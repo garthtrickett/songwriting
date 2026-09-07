@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phase 1 is complete. Phase 2 is implemented; publication checks are pending. Phases 3–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
+Status: Phase 1 is complete. Phase 2 is complete. Its evidence is in [docs/PHASE2_VALIDATION.md](docs/PHASE2_VALIDATION.md). Phases 3–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -250,7 +250,7 @@ undo, or the milestone's simple playback.
 
 ## Phase 2 — Fluent song structure and arrangement editing
 
-**Status:** IMPLEMENTED — publication checks pending
+**Status:** DONE — local checks, live-agent evaluation, and GitHub verification passed
 
 ### Outcome
 

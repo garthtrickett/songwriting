@@ -25,7 +25,7 @@ retain their original revision and text through incoming edits.
 | `bun run test:browser` | PASS: all eleven Chromium workflows |
 | `git diff --check` | PASS |
 | Live external-agent composition | PASS: 13 calls through the live browser bridge |
-| GitHub Actions | Pending publication |
+| GitHub Actions | PASS: push and pull-request verification for implementation commit `966cb077db80fcd247078a1a28b859d3fd840dc9` |
 
 Unit/integration checks cover actual section reuse, variation isolation,
 per-member chord releases, exact meter shifts, phrase/lyric containment,
@@ -47,6 +47,17 @@ cause revision conflicts. A new integration check proves that distinction.
 
 The two new browser regressions and both previously failing workflows pass in a
 focused run. The expanded full suite also passed all eleven workflows.
+
+## GitHub evidence
+
+- [PR verification 34104409726](https://github.com/garthtrickett/songwriting/actions/runs/34104409726): completed success.
+- [Push verification 34104404528](https://github.com/garthtrickett/songwriting/actions/runs/34104404528): completed success.
+
+Both runs exercised frozen installation, 27 unit/integration tests, strict
+TypeScript, the production build and all eleven browser workflows. These runs
+supersede the failures on initial commit `77daa18`. [PR #2](https://github.com/garthtrickett/songwriting/pull/2)
+contains the implementation and closure notes; its final commit must also pass
+verification before merge.
 
 ## Real-agent evaluation
 
