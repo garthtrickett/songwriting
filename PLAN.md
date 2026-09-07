@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–4 complete; Phases 5–9 planned; see PHASES.md and docs/PHASE4_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–5 complete; Phases 6–7 authorized next; Phases 8–9 planned; see PHASES.md and docs/PHASE5_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -891,7 +891,8 @@ are deliberately bounded; arbitrary explicit note collections remain supported.
 
 ## Phase 5 — Playable guitar and bass arrangements
 
-**Status:** ACTIVE. Phase 6 and 7 are authorized next, after this phase merges.
+**Status:** DONE — local checks, live agent evaluation and GitHub verification passed.
+Evidence: [Phase 5 validation](docs/PHASE5_VALIDATION.md). Phases 6 and 7 are authorized next.
 
 ### 5.1 A fretted realisation alongside relative music
 

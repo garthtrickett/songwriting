@@ -42,7 +42,7 @@ Detailed scope: PLAN.md Phase 5; PHASES.md links to it; CONTEXT.md adds vocabula
 | `bun run test:browser tests/browser/fretted.spec.ts` | PASS; both new workflows |
 | `bun run test:browser` | PASS; all 19 Chromium workflows |
 | `git diff --check` | PASS |
-| GitHub Actions | Pending publication; exact-head evidence recorded before closure |
+| GitHub Actions | PASS; push and PR runs on `632f097c0b442c819f2badca02ed0fc4d483f7a7` |
 
 Eight new domain tests exercise standard/alternate/re-entrant tuning and bass,
 capo arithmetic, no-position results, ringing cross-voice collisions, technique
@@ -91,3 +91,12 @@ existing MIDI 12–96 range, while realisation arithmetic supports 0–127.
 
 Recording/media, extended agent customization and remote sync are outside this
 phase. Phases 6 and 7 are authorized next after this merge.
+
+## GitHub evidence
+
+[Push run 34119795775](https://github.com/garthtrickett/songwriting/actions/runs/34119795775)
+and [PR run 34119866115](https://github.com/garthtrickett/songwriting/actions/runs/34119866115)
+completed successfully for `632f097c0b442c819f2badca02ed0fc4d483f7a7`, including
+62 tests and all 19 browser workflows. No CI correction was needed.
+[PR #5](https://github.com/garthtrickett/songwriting/pull/5) contains implementation
+and closure evidence; the final documentation commit is verified before merge.

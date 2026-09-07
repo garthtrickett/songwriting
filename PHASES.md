@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phases 1–4 are complete. Phase 5 is active; Phases 6–7 are authorized next and Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md).
+Status: Phases 1–5 are complete. Phases 6–7 are authorized next; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -362,7 +362,9 @@ Detailed specification: [PLAN.md — Phase 4](PLAN.md#phase-4--harmonic-writing-
 
 ## Phase 5 — Playable guitar and bass arrangements
 
-**Status:** ACTIVE. Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-and-bass-arrangements).
+**Status:** DONE — local checks, live agent evaluation and GitHub verification passed.
+Evidence: [Phase 5 validation](docs/PHASE5_VALIDATION.md).
+Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-and-bass-arrangements).
 
 ## Phase 6 — Voice capture, media, and useful instrumental playback
 
