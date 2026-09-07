@@ -51,5 +51,21 @@ The browser-only file picker/download and audio activation gesture are delivery
 mechanisms. Tools receive/provide the same JSON and control the same audio engine.
 
 Acceptance evidence: model/command invariants, browser manual and tool tests,
-and live external-agent compositions through these primitives. Media, advanced
-guitar notation, and user prompt customization remain later phases.
+and live external-agent compositions through these primitives. User prompt customization remains the next phase.
+
+## Phase 6 media
+
+| Writer outcome | Shared tool path |
+| --- | --- |
+| Import/inspect/download audio library | `media_import`, `media_status`, `media_asset` |
+| Attach a reviewed audio idea | `media_attach` with expected revision and operation ID |
+| Read/edit/delete takes and asset metadata | `read`, `mutate` full entity CRUD; take inspector |
+| Record, stop, cancel pending permission | `recording_start`, `recording_stop`, `media_status` |
+| Recover/download/discard capture | `capture_recover`, `capture_export`, `capture_discard` |
+| Remove unreferenced local binary | `media_remove_unused` with history/capture protection |
+| Complete media bundle import/export | `bundle_import`, `bundle_export` |
+| Audition/seek recorded and synthesized parts | Existing `transport` |
+
+Microphone permission is enforced by the browser. Recording start returns a
+requesting state; query status before claiming capture began. Asset deletion is
+separate from musical deletion and never silently removes undo dependencies.

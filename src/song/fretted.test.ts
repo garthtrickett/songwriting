@@ -179,7 +179,7 @@ it("migrates schema 4 history and retains fingerprint, retries and undo semantic
     (d: any) => !["fretted", "fingerings"].includes(d.table),
   );
   const e = hydrateEnvelope(legacy);
-  expect(e.song!.schemaVersion).toBe(5);
+  expect(e.song!.schemaVersion).toBe(6);
   expect(e.song!.tables.fretted).toEqual({});
   expect(e.history[0]!.fingerprint).toBe(legacy.history[0].fingerprint);
   const empty = edit(e, { kind: "undo", targetId: "create" });

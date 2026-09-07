@@ -161,3 +161,15 @@ A hammer-on, pull-off or slide joining one note to another on the same string.
 
 **Tablature**:
 A view of musical timing through strings, frets and playing techniques.
+
+**Audio asset**:
+An original captured or imported sound, retained independently of where it is used.
+
+**Take**:
+A placed performance of an audio asset, with its own timing, trim and expression.
+
+**Capture**:
+An ongoing or recovered recording awaiting use in the composition.
+
+**Media bundle**:
+A portable copy of a composition and the audio needed to hear its takes.

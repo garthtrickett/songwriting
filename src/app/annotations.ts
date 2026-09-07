@@ -1,3 +1,5 @@
+import { takePlacements } from "../song/media.ts";
+import { secondsPerQuarter } from "../song/timeline.ts";
 import { harmonicSpans } from "../song/harmony-analysis.ts";
 import { pitchLabel } from "../song/model.ts";
 import { html } from "lit-html";
@@ -58,5 +60,6 @@ export function annotationLanes(c: Controller, width: number) {
         </div>`,
     ),
     ...renderedAnnotations,
+    ...takePlacements(s).map(t => html`<div class="annotation-lane"><span class="lane-name">${s.tables.parts[t.partId]!.name} · AUDIO</span><div style=${`width:${width}px;position:relative`}><button class="annotation recorded-take" style=${`left:${value(t.at)*c.zoom}px;width:${Math.max(10,t.duration/secondsPerQuarter(s)*c.zoom)}px;opacity:${t.muted?0.4:1}`} title=${`${t.name}: ${t.duration} seconds from source ${t.offset}`} @click=${()=>c.select({table:"takes",id:t.id})}>${t.name}${t.muted?" · muted":""}</button></div></div>`),
   ];
 }

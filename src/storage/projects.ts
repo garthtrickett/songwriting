@@ -7,10 +7,10 @@ import {
 import { attemptAsync, type Result } from "../result.ts";
 export function openDb(name = "songwriting-v1"): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(name, 1);
+    const request = indexedDB.open(name, 2);
     request.onupgradeneeded = () => {
-      for (const store of ["songs", "sessions", "settings"])
-        request.result.createObjectStore(store, { keyPath: "id" });
+      for (const store of ["songs", "sessions", "settings", "media", "captures"])
+        if (!request.result.objectStoreNames.contains(store)) request.result.createObjectStore(store, { keyPath: "id" });
     };
     request.onsuccess = () => {
       request.result.onversionchange = () => request.result.close();

@@ -14,8 +14,8 @@ export function schema() {
   };
   const entity = (id: string, name: string) => ({ id, name });
   return {
-    schemaVersion: 5,
-    toolVersion: "phase5-fretted-v1",
+    schemaVersion: 6,
+    toolVersion: "phase6-media-v1",
     time: {
       type: "array",
       items: { type: "integer" },
@@ -26,6 +26,8 @@ export function schema() {
     },
     document: emptySong("song-id", "Title"),
     conventions: {
+      media:
+        "Assets use SHA256 encoded-byte identity. Takes anchor exact quarter starts but trims/releases are seconds; no automatic pitch/time stretch. Local takes repeat with sections. Plain song JSON omits audio; media_status reports missing assets. Stage media before revision-checked attachment. Keep binary data for undo; removeUnused refuses any history/capture reference. Browser permission and per-origin recording lock remain authoritative. Capture chunks checkpoint every data event, with possible loss of the latest unsaved chunk on crash.",
       fretted:
         "Notes remain song-relative. Fretted tonic/tuning are absolute MIDI. String 1 first (usually highest); never sort re-entrant tunings. Fret counts above capo; pitch=tuning[string-1]+capo+fret. Techniques: pluck,tap,hammer-on,pull-off,slide,mute,let-ring. Connected techniques reference source fingering in same string/voice. Musical links may become stale; tablature flags them rather than blocking note edits. Fingerings repeat with a placement. Queries bounded to5000 realised notes,512 displayed; no physical playability guarantee.",
       pitch:
@@ -88,6 +90,24 @@ export function schema() {
       },
     },
     templates: {
+      assets: {
+        id: "0".repeat(64),
+        name: "Audio",
+        mime: "audio/wav",
+        bytes: 44144,
+        duration: 0.5,
+      },
+      takes: {
+        ...entity("take", "Vocal idea"),
+        assetId: "0".repeat(64),
+        partId: "part",
+        sectionId: null,
+        start: [0, 1],
+        offset: 0,
+        duration: 0.5,
+        gain: 1,
+        muted: false,
+      },
       fretted: {
         ...entity("fretted", "Drop D guitar"),
         partId: "part",
@@ -286,6 +306,44 @@ export function schema() {
           chordId: { type: "string" },
           tonic: { type: "object" },
           mode: { type: "string" },
+        },
+      },
+      media_import: {
+        type: "object",
+        required: ["name", "mime", "base64"],
+        properties: {
+          name: { type: "string" },
+          mime: { type: "string" },
+          base64: { type: "string" },
+        },
+      },
+      media_attach: {
+        type: "object",
+        required: ["assetId", "take", "expectedRevision", "operationId"],
+        properties: {
+          assetId: { type: "string" },
+          take: { type: "object" },
+          expectedRevision: { type: "integer" },
+          operationId: { type: "string" },
+        },
+      },
+      bundle_import: {
+        type: "object",
+        required: ["text", "asCopy", "operationId"],
+        properties: {
+          text: { type: "string" },
+          asCopy: { type: "boolean" },
+          operationId: { type: "string" },
+        },
+      },
+      recording_start: {
+        type: "object",
+        required: ["name", "partId", "sectionId", "start"],
+        properties: {
+          name: { type: "string" },
+          partId: { type: "string" },
+          sectionId: { type: ["string", "null"] },
+          start: { type: "array" },
         },
       },
       fret_positions: {

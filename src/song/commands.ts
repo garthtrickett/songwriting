@@ -1,3 +1,4 @@
+import { takePlacements } from "./media.ts";
 import { harmonicSpans } from "./harmony-analysis.ts";
 import { harmonyChanges, type HarmonyAction } from "./harmony.ts";
 import { rhythmChanges, type RhythmAction } from "./rhythm.ts";
@@ -206,6 +207,7 @@ export function applyCommand(
     sounds(next);
     annotations(next);
     harmonicSpans(next);
+    takePlacements(next);
   }
   const revision = (current?.revision ?? 0) + 1;
   const receipt: Receipt = {

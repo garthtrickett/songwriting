@@ -18,8 +18,10 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
   const changes: Change[] = [];
   const base = { id, name: `New ${table.replace(/s$/, "")}` };
   switch (table) {
+    case "assets": throw new Error("Import or record audio through the media library first");
+    case "takes": throw new Error("Use Preview take to attach saved audio to the song");
     case "fretted": {
-      const part = Object.values(t.parts).find(p => p.instrument !== "drums");
+      const part = Object.values(t.parts).find(p => ["guitar", "bass"].includes(p.instrument));
       if (!part) throw new Error("Create a guitar or bass part first");
       item = {...base, partId:part.id, tonic:48, tuning:part.instrument === "bass" ? [43,38,33,28] : [64,59,55,50,45,40],capo:0,maxFret:24,handSpan:4};
       break;

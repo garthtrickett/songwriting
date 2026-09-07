@@ -1,0 +1,74 @@
+{
+  "taskId": "31962cf3-5c22-468a-ba3f-7880dfc3f314",
+  "status": "completed",
+  "provider": "OpenAI",
+  "model": "GPT-6 Codex; exact build unavailable",
+  "objective": "Use Capo conversations as a source to create a separate song called Echoes between bars. Import a generated three-second guide tone as an explicitly synthetic vocal idea, attach a take at quarter 1/3 in the local section, trim it to source offset 1/4 second and duration 5/4 seconds, and repeat the section. Keep all original relative notes, chord/fret data and the independent held voice unchanged. Export a complete media bundle, import it as a separate copy, verify its bytes and repeated take positions independently, and explicitly finish. This is a generated media fixture, not a physical microphone recording.",
+  "summary": "Created Echoes between bars with a generated three-second guide, trimmed to 0.25\u20131.5 seconds at local quarter 1/3, repeated the section, and round-tripped complete audio. Independent Python verified original bytes/SHA-256, WAV duration, trims and all source events/chords/patterns/voices/occurrences/fingerings. Synthetic fixture only; no physical microphone claim.",
+  "checks": [
+    "events unchanged",
+    "chords unchanged",
+    "patterns unchanged",
+    "voices unchanged",
+    "occurrences unchanged",
+    "fretted unchanged",
+    "fingerings unchanged",
+    "Bundle audio identical after import/export",
+    "SHA-256 and original bytes verified independently",
+    "Three-second source, quarter-second offset, five-quarter-second trim",
+    "Repeated local anchor 1/3 and 25/3 quarters (two eight-quarter sections)"
+  ],
+  "steps": [
+    {
+      "name": "schema",
+      "status": "done"
+    },
+    {
+      "name": "context",
+      "status": "done"
+    },
+    {
+      "name": "import",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "media_import",
+      "status": "done"
+    },
+    {
+      "name": "media_attach",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "bundle_export",
+      "status": "done"
+    },
+    {
+      "name": "bundle_import",
+      "status": "done"
+    },
+    {
+      "name": "bundle_export",
+      "status": "done"
+    },
+    {
+      "name": "context",
+      "status": "done"
+    }
+  ],
+  "limitations": [
+    "Generated guide audio; no physical microphone or human listening evaluation."
+  ]
+}

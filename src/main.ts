@@ -22,6 +22,7 @@ try {
   addEventListener("pagehide", () => {
     agent.stop();
     c.audio.stop();
+    void c.media.recorder.stop();
   });
   addEventListener("pageshow", (e) => {
     if ((e as PageTransitionEvent).persisted) location.reload();

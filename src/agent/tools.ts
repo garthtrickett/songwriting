@@ -1,3 +1,5 @@
+import { takePlacements } from "../song/media.ts";
+import type { Take } from "../song/model.ts";
 import { fretPositions } from "../song/fretted.ts";
 import { tablature } from "../song/tablature.ts";
 import {
@@ -24,6 +26,66 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  {
+    name: "media_status",
+    description:
+      "Local audio metadata, capture states and missing song assets. Does not return binary data.",
+  },
+  {
+    name: "media_import",
+    description:
+      "Stage audio before attaching it. Args:name,mime,base64. SHA256 identity; max25 MiB/10 minutes; browser decoding validates audio. Returns asset metadata.",
+  },
+  {
+    name: "media_attach",
+    description:
+      "Atomically attach staged asset metadata and a new take. Args:assetId,take,expectedRevision,operationId. Failed attachment retains binary media for retry.",
+  },
+  {
+    name: "media_asset",
+    description:
+      "Read encoded audio. Args:id. Returns asset metadata and base64.",
+  },
+  {
+    name: "media_remove_unused",
+    description:
+      "Delete unreferenced binary media only after checking songs, all history, deleted snapshots and captures. Args:id.",
+  },
+  {
+    name: "bundle_export",
+    description:
+      "Export complete song/media JSON bundle; errors if media is missing/corrupt. Max50 MiB audio. Plain export has metadata only.",
+  },
+  {
+    name: "bundle_import",
+    description:
+      "Verify and stage a complete bundle, then import song. Args:text,asCopy,operationId. ID conflicts retain staged audio without overwriting music.",
+  },
+  {
+    name: "recording_start",
+    description:
+      "Explicitly request microphone capture. Args:name,partId,sectionId,start exact quarters. Browser permission required; result requesting is not recording. Inspect media_status; only one capture per origin.",
+  },
+  {
+    name: "recording_stop",
+    description:
+      "Stop or cancel pending permission, await final chunks and durable preparation. Inspect status/error before claiming readiness.",
+  },
+  {
+    name: "capture_recover",
+    description:
+      "Recover saved chunks after interruption, or retry saving in-memory capture. Args:id. Does not take over active recording.",
+  },
+  {
+    name: "capture_export",
+    description:
+      "Download captured bytes, even if incomplete codec data cannot decode. Args:id. Returns MIME/base64.",
+  },
+  {
+    name: "capture_discard",
+    description:
+      "Explicitly delete capture checkpoints/raw chunks, retaining any separately stored audio asset. Args:id.",
+  },
   {
     name: "fret_positions",
     description:
@@ -131,6 +193,52 @@ export async function executeTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "media_status":
+      return c.media.status();
+    case "media_import":
+      return c.media.importAudio(
+        String(args.name),
+        String(args.mime),
+        String(args.base64),
+      );
+    case "media_attach":
+      return c.media.attach(
+        String(args.assetId),
+        args.take as Take,
+        Number(args.expectedRevision),
+        String(args.operationId),
+      );
+    case "media_asset":
+      return c.media.exportAsset(String(args.id));
+    case "media_remove_unused":
+      await c.media.library.removeUnused(String(args.id));
+      c.notify();
+      return { removed: true };
+    case "bundle_export":
+      return c.media.exportBundle();
+    case "bundle_import":
+      return c.media.importBundle(
+        String(args.text),
+        Boolean(args.asCopy),
+        String(args.operationId),
+      );
+    case "recording_start":
+      return c.media.start({
+        name: String(args.name),
+        partId: String(args.partId),
+        sectionId: args.sectionId as string | null,
+        start: args.start as Time,
+      });
+    case "recording_stop":
+      await c.media.recorder.stop();
+      return c.media.status();
+    case "capture_recover":
+      return c.media.recorder.recover(String(args.id));
+    case "capture_export":
+      return c.media.rawCapture(String(args.id));
+    case "capture_discard":
+      await c.media.recorder.discard(String(args.id));
+      return { discarded: true };
     case "fret_positions":
       if (!c.song) throw new Error("Open a song");
       return fretPositions(
@@ -218,6 +326,7 @@ export async function executeTool(
         viewport: { zoom: c.zoom, jumpTo: c.jumpTo },
         sections: c.song ? sectionSpans(c.song) : [],
         harmonicRegions: c.song ? harmonicSpans(c.song) : [],
+        recordedTakes: c.song ? takePlacements(c.song) : [],
         undoRedo: historyStacks(c.current?.history ?? []),
         tables: TABLES,
         examples: [

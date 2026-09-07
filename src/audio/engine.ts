@@ -1,3 +1,5 @@
+import { takeSchedule } from "../song/media.ts";
+import { instrumentSource } from "./instruments.ts";
 import type { Song } from "../song/model.ts";
 import { semitone } from "../song/model.ts";
 import {
@@ -13,6 +15,7 @@ export interface Scheduled {
   duration: number;
   frequency: number;
   kind: string;
+  takeId?: string;
 }
 export class AudioEngine {
   private context: AudioContext | null = null;
@@ -27,7 +30,11 @@ export class AudioEngine {
     frequency: number;
     gain: number;
     kind: string;
+    buffer?: AudioBuffer;
+    mediaOffset?: number;
+    takeId?: string;
   }[] = [];
+  constructor(private readonly loadMedia?: (id: string) => Promise<Blob>) {}
   private next = 0;
   private end = 0;
   onChange: () => void = () => {};
@@ -64,11 +71,41 @@ export class AudioEngine {
     if (generation !== this.generation) return;
     if (this.context.state !== "running")
       throw new Error("Click Play to enable browser audio");
+    const takes = takeSchedule(song, from),
+      buffers = new Map<string, AudioBuffer>();
+    for (const take of takes)
+      if (!buffers.has(take.assetId)) {
+        if (!this.loadMedia)
+          throw new Error("Audio media loader is unavailable");
+        const blob = await this.loadMedia(take.assetId);
+        const buffer = await this.context.decodeAudioData(
+          await blob.arrayBuffer(),
+        );
+        if (generation !== this.generation) return;
+        const metadata = song.tables.assets[take.assetId]!;
+        if (Math.abs(buffer.duration - metadata.duration) > 0.005)
+          throw new Error(
+            "Recorded duration differs from saved asset metadata",
+          );
+        buffers.set(take.assetId, buffer);
+      }
+    if (generation !== this.generation) return;
     this.beatSeconds = secondsPerQuarter(song);
     this.offset = from;
     this.origin = this.context.currentTime + 0.06;
     this.scheduled = [];
     this.sequence = sounds(song).flatMap((n) => this.sound(n, from));
+    for (const t of takes)
+      this.sequence.push({
+        at: t.at,
+        duration: t.duration / this.beatSeconds,
+        frequency: 0,
+        gain: t.gain,
+        kind: "take",
+        buffer: buffers.get(t.assetId)!,
+        mediaOffset: t.offset,
+        takeId: t.takeId,
+      });
     if (this.metronome)
       for (const c of clicks(song)) {
         const at = value(c.at);
@@ -122,38 +159,35 @@ export class AudioEngine {
       this.next++;
       const at = Math.max(ctx.currentTime, when),
         duration = n.duration * this.beatSeconds;
-      const osc = ctx.createOscillator(),
-        gain = ctx.createGain();
-      osc.type =
-        n.kind === "bass" ? "sine" : n.kind === "hat" ? "square" : "triangle";
-      osc.frequency.setValueAtTime(n.frequency, at);
-      if (n.kind === "kick")
-        osc.frequency.exponentialRampToValueAtTime(
-          35,
-          at + Math.min(duration, 0.12),
-        );
-      const end = at + Math.max(duration, 0.005);
-      gain.gain.setValueAtTime(0, at);
-      gain.gain.linearRampToValueAtTime(
-        n.gain,
-        at + Math.min(0.005, duration / 3),
-      );
-      gain.gain.setValueAtTime(n.gain, Math.max(at + 0.002, end - 0.015));
-      gain.gain.linearRampToValueAtTime(0, end);
-      osc.connect(gain).connect(this.analyser!);
-      osc.start(at);
-      osc.stop(end + 0.01);
-      this.sources.add(osc);
-      osc.onended = () => {
-        this.sources.delete(osc);
-        osc.disconnect();
-        gain.disconnect();
+      let source: AudioScheduledSourceNode, disconnect: () => void;
+      if (n.buffer) {
+        const node = ctx.createBufferSource(),
+          gain = ctx.createGain();
+        node.buffer = n.buffer;
+        gain.gain.value = n.gain;
+        node.connect(gain).connect(this.analyser!);
+        node.start(at, n.mediaOffset ?? 0, duration);
+        source = node;
+        disconnect = () => {
+          node.disconnect();
+          gain.disconnect();
+        };
+      } else {
+        const voice = instrumentSource(ctx, this.analyser!, n, at, duration);
+        source = voice.source;
+        disconnect = voice.disconnect;
+      }
+      this.sources.add(source);
+      source.onended = () => {
+        this.sources.delete(source);
+        disconnect();
       };
       this.scheduled.push({
         at: when,
         duration,
         frequency: n.frequency,
         kind: n.kind,
+        ...(n.takeId ? { takeId: n.takeId } : {}),
       });
     }
     if (this.position > this.end + 0.1) this.stop();
