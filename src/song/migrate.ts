@@ -6,6 +6,8 @@ const record = (v: unknown): v is Record<string, unknown> =>
 export function migrateEntity(table: string, value: unknown): unknown {
   if (!record(value)) return value;
   const e = structuredClone(value);
+  if (table === "chords" && !("labelTonic" in e))
+    e.labelTonic = { degree: 1, alteration: 0, octave: 0 };
   if (table === "sections" && !("sourceId" in e)) e.sourceId = null;
   if (table === "occurrences" && !("sectionId" in e)) e.sectionId = null;
   if (table === "patterns" && !("groups" in e)) e.groups = [];
@@ -15,13 +17,23 @@ export function migrateEntity(table: string, value: unknown): unknown {
 export function migrateSong(input: unknown): unknown {
   if (!record(input)) return input;
   const s = structuredClone(input);
-  if ((s.schemaVersion !== 1 && s.schemaVersion !== 2) || !record(s.tables))
+  if (
+    (s.schemaVersion !== 1 && s.schemaVersion !== 2 && s.schemaVersion !== 3) ||
+    !record(s.tables)
+  )
     return s;
-  s.schemaVersion = 3;
+  s.schemaVersion = 4;
   s.tables.phrases ??= {};
   s.tables.lyrics ??= {};
   s.tables.polyrhythms ??= {};
-  for (const table of ["sections", "occurrences", "patterns", "events"]) {
+  s.tables.harmony ??= {};
+  for (const table of [
+    "sections",
+    "occurrences",
+    "patterns",
+    "events",
+    "chords",
+  ]) {
     const entries = s.tables[table];
     if (record(entries))
       for (const [id, e] of Object.entries(entries))

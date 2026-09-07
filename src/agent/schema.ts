@@ -1,9 +1,21 @@
 import { emptySong, noteEvent } from "../song/model.ts";
 export function schema() {
+  const harmonyRecipe = {
+    root: "V",
+    quality: "major",
+    extension: 7,
+    seventh: "minor",
+    tones: [],
+    omit: [],
+    inversion: 0,
+    octave: 0,
+    target: "V",
+    tonic: { degree: 1, alteration: 0, octave: 0 },
+  };
   const entity = (id: string, name: string) => ({ id, name });
   return {
-    schemaVersion: 3,
-    toolVersion: "phase3-rhythm-v1",
+    schemaVersion: 4,
+    toolVersion: "phase4-harmony-v1",
     time: {
       type: "array",
       items: { type: "integer" },
@@ -22,10 +34,67 @@ export function schema() {
         "Section-relative placements (sectionId set), phrases and lyrics move with every section appearance. Global placements (sectionId null) stay at absolute times. Meter edits preserve local offsets and reject overflow; they move following appearances. Releases may ring beyond a section.",
       rhythm:
         "Pattern groups are positive exact times summing to cycle length, or []. Event originId is unique within a pattern and preserved in variations. Polyrhythm declarations describe intended grids; polyrhythm_grid reports drift without changing notes. Same-scope lanes must use distinct voices. Alignment output is bounded to 512 points per lane, with totals and truncation flags. Comparison matches event origin IDs; legacy or unrelated patterns may have no matches.",
+      harmony:
+        "Notes always use song coordinates. Harmonic regions are half-open annotation spans; local overrides global; no same-scope overlaps. labelTonic locates a chord interpretation, not its pitches. Context changes never transpose. Builder uses explicit root/target and quality, extension 0/6/7/9/11/13, seventh quality, tone degree/alteration overrides, omit list and inversion. Optional performance gain defaults 1; articulation defaults inherit. Voice leading bounds chords to 8 members and radius to 2. Expression selects non-rest events within one pattern. Interpretations are finite-vocabulary exact pitch-class alternatives, not inferred function.",
       references:
         "IDs in voice.partId, event.patternId/chordId, occurrence.patternId/voiceId, section.barIds, bar.sectionId, arrangement.sectionId and pattern.sourceId must exist.",
     },
+    harmonyRecipe,
+    memberPerformance: {
+      memberId: "root",
+      offset: [0, 1],
+      duration: [1, 1],
+      gain: 1,
+      articulation: "inherit",
+    },
+    harmonyActions: {
+      build: {
+        type: "build",
+        newId: "new-chord",
+        name: "Applied dominant",
+        recipe: harmonyRecipe,
+        eventId: null,
+        performance: "reject",
+      },
+      transpose: {
+        type: "transpose",
+        patternId: "pattern",
+        newId: "transposed-chords",
+        steps: 3,
+        semitones: 5,
+      },
+      voiceLead: {
+        type: "voiceLead",
+        sourceId: "source-chord",
+        targetId: "target-chord",
+        octaveRadius: 1,
+      },
+      perform: {
+        type: "perform",
+        eventId: "event",
+        order: ["root", "third", "fifth"],
+        step: [1, 3],
+        duration: null,
+      },
+      expression: {
+        type: "expression",
+        eventIds: ["event"],
+        from: 0.4,
+        to: 1,
+        articulation: "normal",
+        gate: [1, 1],
+      },
+    },
     templates: {
+      harmony: {
+        ...entity("context", "Local dominant"),
+        sectionId: null,
+        start: [0, 1],
+        duration: [4, 1],
+        tonic: { degree: 5, alteration: 0, octave: 0 },
+        mode: "major",
+        annotation: "Temporary centre",
+      },
       parts: {
         ...entity("part", "Guitar"),
         instrument: "guitar",
@@ -40,6 +109,7 @@ export function schema() {
         sourceId: null,
       },
       chords: {
+        labelTonic: { degree: 1, alteration: 0, octave: 0 },
         ...entity("chord", "Tonic"),
         label: "I",
         notes: [
@@ -177,6 +247,34 @@ export function schema() {
       },
     },
     toolArguments: {
+      harmonic_context: {
+        type: "object",
+        required: ["at"],
+        properties: { at: { type: "array" } },
+      },
+      sounding_harmony: {
+        type: "object",
+        required: ["at"],
+        properties: { at: { type: "array" } },
+      },
+      chord_candidates: {
+        type: "object",
+        required: ["chordId"],
+        properties: {
+          chordId: { type: "string" },
+          tonic: { type: "object" },
+          mode: { type: "string" },
+        },
+      },
+      voice_leading: {
+        type: "object",
+        required: ["sourceId", "targetId", "octaveRadius"],
+        properties: {
+          sourceId: { type: "string" },
+          targetId: { type: "string" },
+          octaveRadius: { type: "integer", minimum: 0, maximum: 2 },
+        },
+      },
       compare_patterns: {
         type: "object",
         required: ["sourceId", "variationId"],
@@ -232,6 +330,18 @@ export function schema() {
           label: { type: "string" },
           command: {
             oneOf: [
+              {
+                type: "object",
+                required: ["kind", "action"],
+                properties: {
+                  kind: { const: "harmony" },
+                  action: {
+                    type: "object",
+                    description:
+                      "See harmonyActions and harmonyRecipe. All actions share preview, validation, revision checks and undo.",
+                  },
+                },
+              },
               {
                 type: "object",
                 required: ["kind", "action"],

@@ -1,5 +1,5 @@
 import { sectionLength } from "../song/arrangement.ts";
-import type { Lyric, Polyrhythm } from "../song/model.ts";
+import type { Lyric, Polyrhythm, HarmonicRegion } from "../song/model.ts";
 import type { TemplateResult } from "lit-html";
 import { html, nothing } from "lit-html";
 import type { Controller } from "./controller.ts";
@@ -9,6 +9,7 @@ export function properties(
   c: Controller,
   lyrics: (l: Lyric) => TemplateResult,
   polyrhythms: (p: Polyrhythm) => TemplateResult,
+  harmonicRegions: (h: HarmonicRegion) => TemplateResult,
 ) {
   const sel = c.selection,
     s = c.song,
@@ -68,6 +69,8 @@ export function properties(
   const refs = (table: Table) => Object.values(s.tables[table]);
   const words = (words: string[]) => words.map((w) => ({ id: w, name: w }));
   switch (sel.table) {
+    case "harmony":
+      return harmonicRegions(e as HarmonicRegion);
     case "parts":
       return html`<div class="field-grid">
         ${choice("instrument", "Instrument", words(["guitar", "bass", "drums"]))}${input("volume", "Volume · 0 to 1", "number")}<label
@@ -269,6 +272,9 @@ export function properties(
             .value=${chord.label ?? ""}
             @change=${(ev: Event) => void change({ label: (ev.target as HTMLInputElement).value || null })}
         /></label>
+        <div class="field-grid">
+          ${(["degree", "alteration", "octave"] as const).map((k) => html`<label>Label tonic ${k}<input type="number" aria-label=${`Label tonic ${k}`} .value=${String(chord.labelTonic[k])} @change=${(ev: Event) => void change({ labelTonic: { ...chord.labelTonic, [k]: Number((ev.target as HTMLInputElement).value) } })} /></label>`)}
+        </div>
         <p class="muted">Contained notes · degree / alteration / octave</p>
         ${chord.notes.map((n) => html`<div class="member">${(["degree", "alteration", "octave"] as const).map((key) => html`<input type="number" aria-label=${`${n.id} ${key}`} .value=${String(n.pitch[key])} @change=${(ev: Event) => void member(n.id, { [key]: Number((ev.target as HTMLInputElement).value) })} />`)}<button aria-label="Remove chord note" @click=${() => void change({ notes: chord.notes.filter((v) => v.id !== n.id), label: null })}>−</button></div>`)}<button
           class="secondary"

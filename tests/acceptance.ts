@@ -36,6 +36,7 @@ export function acceptance(id = "acceptance"): Song {
   t.chords.tonic = {
     id: "tonic",
     name: "Open tonic",
+    labelTonic: { degree: 1, alteration: 0, octave: 0 },
     label: "I",
     notes: [
       { id: "root", pitch: { degree: 1, alteration: 0, octave: 0 } },

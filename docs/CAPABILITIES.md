@@ -1,4 +1,4 @@
-# UI / agent capability map — Phases 1–3
+# UI / agent capability map — Phases 1–4
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -6,6 +6,15 @@ structural dependencies may require an atomic multi-object edit.
 
 | UI outcome | Agent equivalent |
 | --- | --- |
+| Build an applied/extended/altered chord and optionally assign it | `preview` / `mutate` harmony `build`; `schema.harmonyRecipe` |
+| Transpose a pattern without changing shared source chords | Harmony `transpose`; independent rhythm `variation` when needed |
+| Compare and apply bounded octave voice leading | `voice_leading`; harmony `voiceLead` |
+| Order member attacks, edit their durations/gain/articulation | Harmony `perform`; full event `performance` edits |
+| Ramp selected accents, set articulation and scale releases | Harmony `expression` |
+| Add/edit/delete timed global/section harmonic regions | Full `harmony` entity CRUD; `context` lists arranged regions |
+| Inspect the active relative tonic/mode at exact time | `harmonic_context` |
+| Inspect chord alternatives and explicitly adopt a label | `chord_candidates`; chord `label` / `labelTonic` edit |
+| Inspect actual audible harmony across independent voices | `sounding_harmony` |
 | Displace an entrance, shift phase, rotate attacks/accents, scale or splice time | `preview` then `mutate` with `kind: "rhythm"`; `schema.rhythmActions` |
 | Build/edit/delete a declared polyrhythm and its ordinary music | Rhythm `polyrhythm` generator; full `polyrhythms` CRUD; independent event edits |
 | Inspect expected versus actual polyrhythm attacks | `polyrhythm_grid` |

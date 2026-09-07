@@ -41,6 +41,9 @@ export const songEnd = (s: Song): Time => {
     const e = add(o.start, o.span);
     if (cmp(e, end) > 0) end = e;
   }
+  for (const h of Object.values(s.tables.harmony))
+    if (h.sectionId === null && cmp(add(h.start, h.duration), end) > 0)
+      end = add(h.start, h.duration);
   return end;
 };
 interface Segment {
@@ -119,7 +122,11 @@ export function sounds(s: Song): Sound[] {
             const start = add(attack, perf?.offset ?? ZERO);
             if (cmp(start, seg.start) < 0 || cmp(start, seg.end) >= 0) continue;
             let duration = perf?.duration ?? e.duration;
-            if (e.articulation === "staccato") duration = mul(duration, [1, 2]);
+            const articulation =
+              perf?.articulation && perf.articulation !== "inherit"
+                ? perf.articulation
+                : e.articulation;
+            if (articulation === "staccato") duration = mul(duration, [1, 2]);
             if (o.tails === "cut" && cmp(add(start, duration), seg.end) > 0)
               duration = sub(seg.end, start);
             out.push({
@@ -136,8 +143,9 @@ export function sounds(s: Song): Sound[] {
               gain:
                 part.volume *
                 e.accent *
-                (e.articulation === "ghost" ? 0.25 : 1) *
-                (e.articulation === "muted" ? 0.45 : 1),
+                (perf?.gain ?? 1) *
+                (articulation === "ghost" ? 0.25 : 1) *
+                (articulation === "muted" ? 0.45 : 1),
             });
             if (out.length > 100000) throw new Error("Too many sounding notes");
           }

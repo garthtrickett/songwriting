@@ -1,0 +1,160 @@
+{
+  "date": "2026-09-07",
+  "taskId": "f3b215f4-7734-4b26-922f-da0511acfc66",
+  "objective": "Create Moving centres, a new math-rock sketch with alternating 7/8 and 9/8 bars in two sections and a sustained low I bass. Build V9/V for the first section's guitar riff. Make an independent pattern variation, transpose it down a perfect fifth, and place that answer in the second section under a local V harmonic context. Stagger the answer chord members by 1/3 quarter note, preserving their durations. Inspect the context, chord interpretations and sounding notes at quarter 9. Verify the original applied chord, source events and held bass are unchanged by the variation. Export the result and explicitly finish.",
+  "provider": "OpenAI",
+  "model": "GPT-6 Codex; exact build unavailable",
+  "host": "Primary Codex session using scripts/agent.ts and the Bun bridge; persistent Chromium only hosted the UI and submitted the objective. No model was called by the browser harness.",
+  "schemaVersion": 4,
+  "toolVersion": "phase4-harmony-v1",
+  "status": "completed",
+  "toolCalls": [
+    {
+      "name": "context",
+      "status": "done"
+    },
+    {
+      "name": "schema",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "open_song",
+      "status": "done"
+    },
+    {
+      "name": "preview",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done",
+      "applicationError": "Invalid mutation"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "preview",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "harmonic_context",
+      "status": "done"
+    },
+    {
+      "name": "chord_candidates",
+      "status": "done"
+    },
+    {
+      "name": "sounding_harmony",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    }
+  ],
+  "independentVerification": {
+    "method": "Python fractions.Fraction, direct relative pitch arithmetic and exported before/after entity comparisons, separate from app analysis",
+    "checks": {
+      "source_events_unchanged": true,
+      "source_patterns_unchanged": true,
+      "applied_chord_unchanged": true,
+      "bass_placement_unchanged": true,
+      "exact_down_perfect_fifth": true,
+      "exact_third_attacks": true,
+      "independent_release_durations": true,
+      "mixed_meters_preserved": true,
+      "local_V_context": true,
+      "audible_notes_at_nine": true,
+      "local_ninth_candidate": true,
+      "analysis_did_not_label": true
+    }
+  },
+  "result": {
+    "example": "examples/moving-centres.song.json",
+    "sourceSemitonesAboveSongTonic": [
+      14,
+      18,
+      21,
+      24,
+      28
+    ],
+    "replySemitonesAboveSongTonic": [
+      7,
+      11,
+      14,
+      17,
+      21
+    ],
+    "memberOffsets": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        4,
+        3
+      ]
+    ],
+    "memberDuration": [
+      4,
+      1
+    ],
+    "atNineSemitonesAboveSongTonic": [
+      -12,
+      7,
+      11,
+      14,
+      17
+    ],
+    "candidateInLocalV": "I9"
+  },
+  "limitations": [
+    "Single live reasoning session, not a broad model benchmark.",
+    "One mutation omitted required envelope fields and was rejected without changing the song; corrected envelope succeeded.",
+    "No subjective listening claim; automated browser tests exercise the audio graph.",
+    "Candidate was inspected but deliberately not adopted; analysis leaves the label unresolved until explicitly chosen."
+  ]
+}
