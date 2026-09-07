@@ -85,7 +85,7 @@ export interface Sound {
   pitch: Pitch | null;
   drum: "kick" | "snare" | "hat";
   gain: number;
-  instrument: "guitar" | "bass" | "drums";
+  instrument: "guitar" | "bass" | "drums" | "voice";
 }
 export function sounds(s: Song): Sound[] {
   const out: Sound[] = [];

@@ -1,5 +1,5 @@
 import { sectionLength } from "../song/arrangement.ts";
-import type { Lyric, Polyrhythm, HarmonicRegion, Fretted, Fingering } from "../song/model.ts";
+import type { Lyric, Polyrhythm, HarmonicRegion, Fretted, Fingering, Take } from "../song/model.ts";
 import type { TemplateResult } from "lit-html";
 import { html, nothing } from "lit-html";
 import type { Controller } from "./controller.ts";
@@ -11,6 +11,7 @@ export function properties(
   polyrhythms: (p: Polyrhythm) => TemplateResult,
   harmonicRegions: (h: HarmonicRegion) => TemplateResult,
   fretted: (table: "fretted" | "fingerings", e: Fretted | Fingering) => TemplateResult,
+  takes: (t: Take) => TemplateResult,
 ) {
   const sel = c.selection,
     s = c.song,
@@ -70,13 +71,15 @@ export function properties(
   const refs = (table: Table) => Object.values(s.tables[table]);
   const words = (words: string[]) => words.map((w) => ({ id: w, name: w }));
   switch (sel.table) {
+    case "takes": return takes(e as Take);
+    case "assets": return html`<p>Audio ${data.mime} · ${data.bytes} bytes · ${data.duration} seconds. Binary identity is retained separately; use the media library for downloads and recovery.</p>`;
     case "fretted":
     case "fingerings": return fretted(sel.table, e as Fretted | Fingering);
     case "harmony":
       return harmonicRegions(e as HarmonicRegion);
     case "parts":
       return html`<div class="field-grid">
-        ${choice("instrument", "Instrument", words(["guitar", "bass", "drums"]))}${input("volume", "Volume · 0 to 1", "number")}<label
+        ${choice("instrument", "Instrument", words(["guitar", "bass", "drums", "voice"]))}${input("volume", "Volume · 0 to 1", "number")}<label
           class="check"
           ><input
             type="checkbox"

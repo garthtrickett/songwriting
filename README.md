@@ -218,3 +218,27 @@ reasoning evaluations.
   excluded from git. Browser songs are not stored in that directory.
 
 See [PLAN.md](PLAN.md), [PHASES.md](PHASES.md), and [CONTEXT.md](CONTEXT.md).
+
+## Record and keep ideas
+
+Add a voice, guitar or other part. In **Audio ideas**, import an audio file or
+choose a name, part, scope and exact start, then start recording. Microphone access
+requires browser permission on localhost or HTTPS. Stop waits for final encoded
+chunks to be saved. Select library audio and preview its placement before attaching
+it. Click a take to trim its source in seconds or edit timing, gain and mute.
+Section-local takes repeat with the section; recordings keep their original pitch
+and speed when composition key or tempo changes.
+
+The capture library offers recovery and raw download after interruption or save
+failure. Never close the page while it says data exists only in memory. A process
+kill can lose the latest unsaved chunk; incomplete codec data may only support raw
+export. The app supports one microphone recording per origin at a time.
+
+Use **Export media bundle** to keep music and audio together. Plain **Export JSON**
+contains metadata only. Import `examples/echoes-between-bars.songbundle.json` for
+a generated guide-tone example (not a human vocal performance). Audio is local to
+this browser; browser storage deletion removes it. Undo and deleted-song history
+protect referenced audio from unused-library removal. Bounds are 25 MiB and ten
+minutes per asset, and 50 MiB audio per bundle before base64 overhead. Browser
+codec support varies. Guitar/bass plucks and synthesized drums are writing aids;
+this is not a studio mixer or transcription tool.

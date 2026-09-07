@@ -211,6 +211,15 @@ test("a fresh writer can create sections, bars, phrases and lyrics with no JSON"
   const phrase = Object.values(
     (await tool(page, "read")).tables.phrases,
   )[0] as any;
+  // Keep this writer's field save in flight while they type and submit words.
+  await page.evaluate(() => {
+    const c = (window as any).songwriting.controller;
+    const mutate = c.mutate.bind(c);
+    c.mutate = async (...args: unknown[]) => {
+      await new Promise(resolve => setTimeout(resolve, 250));
+      return mutate(...args);
+    };
+  });
   await page.getByLabel("Phrase", { exact: true }).selectOption(phrase.id);
   await page
     .getByLabel("Lyric text", { exact: true })

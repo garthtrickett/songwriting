@@ -83,7 +83,7 @@ it("loads a schema 1 database in place and preserves old retries and undo across
   db.close();
   db = await openDb(name);
   const loaded = await read<any>(db, "songs", song.id);
-  expect(loaded.song.schemaVersion).toBe(5);
+  expect(loaded.song.schemaVersion).toBe(6);
   expect(loaded.song.tables.occurrences.guitar.sectionId).toBe(null);
   const duplicate = await commit(db, m);
   expect(duplicate.ok && duplicate.value.revision).toBe(1);

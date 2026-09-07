@@ -298,3 +298,29 @@ context consolidation, provider limits, and continuation policy.
 Transport tools expose play/stop/seek, playback tonic, and metronome. If browser
 policy requires a gesture, tell the writer to click Play before continuing.
 Never claim audio was heard just because a schedule was produced.
+
+## Phase 6 media tools
+
+Discovery reports schema 6 and `phase6-media-v1`. `media_import` takes `name`,
+`mime`, and `base64`; it stages decoded, hashed audio and returns metadata without
+changing song revision. `media_attach` takes `assetId`, a complete `take`,
+`expectedRevision`, and `operationId`. Take shape is in `schema`; positions are
+exact quarters, source offset/duration are seconds. Normal `mutate` edits trims,
+part, gain, mute, and placement. Section-local takes repeat automatically.
+
+`media_status` returns library metadata, missing song assets, capture summaries
+and recorder status. `media_asset {id}` returns original bytes as base64.
+`recording_start {name,partId,sectionId,start}` requests microphone access;
+`recording_stop` cancels a request or waits for final recording persistence.
+Poll status; do not assume permission or success. `capture_recover {id}` retries
+persisted/in-memory data; `capture_export {id}` returns raw bytes even if decoding
+failed; `capture_discard {id}` removes a checkpoint. `media_remove_unused {id}`
+refuses assets referenced by any song, history, deleted snapshot or capture.
+
+`bundle_export` returns a JSON string containing song and all referenced audio.
+`bundle_import {text,asCopy,operationId}` verifies and stages every asset before
+importing the song. Missing/corrupt audio makes complete export fail. Plain
+`export` includes metadata only. Limits: 25 MiB / 10 minutes per asset, 50 MiB
+encoded audio per bundle, plus base64 overhead. Recorded media keeps its original
+pitch and speed when audition key/tempo change. Transport requires usable media
+for all active takes; unsupported decoding is an error, not a partial success.

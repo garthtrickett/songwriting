@@ -11,6 +11,26 @@ it("exposes complete entity CRUD through the same command model, including chord
   try {
     await c.init();
     const s = arrangementSong("parity");
+    const assetId = "0".repeat(64);
+    s.tables.assets[assetId] = {
+      id: assetId,
+      name: "Fixture audio metadata",
+      mime: "audio/wav",
+      bytes: 44,
+      duration: 1,
+    };
+    s.tables.takes.take = {
+      id: "take",
+      name: "Take",
+      assetId,
+      partId: "guitar",
+      sectionId: null,
+      start: [0, 1],
+      offset: 0,
+      duration: 1,
+      gain: 1,
+      muted: false,
+    };
     s.tables.fretted.g = {
       id: "g",
       name: "Guitar",

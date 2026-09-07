@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phases 1–5 are complete. Phases 6–7 are authorized next; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
+Status: Phases 1–5 are complete. Phase 6 is active; Phase 7 is authorized next; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -368,11 +368,7 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 6 — Voice capture, media, and useful instrumental playback
 
-**Outcome:** Attach recorded vocal or instrumental ideas to musical structure,
-manage takes and binary assets, and export/import complete media bundles.
-Improve basic guitar, bass, and drum sounds where it helps writing. Ensure
-permission, recording lifecycle, asset durability, playback, and agent controls
-remain consistent and recoverable.
+**Status:** ACTIVE. Detailed specification: [PLAN.md — Phase 6](PLAN.md#phase-6--voice-capture-media-and-useful-instrumental-playback).
 
 ## Phase 7 — Extended agent workflows and user customization
 

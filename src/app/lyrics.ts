@@ -1,40 +1,26 @@
 import { html } from "lit-html";
 import { live } from "lit-html/directives/live.js";
 import type { Controller } from "./controller.ts";
+import type { Envelope } from "../song/commands.ts";
 import type { Lyric } from "../song/model.ts";
 
 export function lyricEditor(c: Controller) {
   const drafts = new Map<
     string,
-    { text: string; revision: number; dirty: boolean }
+    { text: string; revision: number; base: Envelope; dirty: boolean }
   >();
   return (lyric: Lyric) => {
     const key = `${c.song!.id}/${lyric.id}`;
     let draft = drafts.get(key);
     if (!draft || !draft.dirty) {
-      draft = { text: lyric.text, revision: c.current!.revision, dirty: false };
+      draft = { text: lyric.text, revision: c.current!.revision, base: c.current!, dirty: false };
       drafts.set(key, draft);
     }
     const d = draft;
     return html`<form
       @submit=${async (event: SubmitEvent) => {
         event.preventDefault();
-        const r = await c.mutate({
-          songId: c.song!.id,
-          expectedRevision: d.revision,
-          operationId: crypto.randomUUID(),
-          label: "Edit lyrics",
-          command: {
-            kind: "edit",
-            changes: [
-              {
-                table: "lyrics",
-                id: lyric.id,
-                value: { ...lyric, text: d.text },
-              },
-            ],
-          },
-        });
+        const r = await c.patchEntity("lyrics", lyric.id, { text: d.text }, "Edit lyrics", d.base);
         if (r.ok) d.dirty = false;
         c.notify();
       }}

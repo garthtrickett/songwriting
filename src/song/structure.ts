@@ -149,6 +149,12 @@ export function structureChanges(s: Song, action: StructureAction): Change[] {
           patternId: copied("patterns", o.patternId),
         });
       }
+      for (const take of Object.values(s.tables.takes).filter(
+        (t) => t.sectionId === sec.id,
+      )) {
+        const id = copied("takes", take.id);
+        put("takes", id, { ...take, id, sectionId: action.newId });
+      }
       const localIds = new Set(local.map((o) => o.id));
       const fingers = Object.values(s.tables.fingerings).filter((f) =>
         localIds.has(f.occurrenceId),

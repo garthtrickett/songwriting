@@ -1,3 +1,4 @@
+import { MediaWorkspace } from "../media/workspace.ts";
 import { historyStacks } from "../song/history.ts";
 import { sectionSpans } from "../song/arrangement.ts";
 import { value } from "../song/time.ts";
@@ -28,13 +29,16 @@ export class Controller {
   navigationVersion = 0;
   pending = 0;
   failed: Mutation | null = null;
-  audio = new AudioEngine();
+  audio: AudioEngine;
+  media: MediaWorkspace;
   private listeners = new Set<() => void>();
   private channel: BroadcastChannel | null = null;
   private queue: Promise<unknown> = Promise.resolve();
   private fieldQueue: Promise<unknown> = Promise.resolve();
   private fieldOperations = new Set<string>();
   constructor(readonly db: IDBDatabase) {
+    this.media = new MediaWorkspace(this);
+    this.audio = new AudioEngine(async id => (await this.media.library.get(id)).blob);
     if (typeof BroadcastChannel !== "undefined") {
       this.channel = new BroadcastChannel("songwriting-edits");
       this.channel.onmessage = () => void this.refresh();
@@ -89,6 +93,7 @@ export class Controller {
     this.notify();
   }
   async open(id: string) {
+    await this.media.recorder.stop();
     this.audio.stop();
     this.current = (await read<Envelope>(this.db, "songs", id)) ?? null;
     this.selection = null;
@@ -159,12 +164,13 @@ export class Controller {
     id: string,
     fields: Record<string, unknown>,
     label: string,
+    captured = this.current,
   ) {
     return this.queueFields((s) => {
       const entity = s.tables[table][id];
       if (!entity) throw new Error("The edited object no longer exists");
       return [{ table, id, value: { ...entity, ...fields } }];
-    }, label);
+    }, label, captured);
   }
   patchTitle(title: string) {
     return this.queueFields(
@@ -172,8 +178,7 @@ export class Controller {
       "Rename song",
     );
   }
-  private queueFields(build: (song: Song) => Change[], label: string) {
-    const captured = this.current;
+  private queueFields(build: (song: Song) => Change[], label: string, captured = this.current) {
     if (!captured?.song)
       return Promise.resolve({
         ok: false as const,
@@ -310,6 +315,7 @@ export class Controller {
     return JSON.stringify(this.song, null, 2);
   }
   dispose() {
+    void this.media.recorder.stop();
     this.audio.dispose();
     this.channel?.close();
     this.listeners.clear();

@@ -13,7 +13,7 @@ export interface Note {
   pitch: Pitch;
 }
 export interface Part extends Entity {
-  instrument: "guitar" | "bass" | "drums";
+  instrument: "guitar" | "bass" | "drums" | "voice";
   volume: number;
   muted: boolean;
 }
@@ -130,7 +130,24 @@ export interface Fingering extends Entity {
   technique: (typeof TECHNIQUES)[number];
   fromId: string | null;
 }
+export interface AudioAsset extends Entity {
+  mime: string;
+  bytes: number;
+  duration: number;
+}
+export interface Take extends Entity {
+  assetId: string;
+  partId: string;
+  sectionId: string | null;
+  start: Time;
+  offset: number;
+  duration: number;
+  gain: number;
+  muted: boolean;
+}
 export interface Tables {
+  assets: Record<string, AudioAsset>;
+  takes: Record<string, Take>;
   fretted: Record<string, Fretted>;
   fingerings: Record<string, Fingering>;
   harmony: Record<string, HarmonicRegion>;
@@ -149,6 +166,8 @@ export interface Tables {
   polyrhythms: Record<string, Polyrhythm>;
 }
 export const TABLES = [
+  "assets",
+  "takes",
   "fretted",
   "fingerings",
   "harmony",
@@ -168,7 +187,7 @@ export const TABLES = [
 ] as const;
 export type Table = (typeof TABLES)[number];
 export interface Song {
-  schemaVersion: 5;
+  schemaVersion: 6;
   id: string;
   title: string;
   mode: string;
@@ -178,7 +197,7 @@ export interface Song {
   tables: Tables;
 }
 export const emptySong = (id: string, title = "Untitled idea"): Song => ({
-  schemaVersion: 5,
+  schemaVersion: 6,
   id,
   title,
   mode: "major",
@@ -186,6 +205,8 @@ export const emptySong = (id: string, title = "Untitled idea"): Song => ({
   tempo: { bpm: 112, beatUnit: [1, 1] },
   arrangementOrder: [],
   tables: {
+    assets: {},
+    takes: {},
     fretted: {},
     fingerings: {},
     harmony: {},

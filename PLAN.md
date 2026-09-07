@@ -973,3 +973,107 @@ independently verify absolute pitch/string/fret arithmetic and unchanged music.
 Frozen install, `bun run verify`, all browser checks and `git diff --check` must
 pass. Publish a phase5 PR, verify its final commit on GitHub, merge it, record
 `docs/PHASE5_VALIDATION.md`, then expand and implement Phase 6.
+
+## Phase 6 — Voice capture, media, and useful instrumental playback
+
+**Status:** ACTIVE. Phase 7 is authorized next, after this phase merges.
+
+### 6.1 Media belongs to the composition without becoming musical pitch
+
+Schema 6 adds audio asset metadata and takes, and a voice instrument type. Asset
+identity is a SHA-256 digest of encoded bytes; metadata includes name, MIME,
+byte count and decoded duration. Binary data lives in a dedicated IndexedDB store,
+shared by content identity. Takes reference an asset and part, optional section,
+exact start in quarters, source offset and duration in seconds, gain and mute.
+Several takes can preserve alternatives; explicitly choose which are audible.
+
+Section-local takes repeat with section appearances and copy into variations;
+global takes retain their absolute musical start. Starts must fit the scope;
+recorded releases may ring beyond a section. Tempo changes move musical anchors
+but never stretch/pitch-shift recorded media. Trims are nondestructive seconds
+within the decoded asset. Take playback stays in the recorded key even when the
+relative composition's audition tonic changes. Preserve this distinction visibly.
+
+Migrate schemas 1–5 and history additively. Upgrade IndexedDB without destroying
+songs/settings/sessions. Binary retention protects undo and deleted-song recovery.
+Deleting a take or metadata never silently deletes audio. Explicit unused-asset
+removal must check all songs, deleted snapshots, undo/redo values and capture
+checkpoints in one transaction; no automatic garbage collection.
+
+### 6.2 Durable import, recording and recovery
+
+- Import a decodable audio file into the local media library, validating MIME,
+  bounded size and decoded duration before reporting it usable. Compute identity
+  from actual bytes. Equal audio deduplicates without overwriting content.
+- Store audio before attaching a take. A revision conflict or failed musical save
+  leaves the audio in the library for retry. Attach metadata/take atomically through
+  the shared command path with a revision captured for the reviewed placement.
+- Record only after an explicit start action, with browser microphone permission.
+  Use MediaRecorder capability detection and a supported MIME. Show requesting,
+  recording, stopping, ready and failure states; never imply recording began while
+  permission is pending. No microphone monitoring by default.
+- One recorder per origin uses a browser lock. Release microphone tracks and locks
+  on stop, cancellation, errors and page exit. Cancelling a pending permission
+  request invalidates late grants and stops their tracks. Song navigation stops
+  capture; the recoverable capture remains bound to its original song/anchor.
+- Persist ordered encoded chunks as they arrive (nominal one-second timeslice),
+  with capture identity, original song/placement intent, MIME and state. Stop waits
+  for final data and persistence before declaring readiness. Save failures retain
+  in-memory data for retry and show that durability is incomplete.
+- Recover interrupted captures from persisted chunks explicitly; never steal an
+  active recording in another tab. A process kill can lose the most recent
+  unpersisted chunk. Concatenate stored chunks before decoding; incomplete codec
+  output may be recoverable only as a raw download. Keep failures visible and
+  preserve bytes for retry/export rather than discarding them.
+- Bound a take to 10 minutes and each encoded asset to 25 MiB. Exceeding limits
+  stops capture and preserves available data with an explicit result. These are
+  prototype memory limits, not silent truncation of a supposedly complete take.
+
+### 6.3 Portable bundles and useful playback
+
+Use a versioned `.songbundle.json`: canonical song plus one base64 record per
+referenced asset. It is readable and requires no archive dependency. Validate
+schema, identity, bytes, decoded duration, completeness and bounds before changing
+the song. Limit bundles to 50 MiB encoded audio (base64 overhead additional).
+Import keeps ID-conflict/copy and revision policies; staging verified assets before
+song commit is safe because failed commits leave a recoverable library entry.
+Export fails explicitly if any referenced media is absent/corrupt; never produce
+a bundle presented as complete while omitting audio. Plain `.song.json` exports
+metadata only and must say so; importing it reports missing media.
+
+Schedule decoded take buffers on the existing audio clock, respecting absolute
+starts, trims, section repeats, gain/mute and seek offsets. Stop/seek/song changes
+cancel both synthesized and recorded sources. Decode/loading failure prevents a
+misleading partial audition; report missing/unsupported media. Keep independent
+musical releases. No recording auto-alignment, time-stretch or DAW mixing is implied.
+
+Improve instrumental audition with a decaying harmonic guitar pluck, a fuller
+bass tone, noise-based snare/hat and a pitched kick, all locally synthesized with
+no licensed samples or network fetch. Preserve scheduler observability, bounded
+source cleanup and existing metronome behavior. Voice notes have a simple sustained
+tone; recorded vocal takes provide the real captured voice.
+
+### 6.4 UI, tools, validation and exit gate
+
+Provide ordinary capture/import/library/attach controls, editable take trim,
+scope, gain and mute, recovery/download/delete controls and complete bundle
+import/export. Show missing assets and recorded-key behavior; make take placement
+visible alongside the song timeline. Keep capture/file/draft state across failed
+attachment and reject stale revisions. Tools expose import/export bytes, media
+status/library, recording lifecycle, recovery, and shared take/asset CRUD. Browser
+permission remains the browser's authority; no agent bypass or hidden capture.
+
+Test migration, content identity/corruption, trims/section repeats, staged assets
+on conflict, protected cleanup/undo, complete/missing bundle round trips, source
+scheduling and independent note preservation. Real Chromium checks cover synthetic
+microphone input, permission denial and delayed grant/cancel, final-chunk ordering,
+reload recovery, cross-tab recording lock, stopping/seek and audio-graph output.
+Use generated fixture audio, never private recordings. A live agent evaluation
+attaches/imports media via tools, places/trims a take, exports/reimports a bundle,
+and independently verifies bytes and musical preservation; simulated microphone
+input is disclosed rather than described as a physical recording evaluation.
+
+Run frozen install, `bun run verify`, all browser workflows and whitespace checks.
+Publish a phase6 PR, resolve failures, verify its final GitHub commit, merge and
+record `docs/PHASE6_VALIDATION.md` before expanding Phase 7. No remote backup,
+transcription, studio processing, streaming service integration or sample library.

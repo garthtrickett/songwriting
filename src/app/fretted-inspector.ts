@@ -104,7 +104,7 @@ export function frettedEditor(c: Controller) {
         "partId",
         "Fretted part",
         Object.values(c.song!.tables.parts).filter(
-          (p) => p.instrument !== "drums",
+          (p) => ["guitar", "bass"].includes(p.instrument),
         ),
       )}
                 <label

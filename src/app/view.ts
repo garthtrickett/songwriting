@@ -1,3 +1,7 @@
+import { takePlacements } from "../song/media.ts";
+import { secondsPerQuarter } from "../song/timeline.ts";
+import { mediaPanel } from "./media.ts";
+import { takeEditor } from "./takes.ts";
 import { frettedPanel } from "./fretted.ts";
 import { frettedEditor } from "./fretted-inspector.ts";
 import { harmonyPanel } from "./harmony.ts";
@@ -53,6 +57,7 @@ export interface AgentView {
   control(id: string, action: "cancel" | "resume"): Promise<void>;
 }
 export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
+  const media = mediaPanel(c), takes = takeEditor(c);
   const frets = frettedPanel(c), fretEditor = frettedEditor(c);
   const rhythm = rhythmPanel(c), harmony = harmonyPanel(c), harmonicRegions = harmonicRegionEditor(c), members = memberPerformanceEditor(c);
   const arrange = arrangementPanel(c),
@@ -218,6 +223,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
       ? Math.max(
           8,
           value(songEnd(song)),
+          ...takePlacements(song).map(t=>value(t.at)+t.duration/secondsPerQuarter(song)),
           ...score.map((n) => value(add(n.start, n.duration))),
         )
       : 16;
@@ -344,7 +350,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                         </p>
                       </div>
                       <button class="secondary" @click=${handle(download)}>
-                        Export ↗
+                        Export JSON · no audio ↗
                       </button>
                     </div>
                     <div class="transport">
@@ -407,7 +413,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                     </div>
                     ${arrange()}
                     ${rhythm()}
-                    ${harmony()}${frets()}
+                    ${harmony()}${frets()}${media()}
                     ${c.incoming ? html`<p class="incoming" role="status">${c.incoming}</p>` : nothing}
                     <div class="score-heading">
                       <h2>Song map</h2>
@@ -692,7 +698,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                     .value=${entity.name}
                                     @change=${(e: Event) => void handle(() => c.patchEntity(c.selection!.table, entity.id, { name: (e.target as HTMLInputElement).value }, "Rename object"))()}
                                 /></label>
-                                ${c.selection?.table === "events" ? html`${fields(entity as MusicalEvent)}${members(entity as MusicalEvent)}` : properties(c, lyrics, polyrhythms, harmonicRegions, fretEditor)}
+                                ${c.selection?.table === "events" ? html`${fields(entity as MusicalEvent)}${members(entity as MusicalEvent)}` : properties(c, lyrics, polyrhythms, harmonicRegions, fretEditor, takes)}
                                 ${
                                   c.selection?.table === "patterns"
                                     ? html`<button

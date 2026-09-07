@@ -1,3 +1,4 @@
+import { validateMedia } from "./media.ts";
 import { validateFretted } from "./fretted.ts";
 import { migrateSong } from "./migrate.ts";
 import { sectionLength } from "./arrangement.ts";
@@ -45,7 +46,7 @@ export function validateSong(input: unknown): Result<Song> {
   try {
     assert(record(input), "Song must be an object");
     const s = migrateSong(input) as Song;
-    assert(s.schemaVersion === 5, "Unsupported song schema version");
+    assert(s.schemaVersion === 6, "Unsupported song schema version");
     assert(
       id(s.id) &&
         text(s.title) &&
@@ -78,7 +79,7 @@ export function validateSong(input: unknown): Result<Song> {
       );
     for (const p of Object.values(t.parts))
       assert(
-        ["guitar", "bass", "drums"].includes(p.instrument) &&
+        ["guitar", "bass", "drums", "voice"].includes(p.instrument) &&
           scalar(p.volume, 0, 1) &&
           typeof p.muted === "boolean",
         "Invalid part",
@@ -354,6 +355,7 @@ export function validateSong(input: unknown): Result<Song> {
     }
     for (const m of Object.values(t.markers)) duration(m.at);
     validateFretted(s);
+    validateMedia(s);
     return ok(structuredClone(s));
   } catch (e) {
     return err(e instanceof Error ? e.message : String(e));
