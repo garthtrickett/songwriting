@@ -21,8 +21,8 @@ retain their original revision and text through incoming edits.
 | Check | Result |
 | --- | --- |
 | `bun install --frozen-lockfile` | PASS, no dependency changes |
-| `bun run verify` | PASS: strict TypeScript, 26 unit/integration tests, production build |
-| `bun run test:browser` | PASS: all nine Chromium workflows |
+| `bun run verify` | PASS: strict TypeScript, 27 unit/integration tests, production build |
+| `bun run test:browser` | PASS: all eleven Chromium workflows |
 | `git diff --check` | PASS |
 | Live external-agent composition | PASS: 13 calls through the live browser bridge |
 | GitHub Actions | Pending publication |
@@ -38,7 +38,15 @@ focus/nudging/undo/redo/zoom; stale previews and unsaved lyric drafts during
 incoming agent edits; fresh section/bar/phrase/lyric creation without JSON.
 The initial full browser run passed eight workflows. The ninth read before a
 save completed; it now waits for the persisted musical result and passes in a
-focused run. The final full suite passed all nine workflows.
+focused run. That local full suite passed all nine workflows. GitHub then exposed two real
+races: a background render reset an in-progress title, and consecutive inspector
+edits captured the same revision. Both now have deterministic reproductions.
+The fix preserves DOM text on unchanged renders and composes queued local field
+intentions only across that queue's accepted operations. Foreign mutations still
+cause revision conflicts. A new integration check proves that distinction.
+
+The two new browser regressions and both previously failing workflows pass in a
+focused run. The expanded full suite also passed all eleven workflows.
 
 ## Real-agent evaluation
 

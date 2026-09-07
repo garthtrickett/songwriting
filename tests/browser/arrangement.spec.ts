@@ -226,3 +226,54 @@ test("a fresh writer can create sections, bars, phrases and lyrics with no JSON"
     "unexpected turn",
   );
 });
+
+test("typing a title survives a same-revision repaint before blur", async ({
+  page,
+}) => {
+  await boot(page);
+  await page.getByLabel("Song title").fill("A title in progress");
+  await tool(page, "navigate", { zoom: 40 });
+  await expect(page.getByLabel("Song title")).toHaveValue(
+    "A title in progress",
+  );
+  await page.getByLabel("Song title").press("Tab");
+  await expect
+    .poll(async () => (await tool(page, "read")).title)
+    .toBe("A title in progress");
+  await page.reload();
+  await expect(page.getByLabel("Song title")).toHaveValue(
+    "A title in progress",
+  );
+});
+
+test("rapid inspector field edits compose before their first save completes", async ({
+  page,
+}) => {
+  await boot(page);
+  await tool(page, "select", { table: "occurrences", id: "guitar" });
+  await page.evaluate(() => {
+    for (const [label, value] of [
+      ["Repeat span", "31/2"],
+      ["Start · quarter notes", "1/2"],
+    ]) {
+      const input = document.querySelector<HTMLInputElement>(
+        `input[aria-label="${label}"]`,
+      )!;
+      input.value = value!;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+  await expect
+    .poll(async () => {
+      const o = await tool(page, "read", {
+        table: "occurrences",
+        id: "guitar",
+      });
+      return [o.start, o.span];
+    })
+    .toEqual([
+      [1, 2],
+      [31, 2],
+    ]);
+  await expect(page.getByRole("alert")).toHaveCount(0);
+});

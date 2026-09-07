@@ -77,13 +77,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
       const sel = c.selection;
       if (!sel || sel.table !== "events") return;
       const e = c.song!.tables.events[sel.id]!;
-      return c.edit(
-        {
-          kind: "edit",
-          changes: [{ table: "events", id: e.id, value: { ...e, ...patch } }],
-        },
-        "Edit note",
-      );
+      return c.patchEntity("events", e.id, patch, "Edit note");
     });
   const download = () => {
     const blob = new Blob([c.export()], { type: "application/json" });
@@ -332,8 +326,8 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                         <input
                           class="title"
                           aria-label="Song title"
-                          .value=${live(song.title)}
-                          @change=${(e: Event) => void handle(() => c.edit({ kind: "edit", changes: [{ table: "meta", id: "title", value: (e.target as HTMLInputElement).value }] }, "Rename song"))()}
+                          .value=${song.title}
+                          @change=${(e: Event) => void handle(() => c.patchTitle((e.target as HTMLInputElement).value))()}
                         />
                         <p>
                           Shape the pattern. Find the conversation between
@@ -432,14 +426,14 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                           aria-label="Nudge step"
                           .value=${format(step)}
                           @change=${(e: Event) =>
-                        void handle(() => {
-                          const next = parse(
-                            (e.target as HTMLInputElement).value,
-                          );
-                          if (cmp(next, [0, 1]) <= 0)
-                            throw new Error("Step must be positive");
-                          step = next;
-                        })()}
+                            void handle(() => {
+                              const next = parse(
+                                (e.target as HTMLInputElement).value,
+                              );
+                              if (cmp(next, [0, 1]) <= 0)
+                                throw new Error("Step must be positive");
+                              step = next;
+                            })()}
                       /></label>
                       <small>← → nudge · Ctrl/⌘ Z undo · Shift Z redo</small>
                     </div>
@@ -457,9 +451,9 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                 html`<button
                                   style=${`left:${value(b.start) * px}px;width:${value(b.length) * px}px`}
                                   @click=${() => {
-                         tab = "bars";
-                         c.select({ table: "bars", id: b.id });
-                       }}
+                                    tab = "bars";
+                                    c.select({ table: "bars", id: b.id });
+                                  }}
                                 >
                                   <b>${b.index + 1}</b>
                                   ${b.numerator}/${b.denominator}<small
@@ -476,9 +470,9 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                             <button
                               class="lane-name"
                               @click=${() => {
-                     tab = "voices";
-                     c.select({ table: "voices", id: voice.id });
-                   }}
+                                tab = "voices";
+                                c.select({ table: "voices", id: voice.id });
+                              }}
                             >
                               <b>${part.name}</b><small>${voice.name}</small>
                             </button>
@@ -487,68 +481,69 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                               style=${`width:${width}px;background-size:16px 100%`}
                             >
                               ${placements(song)
-                     .filter((o) => o.voiceId === voice.id)
-                     .map(
-                       (o) =>
-                         html`<button
-                           class="occurrence ${c.selection?.table === "occurrences" && c.selection.id === o.id ? "chosen" : ""}"
-                           style=${`left:${value(o.start) * px}px;width:${value(o.span) * px}px`}
-                           @click=${() => {
-                 tab = "occurrences";
-                 c.select({ table: "occurrences", id: o.id });
-               }}
-                         >
-                           ${song.tables.patterns[o.patternId]!.name}
-                           <span
-                             >${format(song.tables.patterns[o.patternId]!.length)}
-                             q · ${o.sectionId ? "section" : "global"} ·
-                             ${o.tails}</span
-                           >
-                         </button>`,
-                     )}
+                                .filter((o) => o.voiceId === voice.id)
+                                .map(
+                                  (o) =>
+                                    html`<button
+                                      class="occurrence ${c.selection?.table === "occurrences" && c.selection.id === o.id ? "chosen" : ""}"
+                                      style=${`left:${value(o.start) * px}px;width:${value(o.span) * px}px`}
+                                      @click=${() => {
+                             tab = "occurrences";
+                             c.select({ table: "occurrences", id: o.id });
+                           }}
+                                    >
+                                      ${song.tables.patterns[o.patternId]!.name}
+                                      <span
+                                        >${format(song.tables.patterns[o.patternId]!.length)}
+                                        q ·
+                                        ${o.sectionId ? "section" : "global"} ·
+                                        ${o.tails}</span
+                                      >
+                                    </button>`,
+                                )}
                               ${placements(song)
-                     .filter((o) => o.voiceId === voice.id)
-                     .flatMap((o) => cycleStarts(song, o))
-                     .map(
-                       (at) =>
-                         html`<span
-                           class="cycle-edge"
-                           style=${`left:${value(at) * px}px`}
-                           title=${`Cycle begins at ${format(at)} quarter notes`}
-                         ></span>`,
-                     )}
+                                .filter((o) => o.voiceId === voice.id)
+                                .flatMap((o) => cycleStarts(song, o))
+                                .map(
+                                  (at) =>
+                                    html`<span
+                                      class="cycle-edge"
+                                      style=${`left:${value(at) * px}px`}
+                                      title=${`Cycle begins at ${format(at)} quarter notes`}
+                                    ></span>`,
+                                )}
                               ${restSpans(song)
-                     .filter((r) => r.voiceId === voice.id)
-                     .map(
-                       (r) =>
-                         html`<button
-                           class="rest-block"
-                           style=${`left:${value(r.start) * px}px;width:${Math.max(10, value(r.duration) * px)}px`}
-                           title="Rest"
-                           @click=${() => {
-                 tab = "events";
-                 c.select({ table: "events", id: r.eventId });
-               }}
-                         >
-                           𝄽
-                         </button>`,
-                     )}
+                                .filter((r) => r.voiceId === voice.id)
+                                .map(
+                                  (r) =>
+                                    html`<button
+                                      class="rest-block"
+                                      style=${`left:${value(r.start) * px}px;width:${Math.max(10, value(r.duration) * px)}px`}
+                                      title="Rest"
+                                      @click=${() => {
+                             tab = "events";
+                             c.select({ table: "events", id: r.eventId });
+                           }}
+                                    >
+                                      𝄽
+                                    </button>`,
+                                )}
                               ${score
-                     .filter((n) => n.voiceId === voice.id)
-                     .map(
-                       (n) =>
-                         html`<button
-                           class="note-block ${c.selection?.id === n.eventId ? "chosen" : ""}"
-                           style=${`left:${value(n.start) * px}px;width:${Math.max(5, value(n.duration) * px - 2)}px;top:${n.pitch ? 37 + (7 - n.pitch.degree) * 3 : 46}px;opacity:${Math.max(0.45, n.gain)}`}
-                           title=${`${n.pitch ? pitchLabel(n.pitch) : n.drum} · ${format(n.start)} → ${format(add(n.start, n.duration))}`}
-                           @click=${() => {
-                 tab = "events";
-                 c.select({ table: "events", id: n.eventId });
-               }}
-                         >
-                           ${n.pitch ? pitchLabel(n.pitch) : n.drum === "kick" ? "●" : n.drum === "snare" ? "×" : "·"}
-                         </button>`,
-                     )}
+                                .filter((n) => n.voiceId === voice.id)
+                                .map(
+                                  (n) =>
+                                    html`<button
+                                      class="note-block ${c.selection?.id === n.eventId ? "chosen" : ""}"
+                                      style=${`left:${value(n.start) * px}px;width:${Math.max(5, value(n.duration) * px - 2)}px;top:${n.pitch ? 37 + (7 - n.pitch.degree) * 3 : 46}px;opacity:${Math.max(0.45, n.gain)}`}
+                                      title=${`${n.pitch ? pitchLabel(n.pitch) : n.drum} · ${format(n.start)} → ${format(add(n.start, n.duration))}`}
+                                      @click=${() => {
+                             tab = "events";
+                             c.select({ table: "events", id: n.eventId });
+                           }}
+                                    >
+                                      ${n.pitch ? pitchLabel(n.pitch) : n.drum === "kick" ? "●" : n.drum === "snare" ? "×" : "·"}
+                                    </button>`,
+                                )}
                             </div>
                           </div>`;
                         })}
@@ -561,9 +556,9 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                 html`<button
                                   style=${`left:${value(m.at) * px}px`}
                                   @click=${() => {
-                         tab = "markers";
-                         c.select({ table: "markers", id: m.id });
-                       }}
+                                    tab = "markers";
+                                    c.select({ table: "markers", id: m.id });
+                                  }}
                                 >
                                   ⚑ ${m.name}
                                 </button>`,
@@ -587,9 +582,9 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                               html`<button
                                 class=${tab === t ? "active" : ""}
                                 @click=${() => {
-                       tab = t;
-                       c.select(null);
-                     }}
+                                  tab = t;
+                                  c.select(null);
+                                }}
                               >
                                 ${t}
                               </button>`,
@@ -618,14 +613,18 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                   type="checkbox"
                                   .checked=${(alignmentIds ?? Object.keys(song.tables.occurrences).slice(0, 2)).includes(o.id)}
                                   @change=${(ev: Event) => {
-                         const ids =
-                           alignmentIds ??
-                           Object.keys(song.tables.occurrences).slice(0, 2);
-                         alignmentIds = (ev.target as HTMLInputElement).checked
-                           ? [...ids, o.id]
-                           : ids.filter((id) => id !== o.id);
-                         c.notify();
-                       }}
+                                    const ids =
+                                      alignmentIds ??
+                                      Object.keys(
+                                        song.tables.occurrences,
+                                      ).slice(0, 2);
+                                    alignmentIds = (
+                                      ev.target as HTMLInputElement
+                                    ).checked
+                                      ? [...ids, o.id]
+                                      : ids.filter((id) => id !== o.id);
+                                    c.notify();
+                                  }}
                                 />${o.name}</label
                               >`,
                           )}
@@ -679,28 +678,31 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                             ? html`<label
                                   >Name<input
                                     aria-label="Object name"
-                                    .value=${live(entity.name)}
-                                    @change=${(e: Event) => void handle(() => c.edit({ kind: "edit", changes: [{ table: c.selection!.table, id: entity.id, value: { ...entity, name: (e.target as HTMLInputElement).value } }] }, "Rename object"))()}
+                                    .value=${entity.name}
+                                    @change=${(e: Event) => void handle(() => c.patchEntity(c.selection!.table, entity.id, { name: (e.target as HTMLInputElement).value }, "Rename object"))()}
                                 /></label>
                                 ${c.selection?.table === "events" ? fields(entity as MusicalEvent) : properties(c, lyrics)}
                                 ${
-                       c.selection?.table === "patterns"
-                         ? html`<button
-                             class="secondary"
-                             @click=${handle(async () => {
-                   const id = crypto.randomUUID();
-                   const r = await c.edit(
-                     { kind: "edit", changes: vary(song, entity.id, id) },
-                     "Create pattern variation",
-                   );
-                   if (r.ok) c.select({ table: "patterns", id });
-                   return r;
-                 })}
-                           >
-                             Create variation ↗
-                           </button>`
-                         : nothing
-                     }
+                                  c.selection?.table === "patterns"
+                                    ? html`<button
+                                        class="secondary"
+                                        @click=${handle(async () => {
+                               const id = crypto.randomUUID();
+                               const r = await c.edit(
+                                 {
+                                   kind: "edit",
+                                   changes: vary(song, entity.id, id),
+                                 },
+                                 "Create pattern variation",
+                               );
+                               if (r.ok) c.select({ table: "patterns", id });
+                               return r;
+                             })}
+                                      >
+                                        Create variation ↗
+                                      </button>`
+                                    : nothing
+                                }
                                 <details>
                                   <summary>Exact properties · JSON</summary>
                                   <p class="muted">
@@ -713,43 +715,44 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                     spellcheck="false"
                                     .value=${live(draft)}
                                     @input=${(e: Event) => {
-                           draft = (e.target as HTMLTextAreaElement).value;
-                           draftDirty = true;
-                         }}
+                                      draft = (e.target as HTMLTextAreaElement)
+                                        .value;
+                                      draftDirty = true;
+                                    }}
                                   ></textarea
                                   ><button
                                     class="secondary"
                                     @click=${() => {
-                           draftDirty = false;
-                           c.notify();
-                         }}
+                                      draftDirty = false;
+                                      c.notify();
+                                    }}
                                   >
                                     Refresh properties</button
                                   ><button
                                     class="primary"
                                     @click=${handle(async () => {
-                           const result = await c.mutate({
-                             songId: song.id,
-                             expectedRevision: revisionAtDraft,
-                             operationId: crypto.randomUUID(),
-                             label: `Edit ${entity.name}`,
-                             command: {
-                               kind: "edit",
-                               changes: [
-                                 {
-                                   table: c.selection!.table,
-                                   id: entity.id,
-                                   value: JSON.parse(draft),
-                                 },
-                               ],
-                             },
-                           });
-                           if (result.ok) {
-                             draftDirty = false;
-                             c.notify();
-                           }
-                           return result;
-                         })}
+                                      const result = await c.mutate({
+                                        songId: song.id,
+                                        expectedRevision: revisionAtDraft,
+                                        operationId: crypto.randomUUID(),
+                                        label: `Edit ${entity.name}`,
+                                        command: {
+                                          kind: "edit",
+                                          changes: [
+                                            {
+                                              table: c.selection!.table,
+                                              id: entity.id,
+                                              value: JSON.parse(draft),
+                                            },
+                                          ],
+                                        },
+                                      });
+                                      if (result.ok) {
+                                        draftDirty = false;
+                                        c.notify();
+                                      }
+                                      return result;
+                                    })}
                                   >
                                     Apply properties</button
                                   >${draftDirty && revisionAtDraft !== c.current?.revision ? html`<p class="error">Song changed while you were editing. Copy your draft and reselect the object to refresh.</p>` : nothing}
@@ -777,14 +780,18 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                 >${h.label}<small
                                   >Revision ${h.revision} ·
                                   ${h.deltas
-                     .slice(0, 8)
-                     .map((d) => {
-                       const v = d.after ?? d.before;
-                       return v && typeof v === "object" && "name" in v
-                         ? String(v.name)
-                         : `${d.table}/${d.id}`;
-                     })
-                     .join(", ")}${h.deltas.length > 8 ? "…" : ""}</small
+                                    .slice(0, 8)
+                                    .map((d) => {
+                                      const v = d.after ?? d.before;
+                                      return v &&
+                                        typeof v === "object" &&
+                                        "name" in v
+                                        ? String(v.name)
+                                        : `${d.table}/${d.id}`;
+                                    })
+                                    .join(
+                                      ", ",
+                                    )}${h.deltas.length > 8 ? "…" : ""}</small
                                 ></span
                               ><button
                                 @click=${handle(() => c.edit({ kind: "undo", targetId: h.operationId }, `Undo ${h.label}`))}
@@ -817,25 +824,33 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                         advanced
                           ? html`<form
                               @submit=${(e: SubmitEvent) => {
-                     e.preventDefault();
-                     const f = e.currentTarget as HTMLFormElement;
-                     const expected = Number(
-                       (f.elements.namedItem("revision") as HTMLInputElement)
-                         .value,
-                     );
-                     const text = (
-                       f.elements.namedItem("song") as HTMLTextAreaElement
-                     ).value;
-                     void handle(() =>
-                       c.mutate({
-                         songId: song.id,
-                         expectedRevision: expected,
-                         operationId: crypto.randomUUID(),
-                         label: "Edit song document",
-                         command: { kind: "replace", song: JSON.parse(text) },
-                       }),
-                     )();
-                   }}
+                                e.preventDefault();
+                                const f = e.currentTarget as HTMLFormElement;
+                                const expected = Number(
+                                  (
+                                    f.elements.namedItem(
+                                      "revision",
+                                    ) as HTMLInputElement
+                                  ).value,
+                                );
+                                const text = (
+                                  f.elements.namedItem(
+                                    "song",
+                                  ) as HTMLTextAreaElement
+                                ).value;
+                                void handle(() =>
+                                  c.mutate({
+                                    songId: song.id,
+                                    expectedRevision: expected,
+                                    operationId: crypto.randomUUID(),
+                                    label: "Edit song document",
+                                    command: {
+                                      kind: "replace",
+                                      song: JSON.parse(text),
+                                    },
+                                  }),
+                                )();
+                              }}
                             >
                               <input
                                 type="hidden"
@@ -847,8 +862,10 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                 class="json full"
                                 .value=${live(documentDraft)}
                                 @input=${(e: Event) => {
-                       documentDraft = (e.target as HTMLTextAreaElement).value;
-                     }}
+                                  documentDraft = (
+                                    e.target as HTMLTextAreaElement
+                                  ).value;
+                                }}
                               ></textarea
                               ><button class="primary">Apply document</button>
                             </form>`

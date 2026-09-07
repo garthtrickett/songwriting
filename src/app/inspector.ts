@@ -15,13 +15,7 @@ export function properties(
   if (!sel || !s || !e || sel.table === "events") return nothing;
   const data = e as unknown as Record<string, unknown>;
   const change = async (patch: Record<string, unknown>) => {
-    const r = await c.edit(
-      {
-        kind: "edit",
-        changes: [{ table: sel.table, id: e.id, value: { ...e, ...patch } }],
-      },
-      `Edit ${e.name}`,
-    );
+    const r = await c.patchEntity(sel.table, e.id, patch, `Edit ${e.name}`);
     if (!r.ok) c.notify();
   };
   const run = (fn: () => unknown) => {
@@ -108,9 +102,9 @@ export function properties(
           ${data.sectionId ? "Times are relative to this section and play on every appearance." : "Global music stays fixed when sections move. Changing scope keeps the numbers; attach below to convert a song position."}
         </p>
         ${
-        data.sectionId === null && s.arrangementOrder.length
-          ? html`<form
-              @submit=${(ev: SubmitEvent) => {
+          data.sectionId === null && s.arrangementOrder.length
+            ? html`<form
+                @submit=${(ev: SubmitEvent) => {
                 ev.preventDefault();
                 const appearanceId = new FormData(
                   ev.currentTarget as HTMLFormElement,
@@ -127,18 +121,18 @@ export function properties(
                   "Attach placement to section",
                 );
               }}
-            >
-              <label
-                >Attach at appearance<select
-                  name="appearanceId"
-                  aria-label="Attach at appearance"
-                >
-                  ${s.arrangementOrder.map((id) => html`<option value=${id}>${s.tables.arrangement[id]!.name}</option>`)}
-                </select></label
-              ><button>Attach placement</button>
-            </form>`
-          : nothing
-      }`;
+              >
+                <label
+                  >Attach at appearance<select
+                    name="appearanceId"
+                    aria-label="Attach at appearance"
+                  >
+                    ${s.arrangementOrder.map((id) => html`<option value=${id}>${s.tables.arrangement[id]!.name}</option>`)}
+                  </select></label
+                ><button>Attach placement</button>
+              </form>`
+            : nothing
+        }`;
     case "markers":
       return input("at", "Position · quarter notes", "time");
     case "arrangement":
@@ -170,38 +164,39 @@ export function properties(
         </p>
         <button
           @click=${() => {
-          const id = crypto.randomUUID(),
-            last = s.tables.bars[s.tables.sections[e.id]!.barIds.at(-1) ?? ""];
-          void c.edit(
-            {
-              kind: "edit",
-              changes: [
-                {
-                  table: "bars",
-                  id,
-                  value: {
+            const id = crypto.randomUUID(),
+              last =
+                s.tables.bars[s.tables.sections[e.id]!.barIds.at(-1) ?? ""];
+            void c.edit(
+              {
+                kind: "edit",
+                changes: [
+                  {
+                    table: "bars",
                     id,
-                    name: `Bar ${s.tables.sections[e.id]!.barIds.length + 1}`,
-                    sectionId: e.id,
-                    numerator: last?.numerator ?? 4,
-                    denominator: last?.denominator ?? 4,
-                    groups: last?.groups ?? [1, 1, 1, 1],
-                    actual: null,
+                    value: {
+                      id,
+                      name: `Bar ${s.tables.sections[e.id]!.barIds.length + 1}`,
+                      sectionId: e.id,
+                      numerator: last?.numerator ?? 4,
+                      denominator: last?.denominator ?? 4,
+                      groups: last?.groups ?? [1, 1, 1, 1],
+                      actual: null,
+                    },
                   },
-                },
-                {
-                  table: "sections",
-                  id: e.id,
-                  value: {
-                    ...e,
-                    barIds: [...s.tables.sections[e.id]!.barIds, id],
+                  {
+                    table: "sections",
+                    id: e.id,
+                    value: {
+                      ...e,
+                      barIds: [...s.tables.sections[e.id]!.barIds, id],
+                    },
                   },
-                },
-              ],
-            },
-            "Add section bar",
-          );
-        }}
+                ],
+              },
+              "Add section bar",
+            );
+          }}
         >
           + Bar in section
         </button>

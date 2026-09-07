@@ -144,3 +144,43 @@ it("shares structural previews, mutations, navigation and redo with agents, and 
     c.dispose();
   }
 });
+
+it("serializes local field intentions but never rebases them over a foreign mutation", async () => {
+  const c = new Controller(await openDb(crypto.randomUUID()));
+  try {
+    await c.import(JSON.stringify(arrangementSong("field-intentions")), false);
+    const a = c.patchEntity(
+      "occurrences",
+      "guitar",
+      { span: [31, 2] },
+      "Shorten span",
+    );
+    const b = c.patchEntity(
+      "occurrences",
+      "guitar",
+      { start: [1, 2] },
+      "Delay entrance",
+    );
+    expect((await a).ok).toBe(true);
+    expect((await b).ok).toBe(true);
+    expect(c.song!.tables.occurrences.guitar!.span).toEqual([31, 2]);
+    expect(c.song!.tables.occurrences.guitar!.start).toEqual([1, 2]);
+    const other = executeTool(c, "mutate", {
+      songId: c.song!.id,
+      expectedRevision: c.current!.revision,
+      operationId: "foreign-edit",
+      label: "Agent title",
+      command: {
+        kind: "edit",
+        changes: [{ table: "meta", id: "title", value: "Agent title" }],
+      },
+    });
+    const local = c.patchTitle("Stale writer title");
+    expect(((await other) as { ok: boolean }).ok).toBe(true);
+    expect((await local).ok).toBe(false);
+    expect(c.song!.title).toBe("Agent title");
+    expect(c.pending).toBe(0);
+  } finally {
+    c.dispose();
+  }
+});
