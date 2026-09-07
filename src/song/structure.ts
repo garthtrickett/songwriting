@@ -149,6 +149,28 @@ export function structureChanges(s: Song, action: StructureAction): Change[] {
           patternId: copied("patterns", o.patternId),
         });
       }
+      const localIds = new Set(local.map((o) => o.id));
+      const fingers = Object.values(s.tables.fingerings).filter((f) =>
+        localIds.has(f.occurrenceId),
+      );
+      const fingerIds = new Set(fingers.map((f) => f.id));
+      for (const f of fingers) {
+        const id = copied("fingerings", f.id);
+        put("fingerings", id, {
+          ...f,
+          id,
+          occurrenceId: copied("occurrences", f.occurrenceId),
+          eventId:
+            s.tables.events[f.eventId] &&
+            patternIds.has(s.tables.events[f.eventId]!.patternId)
+              ? copied("events", f.eventId)
+              : f.eventId,
+          fromId:
+            f.fromId !== null && fingerIds.has(f.fromId)
+              ? copied("fingerings", f.fromId)
+              : f.fromId,
+        });
+      }
       for (const h of Object.values(s.tables.harmony).filter(
         (h) => h.sectionId === sec.id,
       )) {

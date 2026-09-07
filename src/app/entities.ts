@@ -18,6 +18,13 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
   const changes: Change[] = [];
   const base = { id, name: `New ${table.replace(/s$/, "")}` };
   switch (table) {
+    case "fretted": {
+      const part = Object.values(t.parts).find(p => p.instrument !== "drums");
+      if (!part) throw new Error("Create a guitar or bass part first");
+      item = {...base, partId:part.id, tonic:48, tuning:part.instrument === "bass" ? [43,38,33,28] : [64,59,55,50,45,40],capo:0,maxFret:24,handSpan:4};
+      break;
+    }
+    case "fingerings": throw new Error("Use Find string positions to choose a note, then edit its fingering in the inspector");
     case "harmony":
       item = {
         ...base,

@@ -1,3 +1,5 @@
+import { fretPositions } from "../song/fretted.ts";
+import { tablature } from "../song/tablature.ts";
 import {
   harmonicContext,
   chordCandidates,
@@ -22,6 +24,16 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  {
+    name: "fret_positions",
+    description:
+      "All in-range string/fret choices. Args: arrangementId, occurrenceId, eventId, memberId (null for note). Notes stay relative; no octave substitution.",
+  },
+  {
+    name: "tablature",
+    description:
+      "Timed positions and conflicts across voices. Args: arrangementId, from/until exact quarters. Includes stale/unassigned notes, string collisions, technique connections and hand-span warnings. Display max512; total/truncated explicit. Full diagnostics bounded to5000 notes.",
+  },
   {
     name: "harmonic_context",
     description:
@@ -119,6 +131,23 @@ export async function executeTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "fret_positions":
+      if (!c.song) throw new Error("Open a song");
+      return fretPositions(
+        c.song,
+        String(args.arrangementId),
+        String(args.occurrenceId),
+        String(args.eventId),
+        args.memberId as string | null,
+      );
+    case "tablature":
+      if (!c.song) throw new Error("Open a song");
+      return tablature(
+        c.song,
+        String(args.arrangementId),
+        args.from as Time,
+        args.until as Time,
+      );
     case "harmonic_context":
       if (!c.song) throw new Error("Open a song");
       return harmonicContext(c.song, args.at as Time);

@@ -11,6 +11,28 @@ it("exposes complete entity CRUD through the same command model, including chord
   try {
     await c.init();
     const s = arrangementSong("parity");
+    s.tables.fretted.g = {
+      id: "g",
+      name: "Guitar",
+      partId: "guitar",
+      tonic: 48,
+      tuning: [64, 59, 55, 50, 45, 40],
+      capo: 0,
+      maxFret: 24,
+      handSpan: 4,
+    };
+    s.tables.fingerings.f = {
+      id: "f",
+      name: "Root",
+      arrangementId: "g",
+      occurrenceId: "guitar",
+      eventId: "chord",
+      memberId: "root",
+      string: 5,
+      fret: 3,
+      technique: "pluck",
+      fromId: null,
+    };
     s.tables.harmony.h = {
       id: "h",
       name: "Context",
@@ -349,6 +371,60 @@ it("harmony commands and context queries share previews, retries, conflicts and 
     expect(JSON.parse(c.export()).tables.chords["new-chord"].label).toBe(
       "V7/V",
     );
+  } finally {
+    c.dispose();
+  }
+});
+
+it("fretted queries share exact position diagnostics, durable retries and undo with UI edits", async () => {
+  const { frettedSong, finger } = await import("../../tests/fretted.ts");
+  const c = new Controller(await openDb(crypto.randomUUID()));
+  try {
+    await c.init();
+    const s = frettedSong();
+    await c.import(JSON.stringify(s), false, "fretted-import");
+    const args = {
+      arrangementId: "drop",
+      occurrenceId: "line",
+      eventId: "first",
+      memberId: null,
+    };
+    const choices = (await executeTool(c, "fret_positions", args)) as any;
+    expect(choices.positions).toContainEqual({
+      string: 2,
+      fret: 3,
+      physicalFret: 3,
+    });
+    const command = {
+      kind: "edit",
+      changes: [{ table: "fingerings", id: "f", value: finger("f") }],
+    };
+    const preview = (await executeTool(c, "preview", { command })) as any;
+    const mutation = {
+      songId: s.id,
+      expectedRevision: preview.revision,
+      operationId: "assign",
+      label: "Assign",
+      command,
+    };
+    expect(((await executeTool(c, "mutate", mutation)) as any).ok).toBe(true);
+    const revision = c.current!.revision;
+    expect(((await executeTool(c, "mutate", mutation)) as any).ok).toBe(true);
+    expect(c.current!.revision).toBe(revision);
+    const result = (await executeTool(c, "tablature", {
+      arrangementId: "drop",
+      from: [0, 1],
+      until: [8, 1],
+    })) as any;
+    expect(
+      result.rows
+        .filter((n: any) => n.fingering)
+        .every((n: any) => n.issues.length === 0),
+    ).toBe(true);
+    expect((await c.historyAction("undo")).ok).toBe(true);
+    expect(c.song!.tables.fingerings).toEqual({});
+    expect((await c.historyAction("redo")).ok).toBe(true);
+    expect(c.song!.tables.fingerings.f!.fret).toBe(3);
   } finally {
     c.dispose();
   }

@@ -1,4 +1,4 @@
-# UI / agent capability map — Phases 1–4
+# UI / agent capability map — Phases 1–5
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -6,6 +6,11 @@ structural dependencies may require an atomic multi-object edit.
 
 | UI outcome | Agent equivalent |
 | --- | --- |
+| Create/edit/delete tuning, capo and absolute-key realisations | Full `fretted` CRUD |
+| Find every in-range string/fret for a placed note/member | `fret_positions` |
+| Assign/edit/delete positions and playing techniques | Full `fingerings` CRUD through `preview` / `mutate` |
+| Read exact timed tab, stale positions and sustained-string conflicts | `tablature` with arrangement and exact range |
+| Match audition key to an arrangement | `transport` settings with arrangement tonic (audition range MIDI 12–96) |
 | Build an applied/extended/altered chord and optionally assign it | `preview` / `mutate` harmony `build`; `schema.harmonyRecipe` |
 | Transpose a pattern without changing shared source chords | Harmony `transpose`; independent rhythm `variation` when needed |
 | Compare and apply bounded octave voice leading | `voice_leading`; harmony `voiceLead` |

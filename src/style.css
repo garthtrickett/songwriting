@@ -923,3 +923,7 @@ button:focus-visible,
 .pulse-strip.groups i { background: #a27741; height: 12px; }
 .pulse-strip.together i { background: #b2463e; }
 @media (max-width: 640px) { .rhythm-panel { padding: .75rem; } .rhythm-panel table { font-size: .7rem; } }
+
+.tab-scroll { overflow-x: auto; max-width: 100%; }
+.tab-scroll th, .tab-scroll td { min-width: 4rem; white-space: nowrap; text-align: center; }
+[aria-label="Tab note details"] { max-height: 24rem; overflow: auto; }
