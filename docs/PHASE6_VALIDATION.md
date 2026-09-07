@@ -89,3 +89,11 @@ and speed. A killed process may lose its latest unsaved chunk; incomplete codec
 output may only be downloadable raw. Page-exit completion is best effort. History
 protection intentionally retains audio after musical deletion. Browser storage is
 local, not remote backup; device quotas are surfaced as recoverable failures.
+
+## GitHub verification
+
+Implementation commit `b99b282c68b7d0590f2532c719eb677d6cdf7115` passed
+[push Verify](https://github.com/garthtrickett/songwriting/actions/runs/34123674328)
+and [PR Verify](https://github.com/garthtrickett/songwriting/actions/runs/34123694403).
+PR: [#6](https://github.com/garthtrickett/songwriting/pull/6). The final documentation
+commit is checked by the same workflows before merge.

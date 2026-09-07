@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–5 complete; Phases 6–7 authorized next; Phases 8–9 planned; see PHASES.md and docs/PHASE5_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–6 complete; Phase 7 authorized next; Phases 8–9 planned; see PHASES.md and docs/PHASE6_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -976,7 +976,8 @@ pass. Publish a phase5 PR, verify its final commit on GitHub, merge it, record
 
 ## Phase 6 — Voice capture, media, and useful instrumental playback
 
-**Status:** ACTIVE. Phase 7 is authorized next, after this phase merges.
+**Status:** DONE — local checks, live agent evaluation and GitHub verification passed.
+Evidence: [Phase 6 validation](docs/PHASE6_VALIDATION.md).
 
 ### 6.1 Media belongs to the composition without becoming musical pitch
 
