@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–3 complete; Phase 4 active; see PHASES.md and docs/PHASE3_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–4 complete; Phases 5–9 planned; see PHASES.md and docs/PHASE4_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -779,7 +779,8 @@ change musical pitch unless an explicitly entered note/declaration asks for it.
 
 ## Phase 4 — Harmonic writing and independent voices
 
-**Status:** ACTIVE. Detailed scope for this phase; PHASES.md links here.
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+Evidence: [Phase 4 validation](docs/PHASE4_VALIDATION.md). PHASES.md links here.
 
 ### 4.1 Explicit notes and local harmonic context
 

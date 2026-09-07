@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phases 1–3 are complete. Phase 4 is active; Phases 5–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md).
+Status: Phases 1–4 are complete. Phases 5–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -356,7 +356,9 @@ A/A′ comparison, alignment visualization, shared commands and acceptance check
 
 ## Phase 4 — Harmonic writing and independent voices
 
-**Status:** ACTIVE. Detailed specification: [PLAN.md — Phase 4](PLAN.md#phase-4--harmonic-writing-and-independent-voices).
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+Evidence: [Phase 4 validation](docs/PHASE4_VALIDATION.md).
+Detailed specification: [PLAN.md — Phase 4](PLAN.md#phase-4--harmonic-writing-and-independent-voices).
 
 ## Phase 5 — Playable guitar and bass arrangements
 

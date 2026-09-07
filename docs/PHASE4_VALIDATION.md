@@ -50,7 +50,7 @@ same quality. It distinguishes half-diminished `ø7` and fully diminished `°7`.
 | `bun run test:browser tests/browser/harmony.spec.ts` | PASS; all 3 new Chromium workflows |
 | `bun run test:browser` | PASS; all 17 Chromium workflows |
 | `git diff --check` | PASS |
-| GitHub Actions | Pending publication; exact-head evidence will be recorded before closure |
+| GitHub Actions | PASS; push and pull-request verification for `75763e45826e355eab20b1b485ba0b458db8fde0` |
 
 Thirteen new model tests cover relative/applied/altered/suspended chord spelling,
 omissions/inversions, half/fully diminished sevenths, contextual precedence and
@@ -69,6 +69,17 @@ label matching the older rhythm test's `Compare source` query. Renaming the new
 fields to `Motion source chord` / `Motion target chord` resolved the ambiguity;
 the focused affected workflows and final full suite passed. No old test was
 removed or weakened.
+
+## GitHub evidence
+
+- [PR verification 34117488993](https://github.com/garthtrickett/songwriting/actions/runs/34117488993): completed success.
+- [Push verification 34117454589](https://github.com/garthtrickett/songwriting/actions/runs/34117454589): completed success.
+
+Both runs verified `75763e45826e355eab20b1b485ba0b458db8fde0`, including
+all 53 unit/integration tests and 17 Chromium workflows. No CI correction was
+needed. [PR #4](https://github.com/garthtrickett/songwriting/pull/4) contains the
+implementation and closure evidence; its final documentation commit is also
+verified before merge.
 
 ## Live agent evidence
 
