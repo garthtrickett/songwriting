@@ -117,3 +117,11 @@ Already executing tools can finish after cancellation. Mobile background executi
 remote sync and automatic task takeover remain later work. A host restart is tested
 in the task store; the live evaluation exercised checkpoint/resume with actual
 browser collaboration, not a long-duration mobile deployment.
+
+## GitHub verification
+
+Implementation commit `16e73a6e2484e0c2a5df447b02d98071768511a7` passed
+[push Verify](https://github.com/garthtrickett/songwriting/actions/runs/34126308671)
+and [PR Verify](https://github.com/garthtrickett/songwriting/actions/runs/34126354028).
+PR: [#7](https://github.com/garthtrickett/songwriting/pull/7). The final documentation
+commit is checked by the same workflows before merge.

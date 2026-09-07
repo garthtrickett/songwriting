@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phases 1–6 are complete. Phase 7 is active; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
+Status: Phases 1–7 are complete. Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md), [Phase 6](docs/PHASE6_VALIDATION.md), [Phase 7](docs/PHASE7_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -372,7 +372,7 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 7 — Extended agent workflows and user customization
 
-**Status:** ACTIVE. Detailed specification: [PLAN.md — Phase 7](PLAN.md#phase-7--extended-agent-workflows-and-user-customization).
+**Status:** DONE — [validation](docs/PHASE7_VALIDATION.md). Detailed specification: [PLAN.md — Phase 7](PLAN.md#phase-7--extended-agent-workflows-and-user-customization).
 
 ## Phase 8 — Reliable everyday use on desktop and phone
 

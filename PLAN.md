@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–6 complete; Phase 7 active; Phases 8–9 planned; see PHASES.md and docs/PHASE6_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–7 complete; Phases 8–9 planned; see PHASES.md and docs/PHASE7_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -1081,7 +1081,8 @@ transcription, studio processing, streaming service integration or sample librar
 
 ## Phase 7 — Extended agent workflows and user customization
 
-**Status:** ACTIVE. Phases 8–9 remain high-level and are not authorized here.
+**Status:** DONE — local checks, live agent evaluation and GitHub verification passed.
+Evidence: [Phase 7 validation](docs/PHASE7_VALIDATION.md). Phases 8–9 remain planned.
 
 ### 7.1 Portable writing instructions and reusable prompts
 
