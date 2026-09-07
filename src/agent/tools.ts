@@ -1,4 +1,12 @@
 import {
+  harmonicContext,
+  chordCandidates,
+  soundingHarmony,
+  harmonicSpans,
+} from "../song/harmony-analysis.ts";
+import { voiceLeading } from "../song/voice-leading.ts";
+import type { Pitch } from "../song/model.ts";
+import {
   alignmentMap,
   comparePatterns,
   polyrhythmGrid,
@@ -14,6 +22,26 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  {
+    name: "harmonic_context",
+    description:
+      "Read active local/global harmonic region at exact at:[n,d]. Context is annotation; notes remain song-relative.",
+  },
+  {
+    name: "sounding_harmony",
+    description:
+      "Read sounding pitches by voice and interpretation alternatives at exact at:[n,d], including releases, pedals, rests and member performance.",
+  },
+  {
+    name: "chord_candidates",
+    description:
+      "Exact pitch-class interpretation alternatives. Args: chordId, optional tonic:Pitch and mode. Defaults to chord labelTonic. Does not edit or force a label.",
+  },
+  {
+    name: "voice_leading",
+    description:
+      "Minimum semitone motion by octave placement, with matched/added/removed members. Args: sourceId,targetId,octaveRadius:0..2; 1–8 notes per chord. Read-only; apply via harmony voiceLead.",
+  },
   {
     name: "compare_patterns",
     description:
@@ -66,7 +94,7 @@ export const capabilities = [
   {
     name: "mutate",
     description:
-      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"rhythm",action (see schema.rhythmActions); kind:"structure",action (see schema.structuralActions); kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
+      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"harmony",action (see schema.harmonyActions and harmonyRecipe); kind:"rhythm",action (see schema.rhythmActions); kind:"structure",action (see schema.structuralActions); kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
   },
   {
     name: "alignment",
@@ -91,6 +119,28 @@ export async function executeTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "harmonic_context":
+      if (!c.song) throw new Error("Open a song");
+      return harmonicContext(c.song, args.at as Time);
+    case "sounding_harmony":
+      if (!c.song) throw new Error("Open a song");
+      return soundingHarmony(c.song, args.at as Time);
+    case "chord_candidates":
+      if (!c.song) throw new Error("Open a song");
+      return chordCandidates(
+        c.song,
+        String(args.chordId),
+        args.tonic as Pitch | undefined,
+        args.mode as string | undefined,
+      );
+    case "voice_leading":
+      if (!c.song) throw new Error("Open a song");
+      return voiceLeading(
+        c.song,
+        String(args.sourceId),
+        String(args.targetId),
+        Number(args.octaveRadius),
+      );
     case "compare_patterns":
       if (!c.song) throw new Error("Open a song");
       return comparePatterns(
@@ -138,6 +188,7 @@ export async function executeTool(
         selection: c.selection,
         viewport: { zoom: c.zoom, jumpTo: c.jumpTo },
         sections: c.song ? sectionSpans(c.song) : [],
+        harmonicRegions: c.song ? harmonicSpans(c.song) : [],
         undoRedo: historyStacks(c.current?.history ?? []),
         tables: TABLES,
         examples: [

@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–3 complete; see PHASES.md and docs/PHASE3_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–4 complete; Phases 5–9 planned; see PHASES.md and docs/PHASE4_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -776,3 +776,115 @@ above pass and evidence is recorded in docs/PHASE3_VALIDATION.md.
 Do not implement Phase 4 harmony inference, guitar fingering, recording, remote
 sync, a notation engraver or hosted model orchestration. Rhythm tools must not
 change musical pitch unless an explicitly entered note/declaration asks for it.
+
+## Phase 4 — Harmonic writing and independent voices
+
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+Evidence: [Phase 4 validation](docs/PHASE4_VALIDATION.md). PHASES.md links here.
+
+### 4.1 Explicit notes and local harmonic context
+
+- Schema 4 adds harmonic regions: named, timed spans with section/global scope,
+  a tonic expressed relative to the song tonic, mode, and plain-text annotation.
+  Same-scope regions cannot overlap. Local regions repeat with their section and
+  override global regions while active. Use half-open spans; outside a region,
+  the song tonic and descriptive mode apply. Region edits never transpose notes.
+- Chord labels gain an explicit `labelTonic` so a contextual Roman interpretation
+  has a readable reference. Notes remain authoritative song-relative pitches.
+  Constructing I in a V context writes 5–7–2 in song coordinates. Changing context
+  or playback key never rewrites pitches. Labels can remain arbitrary or null.
+- Migrate schema 1–3 documents, history values and deleted snapshots additively;
+  preserve revision/fingerprints, pitch spelling, exact time, and undo. Existing
+  labels refer to song I. Section variations copy their local harmonic regions.
+- Optional chord-member gain and articulation override the event defaults.
+  Missing values mean gain 1 and inherited articulation, preserving old playback.
+
+### 4.2 Chord construction and development
+
+Provide one shared `harmony` command path with revision-bound previews and one
+undoable receipt per action. Expose templates to agents and retain entity CRUD.
+
+- **Build chord:** choose a Roman root/alteration, major/minor/diminished/augmented/
+  sus2/sus4/power quality, seventh quality, extension through 13, optional added or
+  altered chord tones, omitted tones, and inversion. Applied targets such as V/V
+  are explicit relative roots. Construct notes with diatonic spelling and octave
+  placement; never reduce voicings to pitch-class sets in storage. Use explicit
+  `maj7`, `7`, and diminished-seventh labels to distinguish quality.
+- Inversion rotates the selected number of lowest retained chord tones upwards
+  until above the remaining voicing; omissions can change which tone is the bass.
+  Label the actual retained bass tone rather than guessing figured bass.
+- The builder creates a new chord; optionally assign it to a chosen chord event
+  atomically. Other events, melodies, bass and shared definitions stay unchanged.
+  Reassignment requires explicit reset or rejection of incompatible member
+  performances. Existing custom notes remain fully editable without the builder.
+- **Transpose pattern:** explicitly choose diatonic steps and chromatic semitones.
+  Preserve time, event identity/origins, accents and performance. Copy referenced
+  chord definitions before editing so other patterns retain them; clear copied
+  interpretations. Preserve rests/drums. Offer independent variation first.
+- **Voice leading:** compare two 1–8-note chords and choose a target octave search
+  radius of 0–2. A bounded minimum-total-semitone assignment reports matched,
+  added and removed voices; unequal sizes are explicit. Applying changes only
+  target member octaves, preserving IDs, pitch classes, and event performance.
+  Report shared target usage and clear its stale label. This is an octave/motion
+  aid, not a claim of stylistically correct counterpoint or playable fingering.
+- **Chord performance:** order every member once with an exact attack step, and
+  either preserve independent durations or choose a common duration. Existing
+  member expression stays attached to its ID. Normal inspector rows edit each
+  member's offset, duration, gain and articulation; save a revision-bound draft.
+- **Expression:** apply a linear accent ramp in exact attack order to selected
+  non-rest events within one pattern, choose articulation, and multiply durations by an exact positive
+  gate factor. Attacks/pitches and unselected voices remain unchanged. Member
+  durations scale too; member expression overrides remain explicit.
+
+### 4.3 Contextual inspection and ordinary editing
+
+- A harmony workbench provides ordinary controls for all commands, including
+  applied targets, alterations/omissions, inversion, context selection, transpose,
+  performance and expression. Preview contained notes and affected patterns,
+  placements/events before applying. Reject stale previews and preserve drafts.
+- Add/edit/delete harmonic regions with normal controls and show their arranged
+  spans alongside the timeline. A context change is an annotation, not a hidden
+  transposition. Unarranged local contexts remain editable.
+- Read-only chord inspection offers exact pitch-class matches from a documented
+  finite chord vocabulary, in the chosen relative context. Return alternatives,
+  actual bass and mode-membership information. Unrecognised/ambiguous collections
+  stay unresolved. Do not infer cadences or force one function onto the music.
+  A writer can explicitly adopt a candidate or retain/write another label.
+- Read-only sounding-harmony inspection uses the existing realised timeline,
+  including staggered member attacks, releases, rests, mute state, and independent
+  voices. Show sounding relative notes by voice and active context at exact time.
+  A sustained pedal is part of the actual aggregate even when it prevents a simple
+  chord interpretation. Context/analysis queries make no musical edits.
+- Compare voice-leading motion in a table with source/target member IDs and signed
+  semitone moves. Keep arrangement timing and independent voice releases visible.
+- Dynamics/articulation changes flow through the existing audio engine. A member
+  may inherit or override its event's articulation; do not apply staccato twice.
+
+### 4.4 Validation, agent parity and exit gate
+
+- Extend discovery, capability map and full entity CRUD with harmonic regions,
+  builder recipes, harmony commands, chord candidates, sounding harmony, context,
+  and voice-leading queries. UI/tool edits must reach the same headless logic.
+- Test major/minor/applied chords, extensions, altered/omitted tones, suspensions,
+  inversions and enharmonic spelling; context precedence and repeated sections;
+  exact staggered attacks/releases and per-member expression; independent bass;
+  transposition isolation; optimal bounded voice matching; ambiguity; migrations;
+  invalid references; stale previews/drafts; retries; undo/redo and JSON round trips.
+- Browser workflows use ordinary chord/context/performance/voice-leading/expression
+  controls, audition the audio graph, preserve a pedal voice, and reload/export.
+  Retain all previous regression checks and deliberate asynchronous-save coverage.
+- Run a live agent evaluation through the browser bridge: build applied/extended
+  harmony over an unchanged pedal, set a local context, vary/revoice or transpose
+  a part, stagger a chord, inspect the sounding result and export. Independently
+  verify pitches, exact timing and preservation, and record explicit completion.
+- Frozen install, `bun run verify`, all Chromium workflows and `git diff --check`
+  must pass. Publish one Phase 4 PR, fix failures, verify its exact final commit,
+  then merge and record evidence in docs/PHASE4_VALIDATION.md.
+
+Phase 4 is complete when a writer and an agent can construct and develop relative
+harmony, inspect its context and voice motion, preserve independent melodies and
+pedals, and retain the result through concurrent edits, undo and saving.
+
+No guitar fingering, recording, notation engraving, remote sync, hosted reasoning,
+or automatic functional/cadential analysis. Analysis vocabulary and octave search
+are deliberately bounded; arbitrary explicit note collections remain supported.

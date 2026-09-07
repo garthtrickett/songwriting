@@ -26,10 +26,15 @@ export interface Pattern extends Entity {
   sourceId: string | null;
 }
 export interface Chord extends Entity {
+  labelTonic: Pitch;
   notes: Note[];
   label: string | null;
 }
+export type Articulation =
+  "normal" | "staccato" | "sustain" | "muted" | "ghost";
 export interface Performance {
+  gain?: number;
+  articulation?: Articulation | "inherit";
   memberId: string;
   offset: Time;
   duration: Time;
@@ -44,7 +49,7 @@ export interface MusicalEvent extends Entity {
   chordId: string | null;
   drum: "kick" | "snare" | "hat";
   accent: number;
-  articulation: "normal" | "staccato" | "sustain" | "muted" | "ghost";
+  articulation: Articulation;
   performance: Performance[];
 }
 export interface Bar extends Entity {
@@ -90,7 +95,16 @@ export interface Polyrhythm extends Entity {
   duration: Time;
   lanes: { occurrenceId: string; divisions: number }[];
 }
+export interface HarmonicRegion extends Entity {
+  sectionId: string | null;
+  start: Time;
+  duration: Time;
+  tonic: Pitch;
+  mode: string;
+  annotation: string;
+}
 export interface Tables {
+  harmony: Record<string, HarmonicRegion>;
   parts: Record<string, Part>;
   voices: Record<string, Voice>;
   patterns: Record<string, Pattern>;
@@ -106,6 +120,7 @@ export interface Tables {
   polyrhythms: Record<string, Polyrhythm>;
 }
 export const TABLES = [
+  "harmony",
   "parts",
   "voices",
   "patterns",
@@ -122,7 +137,7 @@ export const TABLES = [
 ] as const;
 export type Table = (typeof TABLES)[number];
 export interface Song {
-  schemaVersion: 3;
+  schemaVersion: 4;
   id: string;
   title: string;
   mode: string;
@@ -132,7 +147,7 @@ export interface Song {
   tables: Tables;
 }
 export const emptySong = (id: string, title = "Untitled idea"): Song => ({
-  schemaVersion: 3,
+  schemaVersion: 4,
   id,
   title,
   mode: "major",
@@ -140,6 +155,7 @@ export const emptySong = (id: string, title = "Untitled idea"): Song => ({
   tempo: { bpm: 112, beatUnit: [1, 1] },
   arrangementOrder: [],
   tables: {
+    harmony: {},
     parts: {},
     voices: {},
     patterns: {},

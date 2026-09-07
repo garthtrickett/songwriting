@@ -1,3 +1,5 @@
+import { harmonicSpans } from "./harmony-analysis.ts";
+import { harmonyChanges, type HarmonyAction } from "./harmony.ts";
 import { rhythmChanges, type RhythmAction } from "./rhythm.ts";
 import { structureChanges, type StructureAction } from "./structure.ts";
 import { sectionSpans, annotations } from "./arrangement.ts";
@@ -6,6 +8,7 @@ import { sounds } from "./timeline.ts";
 import { validateSong } from "./validate.ts";
 export type Change = { table: Table | "meta"; id: string; value: unknown };
 export type Command =
+  | { kind: "harmony"; action: HarmonyAction }
   | { kind: "edit"; changes: Change[] }
   | { kind: "replace"; song: unknown }
   | { kind: "delete" }
@@ -106,9 +109,15 @@ export function applyCommand(
     m.expectedRevision < 0 ||
     typeof m.songId !== "string" ||
     !m.command ||
-    !["edit", "replace", "delete", "undo", "structure", "rhythm"].includes(
-      m.command.kind,
-    )
+    ![
+      "edit",
+      "replace",
+      "delete",
+      "undo",
+      "structure",
+      "rhythm",
+      "harmony",
+    ].includes(m.command.kind)
   )
     throw new Error(
       "Invalid mutation: identity, revision, label and command are required",
@@ -131,6 +140,11 @@ export function applyCommand(
     case "edit":
       if (!next) throw new Error("Song does not exist");
       for (const c of m.command.changes) write(next, c);
+      break;
+    case "harmony":
+      if (!next) throw new Error("Song does not exist");
+      for (const change of harmonyChanges(next, m.command.action))
+        write(next, change);
       break;
     case "rhythm":
       if (!next) throw new Error("Song does not exist");
@@ -191,6 +205,7 @@ export function applyCommand(
     next = valid.value;
     sounds(next);
     annotations(next);
+    harmonicSpans(next);
   }
   const revision = (current?.revision ?? 0) + 1;
   const receipt: Receipt = {
@@ -236,6 +251,11 @@ export function previewCommand(current: Envelope, command: Command) {
           : [],
     ),
   );
+  const chordIds = new Set(
+    changes.filter((d) => d.table === "chords").map((d) => d.id),
+  );
+  for (const e of Object.values(next.song?.tables.events ?? {}))
+    if (e.chordId && chordIds.has(e.chordId)) patternIds.add(e.patternId);
   return {
     affectedPlacements: Object.values(next.song?.tables.occurrences ?? {})
       .filter(

@@ -125,6 +125,7 @@ describe("musical time and structure", () => {
     s.tables.chords.c = {
       id: "c",
       name: "Tonic",
+      labelTonic: { degree: 1, alteration: 0, octave: 0 },
       label: "I",
       notes: [
         { id: "root", pitch: { degree: 1, alteration: 0, octave: 0 } },
@@ -293,6 +294,7 @@ it("clears a stale chord interpretation when its pitches change", () => {
   s.tables.chords.c = {
     id: "c",
     name: "Tonic",
+    labelTonic: { degree: 1, alteration: 0, octave: 0 },
     label: "I",
     notes: [{ id: "n", pitch: { degree: 1, alteration: 0, octave: 0 } }],
   };

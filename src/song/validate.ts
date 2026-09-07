@@ -44,7 +44,7 @@ export function validateSong(input: unknown): Result<Song> {
   try {
     assert(record(input), "Song must be an object");
     const s = migrateSong(input) as Song;
-    assert(s.schemaVersion === 3, "Unsupported song schema version");
+    assert(s.schemaVersion === 4, "Unsupported song schema version");
     assert(
       id(s.id) &&
         text(s.title) &&
@@ -102,6 +102,7 @@ export function validateSong(input: unknown): Result<Song> {
       }
     }
     for (const c of Object.values(t.chords)) {
+      pitch(c.labelTonic);
       assert(
         Array.isArray(c.notes) && c.notes.length > 0 && c.notes.length <= 64,
         "Chord must contain 1–64 notes",
@@ -164,6 +165,20 @@ export function validateSong(input: unknown): Result<Song> {
           "Broken/duplicate chord member reference",
         );
         seen.add(p.memberId);
+        if (p.gain !== undefined)
+          assert(scalar(p.gain, 0, 1), "Member gain must be 0–1");
+        if (p.articulation !== undefined)
+          assert(
+            [
+              "inherit",
+              "normal",
+              "staccato",
+              "sustain",
+              "muted",
+              "ghost",
+            ].includes(p.articulation),
+            "Invalid member articulation",
+          );
         duration(p.offset);
         duration(p.duration, true);
       }
@@ -303,6 +318,38 @@ export function validateSong(input: unknown): Result<Song> {
         assert(!voices.has(o.voiceId), "Polyrhythm lanes need distinct voices");
         voices.add(o.voiceId);
       }
+    }
+    const regions = Object.values(t.harmony);
+    for (const h of regions) {
+      duration(h.start);
+      duration(h.duration, true);
+      pitch(h.tonic);
+      assert(
+        text(h.mode) && text(h.annotation),
+        "Invalid harmonic context text",
+      );
+      if (h.sectionId !== null) {
+        ref("sections", h.sectionId);
+        assert(
+          cmp(add(h.start, h.duration), sectionLength(s, h.sectionId)) <= 0,
+          "Harmonic region exceeds section",
+        );
+      }
+    }
+    const sortedRegions = [...regions].sort(
+      (a, b) =>
+        JSON.stringify(a.sectionId).localeCompare(
+          JSON.stringify(b.sectionId),
+        ) || cmp(a.start, b.start),
+    );
+    for (let i = 1; i < sortedRegions.length; i++) {
+      const a = sortedRegions[i - 1]!,
+        b = sortedRegions[i]!;
+      if (a.sectionId === b.sectionId)
+        assert(
+          cmp(add(a.start, a.duration), b.start) <= 0,
+          "Harmonic regions in the same scope cannot overlap",
+        );
     }
     for (const m of Object.values(t.markers)) duration(m.at);
     return ok(structuredClone(s));

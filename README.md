@@ -118,9 +118,44 @@ A′ leaves A intact. **Find cycle alignments** maps chosen placements, includin
 phases and section appearances, and lets you mark a shared start. Queries do not
 save musical changes. Pattern groups and grid declarations have normal inspectors.
 
-Schema 3 imports older songs and their history without moving notes. Older
+Schema 4 imports older songs and their history without moving notes. Older
 variations have no inferred event ancestry, so comparison may show additions and
 removals. The rhythm example is `examples/crossing-lines.song.json`.
+
+## Develop harmony and voices
+
+The **Harmony workbench** builds chords from a Roman root, quality, extensions,
+added/altered or omitted tones, inversion, and an optional applied target such as
+V/V. Seventh quality is explicit. Preview the actual contained notes, then apply
+one undoable edit. Optionally assign the new chord to an existing chord event;
+resetting that event's member performance requires an explicit choice.
+
+**+ Harmonic region** adds a timed relative tonic, mode and annotation. Local
+regions repeat with their section and override global context while active.
+Choose **Save harmonic region** after editing. All notes still use song-relative
+coordinates: I constructed in a V context contains 5–7–2. Changing a region
+changes the interpretation without transposing existing music.
+
+Make an independent rhythm variation, then **Transpose a pattern** with both
+diatonic steps and semitones. The command copies shared chords before changing
+them. **Develop voice leading** previews a minimum-motion octave assignment
+between two chords. Applying it changes the target voicing wherever that chord
+is used; inspect shared use first. The aid does not judge counterpoint or guitar
+playability.
+
+**Shape chord performance** orders member attacks with an exact interval. The
+chord-event inspector also edits each member's duration, gain and articulation.
+Choose **Save member performance** to commit the draft. **Shape expression**
+applies an accent ramp, articulation and exact release multiplier to selected
+non-rest events within one pattern. Independent voices and pedal releases remain
+separate. Incoming edits preserve drafts and require a fresh review before saving.
+
+Inspect chord candidates under a chosen context, compare voice motion, or inspect
+sounding harmony at an exact quarter-note position. Candidates are alternatives
+from a finite vocabulary; custom or unresolved labels remain valid. Analysis
+includes audible pedal notes, staggered attacks and releases. Adopt a label only
+when it fits your intent. `examples/moving-centres.song.json` demonstrates an
+applied ninth, an independent transposed answer, local V context and held I bass.
 
 ## Validate
 
@@ -134,7 +169,7 @@ bun run test:browser
 Browser tests cover manual editing, output from the audio graph, durable reload,
 conflicting tabs, deleted-song recovery, and lost agent responses. GitHub Actions
 runs the same automated checks. Real-model evaluation evidence is recorded in
-`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, and `docs/PHASE3_VALIDATION.md`; deterministic bridge tests are not labelled model
+`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, `docs/PHASE3_VALIDATION.md`, and `docs/PHASE4_VALIDATION.md`; deterministic bridge tests are not labelled model
 reasoning evaluations.
 
 ## Current scope

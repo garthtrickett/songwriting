@@ -11,6 +11,16 @@ it("exposes complete entity CRUD through the same command model, including chord
   try {
     await c.init();
     const s = arrangementSong("parity");
+    s.tables.harmony.h = {
+      id: "h",
+      name: "Context",
+      sectionId: null,
+      start: [0, 1],
+      duration: [4, 1],
+      tonic: { degree: 1, alteration: 0, octave: 0 },
+      mode: "major",
+      annotation: "",
+    };
     s.tables.polyrhythms.poly = {
       id: "poly",
       name: "Grid",
@@ -271,6 +281,74 @@ it("shares rhythm previews, queries, durable retries and undo through tools", as
       2,
     );
     expect(c.song!.title).toBe("Intervening writer");
+  } finally {
+    c.dispose();
+  }
+});
+
+it("harmony commands and context queries share previews, retries, conflicts and undo", async () => {
+  const { harmonySong, recipe } = await import("../../tests/harmony.ts");
+  const c = new Controller(await openDb(crypto.randomUUID()));
+  try {
+    await c.import(JSON.stringify(harmonySong("harmony-tools")), false);
+    const command = {
+      kind: "harmony",
+      action: {
+        type: "build",
+        newId: "new-chord",
+        name: "Applied",
+        recipe: recipe({ root: "V", target: "V", extension: 7 }),
+        eventId: "chord",
+        performance: "reset",
+      },
+    };
+    const p = (await executeTool(c, "preview", { command })) as any;
+    expect(p.affectedPlacements.map((o: any) => o.id)).toContain("guitar");
+    await c.patchTitle("Writer title");
+    const m = {
+      songId: c.song!.id,
+      expectedRevision: p.revision,
+      operationId: "harmony-build",
+      label: "Build",
+      command,
+    };
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(false);
+    m.expectedRevision = c.current!.revision;
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(true);
+    const revision = c.current!.revision;
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(true);
+    expect(c.current!.revision).toBe(revision);
+    expect(
+      ((await executeTool(c, "harmonic_context", { at: [4, 1] })) as any).tonic
+        .degree,
+    ).toBe(5);
+    expect(
+      (
+        (await executeTool(c, "chord_candidates", {
+          chordId: "new-chord",
+        })) as any
+      ).candidates.length,
+    ).toBeGreaterThan(0);
+    expect(
+      (
+        (await executeTool(c, "sounding_harmony", { at: [0, 1] })) as any
+      ).voices.some((v: any) => v.id === "bass"),
+    ).toBe(true);
+    expect(
+      (
+        (await executeTool(c, "voice_leading", {
+          sourceId: "tonic",
+          targetId: "new-chord",
+          octaveRadius: 1,
+        })) as any
+      ).moves,
+    ).toHaveLength(4);
+    await c.historyAction("undo");
+    expect(c.song!.tables.chords["new-chord"]).toBeUndefined();
+    await c.historyAction("redo");
+    expect(JSON.parse(c.export()).tables.chords["new-chord"].label).toBe(
+      "V7/V",
+    );
   } finally {
     c.dispose();
   }

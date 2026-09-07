@@ -1,3 +1,5 @@
+import { harmonyPanel } from "./harmony.ts";
+import { harmonicRegionEditor, memberPerformanceEditor } from "./harmony-inspector.ts";
 import { polyrhythmEditor } from "./polyrhythm.ts";
 import { rhythmPanel } from "./rhythm.ts";
 import { annotationLanes } from "./annotations.ts";
@@ -49,7 +51,7 @@ export interface AgentView {
   control(id: string, action: "cancel" | "resume"): Promise<void>;
 }
 export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
-  const rhythm = rhythmPanel(c);
+  const rhythm = rhythmPanel(c), harmony = harmonyPanel(c), harmonicRegions = harmonicRegionEditor(c), members = memberPerformanceEditor(c);
   const arrange = arrangementPanel(c),
     lyrics = lyricEditor(c),
     polyrhythms = polyrhythmEditor(c);
@@ -402,6 +404,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                     </div>
                     ${arrange()}
                     ${rhythm()}
+                    ${harmony()}
                     ${c.incoming ? html`<p class="incoming" role="status">${c.incoming}</p>` : nothing}
                     <div class="score-heading">
                       <h2>Song map</h2>
@@ -686,7 +689,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                     .value=${entity.name}
                                     @change=${(e: Event) => void handle(() => c.patchEntity(c.selection!.table, entity.id, { name: (e.target as HTMLInputElement).value }, "Rename object"))()}
                                 /></label>
-                                ${c.selection?.table === "events" ? fields(entity as MusicalEvent) : properties(c, lyrics, polyrhythms)}
+                                ${c.selection?.table === "events" ? html`${fields(entity as MusicalEvent)}${members(entity as MusicalEvent)}` : properties(c, lyrics, polyrhythms, harmonicRegions)}
                                 ${
                                   c.selection?.table === "patterns"
                                     ? html`<button

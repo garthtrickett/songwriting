@@ -18,6 +18,17 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
   const changes: Change[] = [];
   const base = { id, name: `New ${table.replace(/s$/, "")}` };
   switch (table) {
+    case "harmony":
+      item = {
+        ...base,
+        sectionId: null,
+        start: [0, 1],
+        duration: [4, 1],
+        tonic: { degree: 1, alteration: 0, octave: 0 },
+        mode: s.mode,
+        annotation: "",
+      };
+      break;
     case "parts":
       item = { ...base, instrument: "guitar", volume: 0.6, muted: false };
       break;
@@ -31,6 +42,7 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
       item = {
         ...base,
         name: "Tonic",
+        labelTonic: { degree: 1, alteration: 0, octave: 0 },
         label: "I",
         notes: [1, 3, 5].map((degree, i) => ({
           id: `member-${i}`,

@@ -133,3 +133,19 @@ The absolute pitch chosen to hear a relative composition in a particular key.
 **Guitar arrangement**:
 A playable realisation of the relative composition for a chosen guitar tuning
 and capo position, including fingerings and technique markings.
+
+**Harmonic region**:
+A timed passage with a local tonal centre, mode and optional interpretation.
+
+**Applied chord**:
+A chord interpreted relative to a temporary target degree, such as the dominant
+of the dominant.
+
+**Chord tone**:
+A member's interval above the chord root, including alterations and extensions.
+
+**Voice leading**:
+The motion between independently identifiable notes of successive harmonies.
+
+**Dynamic contour**:
+The changing intensity of musical events across a passage.

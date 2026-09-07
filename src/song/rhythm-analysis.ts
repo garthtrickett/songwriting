@@ -178,7 +178,12 @@ export function comparePatterns(
           if (!same(before[field], after[field])) fields.push(field);
         if (!same(content(before), content(after))) fields.push("notes");
         const label = (e: MusicalEvent) =>
-          e.kind === "chord" ? s.tables.chords[e.chordId!]!.label : null;
+          e.kind === "chord"
+            ? [
+                s.tables.chords[e.chordId!]!.label,
+                s.tables.chords[e.chordId!]!.labelTonic,
+              ]
+            : null;
         if (!same(label(before), label(after))) fields.push("interpretation");
       }
       return {
