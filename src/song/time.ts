@@ -45,3 +45,15 @@ export const parse = (s: string): Time => {
   return time(Number(parts[0]), Number(parts[1] ?? 1));
 };
 export const ZERO: Time = [0, 1];
+
+export function modulo(a: Time, length: Time): Time {
+  if (cmp(length, ZERO) <= 0) throw new Error("Cycle length must be positive");
+  const numerator = BigInt(a[0]) * BigInt(length[1]);
+  const denominator = BigInt(a[1]) * BigInt(length[0]);
+  let q = numerator / denominator;
+  if (numerator < 0n && numerator % denominator !== 0n) q--;
+  return ratio(
+    BigInt(a[0]) * BigInt(length[1]) - q * BigInt(length[0]) * BigInt(a[1]),
+    BigInt(a[1]) * BigInt(length[1]),
+  );
+}

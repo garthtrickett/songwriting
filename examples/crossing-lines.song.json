@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 3,
+  "id": "crossing-lines",
+  "title": "Crossing lines",
+  "mode": "major",
+  "degreeReference": "major",
+  "tempo": {
+    "bpm": 126,
+    "beatUnit": [
+      1,
+      1
+    ]
+  },
+  "arrangementOrder": [
+    "a-once"
+  ],
+  "tables": {
+    "parts": {
+      "guitar": {
+        "id": "guitar",
+        "name": "Interlocking guitar",
+        "instrument": "guitar",
+        "volume": 0.45,
+        "muted": false
+      },
+      "drums": {
+        "id": "drums",
+        "name": "Pulse drums",
+        "instrument": "drums",
+        "volume": 0.45,
+        "muted": false
+      },
+      "bass": {
+        "id": "bass",
+        "name": "Held bass",
+        "instrument": "bass",
+        "volume": 0.45,
+        "muted": false
+      }
+    },
+    "voices": {
+      "guitar": {
+        "id": "guitar",
+        "name": "Interlocking guitar",
+        "partId": "guitar"
+      },
+      "drums": {
+        "id": "drums",
+        "name": "Pulse drums",
+        "partId": "drums"
+      },
+      "bass": {
+        "id": "bass",
+        "name": "Held bass",
+        "partId": "bass"
+      },
+      "return": {
+        "id": "return",
+        "name": "Shortened answer",
+        "partId": "guitar"
+      }
+    },
+    "patterns": {
+      "pedal": {
+        "id": "pedal",
+        "name": "Unbroken pedal",
+        "length": [
+          16,
+          1
+        ],
+        "groups": [],
+        "sourceId": null
+      },
+      "cross-p0": {
+        "id": "cross-p0",
+        "name": "Three across two \u00b7 3",
+        "length": [
+          4,
+          1
+        ],
+        "groups": [
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "sourceId": null
+      },
+      "cross-p1": {
+        "id": "cross-p1",
+        "name": "Three across two \u00b7 2",
+        "length": [
+          4,
+          1
+        ],
+        "groups": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "sourceId": null
+      },
+      "answer": {
+        "id": "answer",
+        "name": "Three compressed",
+        "length": [
+          8,
+          3
+        ],
+        "groups": [
+          [
+            8,
+            9
+          ],
+          [
+            8,
+            9
+          ],
+          [
+            8,
+            9
+          ]
+        ],
+        "sourceId": "cross-p0"
+      }
+    },
+    "chords": {},
+    "events": {
+      "bass-note": {
+        "id": "bass-note",
+        "name": "Held I",
+        "originId": "bass-note",
+        "patternId": "pedal",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          16,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": -1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "sustain",
+        "performance": []
+      },
+      "cross-e0-0": {
+        "id": "cross-e0-0",
+        "name": "Pulse 1",
+        "originId": "cross-e0-0",
+        "patternId": "cross-p0",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "cross-e0-1": {
+        "id": "cross-e0-1",
+        "name": "Pulse 2",
+        "originId": "cross-e0-1",
+        "patternId": "cross-p0",
+        "kind": "note",
+        "start": [
+          4,
+          3
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "cross-e0-2": {
+        "id": "cross-e0-2",
+        "name": "Pulse 3",
+        "originId": "cross-e0-2",
+        "patternId": "cross-p0",
+        "kind": "note",
+        "start": [
+          8,
+          3
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "cross-e1-0": {
+        "id": "cross-e1-0",
+        "name": "Pulse 1",
+        "originId": "cross-e1-0",
+        "patternId": "cross-p1",
+        "kind": "drum",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "cross-e1-1": {
+        "id": "cross-e1-1",
+        "name": "Pulse 2",
+        "originId": "cross-e1-1",
+        "patternId": "cross-p1",
+        "kind": "drum",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "answer-e0": {
+        "id": "answer-e0",
+        "name": "Pulse 1",
+        "originId": "cross-e0-0",
+        "patternId": "answer",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "answer-e1": {
+        "id": "answer-e1",
+        "name": "Pulse 2",
+        "originId": "cross-e0-1",
+        "patternId": "answer",
+        "kind": "note",
+        "start": [
+          8,
+          9
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "answer-e2": {
+        "id": "answer-e2",
+        "name": "Pulse 3",
+        "originId": "cross-e0-2",
+        "patternId": "answer",
+        "kind": "note",
+        "start": [
+          16,
+          9
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      }
+    },
+    "bars": {
+      "bar1": {
+        "id": "bar1",
+        "name": "1",
+        "sectionId": "a",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "bar2": {
+        "id": "bar2",
+        "name": "2",
+        "sectionId": "a",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      },
+      "bar3": {
+        "id": "bar3",
+        "name": "3",
+        "sectionId": "a",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "bar4": {
+        "id": "bar4",
+        "name": "4",
+        "sectionId": "a",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      }
+    },
+    "sections": {
+      "a": {
+        "id": "a",
+        "name": "Crossing",
+        "sourceId": null,
+        "barIds": [
+          "bar1",
+          "bar2",
+          "bar3",
+          "bar4"
+        ]
+      }
+    },
+    "arrangement": {
+      "a-once": {
+        "id": "a-once",
+        "name": "Crossing",
+        "sectionId": "a"
+      }
+    },
+    "occurrences": {
+      "bass-held": {
+        "id": "bass-held",
+        "name": "Held bass throughout",
+        "sectionId": null,
+        "patternId": "pedal",
+        "voiceId": "bass",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          16,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "cross-o0": {
+        "id": "cross-o0",
+        "name": "Three across two \u00b7 Interlocking guitar",
+        "sectionId": null,
+        "patternId": "cross-p0",
+        "voiceId": "guitar",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          16,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "cross-o1": {
+        "id": "cross-o1",
+        "name": "Three across two \u00b7 Pulse drums",
+        "sectionId": null,
+        "patternId": "cross-p1",
+        "voiceId": "drums",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          16,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "answer-line": {
+        "id": "answer-line",
+        "name": "Compressed reply",
+        "sectionId": null,
+        "patternId": "answer",
+        "voiceId": "return",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          16,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      }
+    },
+    "markers": {
+      "reunion": {
+        "id": "reunion",
+        "name": "Together again",
+        "at": [
+          8,
+          1
+        ]
+      }
+    },
+    "phrases": {},
+    "lyrics": {},
+    "polyrhythms": {
+      "cross": {
+        "id": "cross",
+        "name": "Three across two",
+        "sectionId": null,
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "lanes": [
+          {
+            "occurrenceId": "cross-o0",
+            "divisions": 3
+          },
+          {
+            "occurrenceId": "cross-o1",
+            "divisions": 2
+          }
+        ]
+      }
+    }
+  }
+}

@@ -16,18 +16,21 @@ export function acceptance(id = "acceptance"): Song {
     id: "seven",
     name: "Seven steps",
     length: [7, 2],
+    groups: [],
     sourceId: null,
   };
   t.patterns.eight = {
     id: "eight",
     name: "Steady eight",
     length: [4, 1],
+    groups: [],
     sourceId: null,
   };
   t.patterns.bass = {
     id: "bass",
     name: "Pedal",
     length: [32, 1],
+    groups: [],
     sourceId: null,
   };
   t.chords.tonic = {

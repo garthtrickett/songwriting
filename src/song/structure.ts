@@ -149,6 +149,20 @@ export function structureChanges(s: Song, action: StructureAction): Change[] {
           patternId: copied("patterns", o.patternId),
         });
       }
+      for (const p of Object.values(s.tables.polyrhythms).filter(
+        (p) => p.sectionId === sec.id,
+      )) {
+        const id = copied("polyrhythms", p.id);
+        put("polyrhythms", id, {
+          ...p,
+          id,
+          sectionId: action.newId,
+          lanes: p.lanes.map((l) => ({
+            ...l,
+            occurrenceId: copied("occurrences", l.occurrenceId),
+          })),
+        });
+      }
       put("arrangement", a.id, {
         ...a,
         name: action.name,

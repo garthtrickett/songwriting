@@ -1,5 +1,5 @@
 import { sectionLength } from "../song/arrangement.ts";
-import type { Lyric } from "../song/model.ts";
+import type { Lyric, Polyrhythm } from "../song/model.ts";
 import type { TemplateResult } from "lit-html";
 import { html, nothing } from "lit-html";
 import type { Controller } from "./controller.ts";
@@ -8,6 +8,7 @@ import { format, parse, type Time } from "../song/time.ts";
 export function properties(
   c: Controller,
   lyrics: (l: Lyric) => TemplateResult,
+  polyrhythms: (p: Polyrhythm) => TemplateResult,
 ) {
   const sel = c.selection,
     s = c.song,
@@ -82,6 +83,20 @@ export function properties(
       return choice("partId", "Part", refs("parts"));
     case "patterns":
       return html`${input("length", "Cycle length · quarter notes", "time")}
+        <label
+          >Pattern groups · comma-separated quarters<input
+            aria-label="Pattern groups"
+            .value=${s.tables.patterns[e.id]!.groups.map(format).join(", ")}
+            @change=${(ev: Event) =>
+              run(() => {
+                const text = (ev.target as HTMLInputElement).value.trim();
+                return change({
+                  groups: text
+                    ? text.split(",").map((x) => parse(x.trim()))
+                    : [],
+                });
+              })}
+        /></label>
         <p class="muted">
           ${Object.values(s.tables.occurrences).filter((o) => o.patternId === e.id).length}
           placements share this pattern. Seven eighth notes = 7/2 quarter notes.
@@ -105,22 +120,22 @@ export function properties(
           data.sectionId === null && s.arrangementOrder.length
             ? html`<form
                 @submit=${(ev: SubmitEvent) => {
-                ev.preventDefault();
-                const appearanceId = new FormData(
-                  ev.currentTarget as HTMLFormElement,
-                ).get("appearanceId") as string;
-                void c.edit(
-                  {
-                    kind: "structure",
-                    action: {
-                      type: "attach",
-                      appearanceId,
-                      occurrenceId: e.id,
+                  ev.preventDefault();
+                  const appearanceId = new FormData(
+                    ev.currentTarget as HTMLFormElement,
+                  ).get("appearanceId") as string;
+                  void c.edit(
+                    {
+                      kind: "structure",
+                      action: {
+                        type: "attach",
+                        appearanceId,
+                        occurrenceId: e.id,
+                      },
                     },
-                  },
-                  "Attach placement to section",
-                );
-              }}
+                    "Attach placement to section",
+                  );
+                }}
               >
                 <label
                   >Attach at appearance<select
@@ -133,6 +148,8 @@ export function properties(
               </form>`
             : nothing
         }`;
+    case "polyrhythms":
+      return polyrhythms(e as Polyrhythm);
     case "markers":
       return input("at", "Position · quarter notes", "time");
     case "arrangement":

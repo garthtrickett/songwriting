@@ -908,3 +908,18 @@ button:focus-visible,
   outline: 2px solid #497454;
   outline-offset: 3px;
 }
+
+.rhythm-panel { margin: 1rem 0; padding: 1.25rem; border: 1px solid var(--line, #d9d6cb); border-radius: 12px; }
+.rhythm-panel details { margin-top: 1rem; }
+.rhythm-panel summary { cursor: pointer; font-weight: 600; padding: .5rem 0; }
+.rhythm-panel form { margin: .75rem 0; }
+.rhythm-panel fieldset { border: 1px solid var(--line, #d9d6cb); margin: .75rem 0; border-radius: 6px; }
+.rhythm-panel table { width: 100%; text-align: left; border-collapse: collapse; font-size: .85rem; }
+.rhythm-panel th, .rhythm-panel td { padding: .5rem; border-bottom: 1px solid var(--line, #d9d6cb); }
+.rhythm-panel .structure-preview ul { max-height: 18rem; overflow: auto; font-size: .85rem; overflow-wrap: anywhere; }
+.pulse-row { display: grid; grid-template-columns: minmax(100px, 25%) 1fr; gap: 1rem; align-items: center; margin: .7rem 0; font-size: .8rem; }
+.pulse-strip { position: relative; height: 24px; border-bottom: 1px solid #a9ada1; margin-right: 4px; background: #eef0e8; }
+.pulse-strip i { position: absolute; width: 3px; height: 20px; bottom: 0; background: #255d4b; }
+.pulse-strip.groups i { background: #a27741; height: 12px; }
+.pulse-strip.together i { background: #b2463e; }
+@media (max-width: 640px) { .rhythm-panel { padding: .75rem; } .rhythm-panel table { font-size: .7rem; } }

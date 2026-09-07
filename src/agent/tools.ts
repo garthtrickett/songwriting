@@ -1,3 +1,8 @@
+import {
+  alignmentMap,
+  comparePatterns,
+  polyrhythmGrid,
+} from "../song/rhythm-analysis.ts";
 import { previewCommand } from "../song/commands.ts";
 import { sectionSpans, placements, annotations } from "../song/arrangement.ts";
 import { historyStacks } from "../song/history.ts";
@@ -9,6 +14,21 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  {
+    name: "compare_patterns",
+    description:
+      "Compare patterns by stable event origin. Args: sourceId, variationId. Returns same-scale cycle/group and note/rhythm differences; unrelated legacy events appear added/removed.",
+  },
+  {
+    name: "alignments",
+    description:
+      "Exact cycle map for 2–8 occurrenceIds over inclusive from/until, expanded through arrangement. Bounded starts and common points, totals and truncation flag.",
+  },
+  {
+    name: "polyrhythm_grid",
+    description:
+      "Inspect a declaration by id: expected versus actual base attacks for every appearance, missing/extra and match status. Chord-member attacks excluded.",
+  },
   {
     name: "preview",
     description:
@@ -46,7 +66,7 @@ export const capabilities = [
   {
     name: "mutate",
     description:
-      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"structure",action (see schema.structuralActions); kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
+      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"rhythm",action (see schema.rhythmActions); kind:"structure",action (see schema.structuralActions); kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
   },
   {
     name: "alignment",
@@ -71,6 +91,24 @@ export async function executeTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "compare_patterns":
+      if (!c.song) throw new Error("Open a song");
+      return comparePatterns(
+        c.song,
+        String(args.sourceId),
+        String(args.variationId),
+      );
+    case "alignments":
+      if (!c.song) throw new Error("Open a song");
+      return alignmentMap(
+        c.song,
+        args.occurrenceIds as string[],
+        args.from as Time,
+        args.until as Time,
+      );
+    case "polyrhythm_grid":
+      if (!c.song) throw new Error("Open a song");
+      return polyrhythmGrid(c.song, String(args.id));
     case "preview":
       if (!c.current) throw new Error("Open a song");
       return previewCommand(c.current, args.command as Command);
@@ -103,6 +141,12 @@ export async function executeTool(
         undoRedo: historyStacks(c.current?.history ?? []),
         tables: TABLES,
         examples: [
+          {
+            name: "Crossing lines",
+            url: "/crossing-lines.song.json",
+            description:
+              "Live-agent 3:2 grid, shortened independent reply, mixed meters and a held bass; cycles meet at 8 quarters.",
+          },
           {
             name: "Turning rooms",
             url: "/turning-rooms.song.json",

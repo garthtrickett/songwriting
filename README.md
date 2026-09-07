@@ -32,7 +32,7 @@ for a complete editable sketch authored through the live agent tools.
 4. Add an occurrence to place a pattern in a voice. Choose its start, repeat
    span, phase, section-boundary behaviour, and whether the last notes ring out.
 5. Add a section, its bars, and an arrangement occurrence. Bars provide the
-   shared meter map. Changing their lengths preserves absolute note positions.
+   shared meter map. Changing their lengths preserves local offsets and global placements.
 6. Select the pattern occurrences to compare and mark their next alignment.
    Select a pattern and create a variation to develop it independently.
 7. Choose a playback key and press Play. Musical pitches stay relative.
@@ -97,6 +97,31 @@ as music. History lists affected objects, including incoming agent edits.
 song with phrases, lyrics, a delayed return entrance, and an unchanged global bass.
 The Phase 1 *Countercurrent* example remains in `examples/`.
 
+## Develop a rhythm
+
+Open the **Rhythm workbench** to create an independent riff variation, displace
+an entrance, shift its phase, rotate attacks or accents, scale a cycle, or insert
+and remove exact time. Fraction inputs use quarter notes. Scaling offers separate
+release-duration and phase policies. Review affected objects/placements, then
+**Apply rhythm edit**. Each operation is one undoable change. A stale preview
+requires a fresh review.
+
+**Build a polyrhythm** creates 2–8 independent voices' pulse patterns over a
+shared span, such as 3 against 2 or 5 against 4. Choose existing distinct voices,
+division counts, relative pitches/drum sounds and note duration. **Inspect
+polyrhythm grids** compares the intended divisions to current attacks and exposes
+drift after edits. The declaration does not quantize or overwrite your notes.
+
+**Compare A / A′** shows attacks and groups on the same scale plus exact musical
+differences. New variations preserve event origins and copy chords so editing
+A′ leaves A intact. **Find cycle alignments** maps chosen placements, including
+phases and section appearances, and lets you mark a shared start. Queries do not
+save musical changes. Pattern groups and grid declarations have normal inspectors.
+
+Schema 3 imports older songs and their history without moving notes. Older
+variations have no inferred event ancestry, so comparison may show additions and
+removals. The rhythm example is `examples/crossing-lines.song.json`.
+
 ## Validate
 
 ```sh
@@ -109,7 +134,7 @@ bun run test:browser
 Browser tests cover manual editing, output from the audio graph, durable reload,
 conflicting tabs, deleted-song recovery, and lost agent responses. GitHub Actions
 runs the same automated checks. Real-model evaluation evidence is recorded in
-`docs/PHASE1_VALIDATION.md` and `docs/PHASE2_VALIDATION.md`; deterministic bridge tests are not labelled model
+`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, and `docs/PHASE3_VALIDATION.md`; deterministic bridge tests are not labelled model
 reasoning evaluations.
 
 ## Current scope

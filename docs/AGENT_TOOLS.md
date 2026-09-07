@@ -68,10 +68,9 @@ expected revision on an old whole-song document. Reuse an operation ID only
 when retrying the exact same mutation. A lost response may still mean the edit
 committed: inspect the step/result and operation history before retrying.
 
-## Section structure in schema 2
+## Section structure
 
-`schema` exposes `toolVersion: "phase2-structure-v1"`, new phrase/lyric templates,
-and `structuralActions`. Use a `structure` command for one mechanical action:
+`schema` exposes phrase/lyric templates and `structuralActions`. Use a `structure` command for one mechanical action:
 
 ```json
 {
@@ -99,6 +98,49 @@ stop choices still determine their behaviour at section boundaries.
 `read` with a range returns arranged placements and annotations alongside sounds.
 To redo, invert the receipt identified by `context.undoRedo.redo` with the usual
 revision-checked `undo` command. Compare source entities before/after a variation.
+
+## Rhythm in schema 3
+
+Discovery now reports `toolVersion: "phase3-rhythm-v1"` and `rhythmActions`.
+Submit `{ "kind": "rhythm", "action": ... }` through the same preview/mutate
+path. Previews include affected placements, including unchanged placements that
+share a transformed pattern. They do not save anything.
+
+Actions: `variation`, `displace`, `phase`, `rotate`, `accents`, `scale`, `splice`,
+and `polyrhythm`. Signed amounts wrap only for phase/attack rotation; displacement
+must still fit its scope. Scaling requires `releases: scale|preserve` and
+`phases: follow|keep`. Splicing preserves durations and requires explicit policies
+for phases and attacks in removed time (`reject|delete`). A later chord-member
+attack in a cut rejects the edit unless the whole event is being deleted.
+
+A pattern's `groups` is an array of exact quarter durations that sums to its
+length, or an empty array. An event's `originId` is unique within its pattern.
+Variations preserve these origins and copy chord definitions; existing placements
+are not retargeted automatically. Schema 1/2 migration initializes groups and
+origins without inferring ancestry between older variations.
+
+`polyrhythm` generates ordinary events/patterns/placements plus a declaration.
+The declaration links 2–8 distinct voices in one global/section scope, with 1–64
+divisions of its shared span. Each lane specifies its own degree/alteration/octave
+and drum choice; instrument type determines whether the pulse is pitched or a
+drum. Removing only the declaration preserves the music.
+
+Read-only tools:
+
+- `compare_patterns`: `{sourceId, variationId}`; matches event origins and reports
+  timing, notes/chord interpretation, accent, articulation and performance deltas.
+- `polyrhythm_grid`: `{id}`; expands arranged appearances and compares expected
+  base attacks with actual attacks. Missing/extra attacks are explicit. It excludes
+  chord-member offsets and rests. A declaration is intent, not automatic quantization.
+- `alignments`: `{occurrenceIds, from, until}`; reports exact cycle starts and
+  their intersection within the inclusive range. Up to 512 points per lane/shared
+  output, with totals and truncation. A cycle ending at a placement's exclusive
+  end is not another cycle start. The older `alignment` returns the next start
+  strictly after its `after` argument.
+
+Inspect the result after edits; rhythm changes can intentionally make a stored
+polyrhythm grid differ from the music. Queries never alter the song. To mark a
+shared start, create a marker with its returned exact time.
 
 ## Completion and recovery
 

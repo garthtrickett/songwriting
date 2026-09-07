@@ -44,7 +44,7 @@ export function validateSong(input: unknown): Result<Song> {
   try {
     assert(record(input), "Song must be an object");
     const s = migrateSong(input) as Song;
-    assert(s.schemaVersion === 2, "Unsupported song schema version");
+    assert(s.schemaVersion === 3, "Unsupported song schema version");
     assert(
       id(s.id) &&
         text(s.title) &&
@@ -85,6 +85,16 @@ export function validateSong(input: unknown): Result<Song> {
     for (const v of Object.values(t.voices)) ref("parts", v.partId);
     for (const p of Object.values(t.patterns)) {
       duration(p.length, true);
+      assert(
+        Array.isArray(p.groups) && p.groups.length <= 128,
+        "Invalid pattern groups",
+      );
+      for (const group of p.groups) duration(group, true);
+      if (p.groups.length)
+        assert(
+          cmp(p.groups.reduce(add, [0, 1]), p.length) === 0,
+          "Pattern groups must sum to cycle length",
+        );
       assert(cmp(p.length, [10000, 1]) <= 0, "Pattern too long");
       if (p.sourceId !== null) {
         ref("patterns", p.sourceId);
@@ -107,7 +117,15 @@ export function validateSong(input: unknown): Result<Song> {
       }
       assert(c.label === null || text(c.label), "Invalid chord label");
     }
+    const origins = new Set<string>();
     for (const e of Object.values(t.events)) {
+      assert(id(e.originId), "Invalid event origin");
+      const originKey = `${e.patternId}/${e.originId}`;
+      assert(
+        !origins.has(originKey),
+        "Event origins must be unique within a pattern",
+      );
+      origins.add(originKey);
       ref("patterns", e.patternId);
       duration(e.start);
       duration(e.duration, true);
@@ -259,6 +277,33 @@ export function validateSong(input: unknown): Result<Song> {
           parent = t[table][parent]!.sourceId;
         }
       }
+    for (const p of Object.values(t.polyrhythms)) {
+      duration(p.start);
+      duration(p.duration, true);
+      if (p.sectionId !== null) {
+        ref("sections", p.sectionId);
+        assert(
+          cmp(add(p.start, p.duration), sectionLength(s, p.sectionId)) <= 0,
+          "Polyrhythm exceeds its section",
+        );
+      }
+      assert(
+        Array.isArray(p.lanes) && p.lanes.length >= 2 && p.lanes.length <= 8,
+        "Polyrhythm needs 2–8 lanes",
+      );
+      const voices = new Set<string>();
+      for (const lane of p.lanes) {
+        ref("occurrences", lane.occurrenceId);
+        const o = t.occurrences[lane.occurrenceId]!;
+        assert(integer(lane.divisions, 1, 64), "Divisions must be 1–64");
+        assert(
+          o.sectionId === p.sectionId,
+          "Polyrhythm and placements must share scope",
+        );
+        assert(!voices.has(o.voiceId), "Polyrhythm lanes need distinct voices");
+        voices.add(o.voiceId);
+      }
+    }
     for (const m of Object.values(t.markers)) duration(m.at);
     return ok(structuredClone(s));
   } catch (e) {

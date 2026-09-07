@@ -1,4 +1,4 @@
-# UI / agent capability map — Phases 1 and 2
+# UI / agent capability map — Phases 1–3
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -6,6 +6,12 @@ structural dependencies may require an atomic multi-object edit.
 
 | UI outcome | Agent equivalent |
 | --- | --- |
+| Displace an entrance, shift phase, rotate attacks/accents, scale or splice time | `preview` then `mutate` with `kind: "rhythm"`; `schema.rhythmActions` |
+| Build/edit/delete a declared polyrhythm and its ordinary music | Rhythm `polyrhythm` generator; full `polyrhythms` CRUD; independent event edits |
+| Inspect expected versus actual polyrhythm attacks | `polyrhythm_grid` |
+| Edit independent pattern grouping | `mutate` pattern `groups` |
+| Compare A / A′ notes, timing, accents and performance | `compare_patterns` with source/variation pattern IDs |
+| Map 2–8 cycles over a range and mark any shared start | `alignments`, then marker creation through `mutate` |
 | Repeat, move, remove an appearance; independent section variation | `preview` then `mutate` with `kind: "structure"`; templates in `schema.structuralActions` |
 | Attach a fitting global placement to a section appearance | `mutate` structure `attach` with appearance/placement IDs |
 | Add/edit/delete phrases and lyrics, phrase/part links | `mutate` entity changes; `read` includes arranged annotations |
@@ -17,7 +23,7 @@ structural dependencies may require an atomic multi-object edit.
 | Add/edit/delete parts, voices, patterns, notes/events, chords and members | `mutate` entity changes; `read` |
 | Add/edit/delete sections, bars, and arrangement occurrences; order bars/sections | `mutate` related entities and `meta.arrangementOrder` |
 | Place/edit/remove pattern occurrences, phase and boundaries | `mutate` occurrence changes |
-| Create a pattern variation | Compose pattern/event creation and occurrence edits |
+| Independent pattern variation with copied chords and retained event origins | `mutate` rhythm `variation`; primitives remain available |
 | Add/edit/remove markers | `mutate` marker changes |
 | Compare cycles and mark an alignment | `alignment` followed by marker creation |
 | Rename song, change tempo/pulse, edit mode/document | `mutate` metadata or validated document replacement |

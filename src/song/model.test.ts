@@ -27,12 +27,14 @@ export function fixture(): Song {
     id: "seven",
     name: "Seven",
     length: [7, 2],
+    groups: [],
     sourceId: null,
   };
   t.patterns.eight = {
     id: "eight",
     name: "Eight",
     length: [4, 1],
+    groups: [],
     sourceId: null,
   };
   t.events.n = { ...noteEvent("n", "seven"), duration: [5, 1] };
@@ -270,6 +272,7 @@ it("rests release only their own voice while a different voice rings", () => {
     id: "pedal",
     name: "Pedal",
     length: [32, 1],
+    groups: [],
     sourceId: null,
   };
   s.tables.voices.other = { id: "other", name: "Other voice", partId: "g" };

@@ -1,13 +1,12 @@
 # Songwriting app — implementation phases
 
-Status: Phase 1 is complete. Phase 2 is complete. Its evidence is in [docs/PHASE2_VALIDATION.md](docs/PHASE2_VALIDATION.md). Phases 3–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
+Status: Phase 1 is complete. Phase 2 is complete. Its evidence is in [docs/PHASE2_VALIDATION.md](docs/PHASE2_VALIDATION.md). Phase 3 is active; Phases 4–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
 delivery; it does not replace either reference.
 
-Phases 1 and 2 are expanded into implementation detail. Phases 3–9 remain
-high-level until selected. Each detailed phase replaces its high-level entry.
+Phases 1 and 2 are expanded into implementation detail. Phase 3 is detailed in PLAN.md; Phases 4–9 remain high-level until selected. Each detailed phase replaces its high-level entry.
 
 ## Delivery rules
 
@@ -349,10 +348,10 @@ recording, tablature, remote sync, or a hosted model service in this phase.
 
 ## Phase 3 — Advanced rhythm and motif development
 
-**Outcome:** Explore explicit polyrhythmic spans, complex groupings, cycle phase,
-and proportional timing transformations. Add efficient riff displacement,
-accent rotation, subdivision insertion/removal, A/A′ comparison, and richer
-alignment visualisation while retaining exact timing and independent note tails.
+**Status:** ACTIVE. The detailed specification is in
+[PLAN.md — Phase 3](PLAN.md#phase-3--advanced-rhythm-and-motif-development).
+It covers explicit polyrhythm spans, pattern grouping, exact transformations,
+A/A′ comparison, alignment visualization, shared commands and acceptance checks.
 
 ## Phase 4 — Harmonic writing and independent voices
 

@@ -54,6 +54,16 @@ The position within a repeating pattern's cycle at a given point in song time.
 Concurrent rhythmic divisions of a shared span, such as three evenly spaced
 attacks against two.
 
+**Polyrhythm span**:
+A declared shared span in which independent voices have specified rhythmic
+subdivisions; the performed music may depart from the declared grid.
+
+**Pattern grouping**:
+The ordered pulses within a riff's own cycle, independent of the song's bars.
+
+**Rhythmic displacement**:
+Moving a musical idea in time while preserving its internal rhythm.
+
 **Note**:
 A pitched musical element expressed relative to a tonal centre by degree,
 alteration, and octave.
