@@ -18,15 +18,20 @@ export function migrateSong(input: unknown): unknown {
   if (!record(input)) return input;
   const s = structuredClone(input);
   if (
-    (s.schemaVersion !== 1 && s.schemaVersion !== 2 && s.schemaVersion !== 3) ||
+    (s.schemaVersion !== 1 &&
+      s.schemaVersion !== 2 &&
+      s.schemaVersion !== 3 &&
+      s.schemaVersion !== 4) ||
     !record(s.tables)
   )
     return s;
-  s.schemaVersion = 4;
+  s.schemaVersion = 5;
   s.tables.phrases ??= {};
   s.tables.lyrics ??= {};
   s.tables.polyrhythms ??= {};
   s.tables.harmony ??= {};
+  s.tables.fretted ??= {};
+  s.tables.fingerings ??= {};
   for (const table of [
     "sections",
     "occurrences",

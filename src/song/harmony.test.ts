@@ -427,7 +427,7 @@ it("migrates actual schema 3 history and retains original retries and creation u
   for (const d of legacy.history[0].deltas)
     if (d.table === "chords") delete d.after.labelTonic;
   const e = hydrateEnvelope(legacy);
-  expect(e.song!.schemaVersion).toBe(4);
+  expect(e.song!.schemaVersion).toBe(5);
   expect(e.history[0]!.fingerprint).toBe(JSON.stringify(m));
   expect(e.song!.tables.chords.tonic!.labelTonic).toEqual(TONIC);
   expect(e.song!.tables.harmony).toEqual({});

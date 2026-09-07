@@ -149,3 +149,15 @@ The motion between independently identifiable notes of successive harmonies.
 
 **Dynamic contour**:
 The changing intensity of musical events across a passage.
+
+**Fretted arrangement**:
+A realisation of a guitar or bass part in a chosen key, tuning and capo position.
+
+**Fingering**:
+A chosen string and fret for a note in a particular placement of the music.
+
+**Connected technique**:
+A hammer-on, pull-off or slide joining one note to another on the same string.
+
+**Tablature**:
+A view of musical timing through strings, frets and playing techniques.

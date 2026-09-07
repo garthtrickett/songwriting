@@ -1,0 +1,93 @@
+{
+  "date": "2026-09-07",
+  "taskId": "2cbd0950-763b-4bb3-bac3-12c25d3236f1",
+  "objective": "Create Capo conversations: two alternating 7/8 and 9/8 bars, a two-note melody with exact third-quarter attacks, and an independent low I held beneath it on the same guitar. Realise it in DADGAD with capo 2 and tonic MIDI 50. Choose compatible strings and frets, mark tapping then a hammer-on, and inspect the arranged tab. Change the capo to expose stale positions, undo that change, verify the relative notes and independent releases stayed unchanged, export the complete song and explicitly finish.",
+  "provider": "OpenAI",
+  "model": "GPT-6 Codex; exact build unavailable",
+  "host": "Primary Codex reasoning through scripts/agent.ts and live Bun/browser bridge. Chromium hosted the UI and submitted the objective; no model called by the browser harness.",
+  "schemaVersion": 5,
+  "toolVersion": "phase5-fretted-v1",
+  "status": "completed",
+  "toolCalls": [
+    {
+      "name": "schema",
+      "status": "done"
+    },
+    {
+      "name": "context",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "open_song",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    },
+    {
+      "name": "fret_positions",
+      "status": "done"
+    },
+    {
+      "name": "fret_positions",
+      "status": "done"
+    },
+    {
+      "name": "fret_positions",
+      "status": "done"
+    },
+    {
+      "name": "preview",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "tablature",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "tablature",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    }
+  ],
+  "independentVerification": {
+    "method": "Python fractions.Fraction and direct MIDI/string/fret arithmetic on exported before/after documents",
+    "checks": {
+      "relative_events_unchanged": true,
+      "patterns_unchanged": true,
+      "placements_unchanged": true,
+      "capo_restored": true,
+      "physical_pitches_match": true,
+      "exact_third_attack": true,
+      "pedal_duration_unchanged": true,
+      "independent_strings": true,
+      "hammer_direction_and_source": true
+    }
+  },
+  "example": "examples/capo-conversations.song.json",
+  "limitations": [
+    "One live reasoning session, not a broad benchmark.",
+    "No physical guitar performance or subjective audio listening claimed.",
+    "Tab checks constraints; it does not prove ergonomic playability."
+  ]
+}

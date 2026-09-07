@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 5,
+  "id": "capo-conversations",
+  "title": "Capo conversations",
+  "mode": "major",
+  "degreeReference": "major",
+  "tempo": {
+    "bpm": 112,
+    "beatUnit": [
+      1,
+      1
+    ]
+  },
+  "arrangementOrder": [
+    "once"
+  ],
+  "tables": {
+    "fretted": {
+      "dadgad": {
+        "id": "dadgad",
+        "name": "dadgad",
+        "partId": "guitar",
+        "tonic": 50,
+        "tuning": [
+          62,
+          57,
+          55,
+          50,
+          45,
+          38
+        ],
+        "capo": 2,
+        "maxFret": 24,
+        "handSpan": 4
+      }
+    },
+    "fingerings": {
+      "f-tap": {
+        "id": "f-tap",
+        "name": "tap",
+        "arrangementId": "dadgad",
+        "occurrenceId": "upper-line",
+        "eventId": "tap",
+        "memberId": null,
+        "string": 2,
+        "fret": 3,
+        "technique": "tap",
+        "fromId": null
+      },
+      "f-hammer": {
+        "id": "f-hammer",
+        "name": "hammer",
+        "arrangementId": "dadgad",
+        "occurrenceId": "upper-line",
+        "eventId": "hammer",
+        "memberId": null,
+        "string": 2,
+        "fret": 5,
+        "technique": "hammer-on",
+        "fromId": "f-tap"
+      },
+      "f-held": {
+        "id": "f-held",
+        "name": "held",
+        "arrangementId": "dadgad",
+        "occurrenceId": "low-line",
+        "eventId": "held",
+        "memberId": null,
+        "string": 5,
+        "fret": 3,
+        "technique": "let-ring",
+        "fromId": null
+      }
+    },
+    "harmony": {},
+    "parts": {
+      "guitar": {
+        "id": "guitar",
+        "name": "guitar",
+        "instrument": "guitar",
+        "volume": 0.6,
+        "muted": false
+      }
+    },
+    "voices": {
+      "upper": {
+        "id": "upper",
+        "name": "upper",
+        "partId": "guitar"
+      },
+      "low": {
+        "id": "low",
+        "name": "low",
+        "partId": "guitar"
+      }
+    },
+    "patterns": {
+      "melody": {
+        "id": "melody",
+        "name": "melody",
+        "length": [
+          4,
+          1
+        ],
+        "groups": [],
+        "sourceId": null
+      },
+      "pedal": {
+        "id": "pedal",
+        "name": "pedal",
+        "length": [
+          8,
+          1
+        ],
+        "groups": [],
+        "sourceId": null
+      }
+    },
+    "chords": {},
+    "events": {
+      "tap": {
+        "id": "tap",
+        "name": "tap",
+        "originId": "tap",
+        "patternId": "melody",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "hammer": {
+        "id": "hammer",
+        "name": "hammer",
+        "originId": "hammer",
+        "patternId": "melody",
+        "kind": "note",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          1,
+          1
+        ],
+        "pitch": {
+          "degree": 2,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "held": {
+        "id": "held",
+        "name": "held",
+        "originId": "held",
+        "patternId": "pedal",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          8,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "sustain",
+        "performance": []
+      }
+    },
+    "bars": {
+      "seven": {
+        "id": "seven",
+        "name": "seven",
+        "sectionId": "a",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "nine": {
+        "id": "nine",
+        "name": "nine",
+        "sectionId": "a",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      }
+    },
+    "sections": {
+      "a": {
+        "id": "a",
+        "name": "a",
+        "barIds": [
+          "seven",
+          "nine"
+        ],
+        "sourceId": null
+      }
+    },
+    "arrangement": {
+      "once": {
+        "id": "once",
+        "name": "once",
+        "sectionId": "a"
+      }
+    },
+    "occurrences": {
+      "upper-line": {
+        "id": "upper-line",
+        "name": "upper-line",
+        "sectionId": "a",
+        "patternId": "melody",
+        "voiceId": "upper",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          8,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "low-line": {
+        "id": "low-line",
+        "name": "low-line",
+        "sectionId": null,
+        "patternId": "pedal",
+        "voiceId": "low",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          8,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      }
+    },
+    "markers": {},
+    "phrases": {},
+    "lyrics": {},
+    "polyrhythms": {}
+  }
+}

@@ -118,7 +118,7 @@ A′ leaves A intact. **Find cycle alignments** maps chosen placements, includin
 phases and section appearances, and lets you mark a shared start. Queries do not
 save musical changes. Pattern groups and grid declarations have normal inspectors.
 
-Schema 4 imports older songs and their history without moving notes. Older
+Schema 5 imports older songs and their history without moving notes. Older
 variations have no inferred event ancestry, so comparison may show additions and
 removals. The rhythm example is `examples/crossing-lines.song.json`.
 
@@ -157,6 +157,31 @@ includes audible pedal notes, staggered attacks and releases. Adopt a label only
 when it fits your intent. `examples/moving-centres.song.json` demonstrates an
 applied ninth, an independent transposed answer, local V context and held I bass.
 
+## Arrange guitar and bass
+
+Use **+ Fretted arrangement** to realise a part in a chosen key. **Edit tuning
+and capo** opens standard guitar/bass, Drop D and DADGAD presets plus custom open
+strings. Enter MIDI pitches in string-number order (string 1 first, normally the
+highest); re-entrant tunings retain that order. Frets count above the capo. Save
+settings together with **Save fretted arrangement**.
+
+Choose a placed note/member under **Find string positions**, inspect the available
+positions, then preview and apply a fingering. Select its tab entry to mark tap,
+hammer-on, pull-off, slide, mute or let-ring; connected techniques choose a source
+fingering. Assignments repeat with their placement. The time-labelled tab and
+note details retain exact attacks, releases and independent voices.
+
+Changing tuning, capo or relative music recomputes pitch compatibility. Diagnostics
+show unassigned/stale notes, string collisions across voices, invalid connections
+and preferred-hand-span warnings. They help find problems without claiming a hand
+solver or guaranteed playability. Musical releases remain unchanged, including
+when a connected technique consumes a previous string vibration in the physical
+view. The arrangement key is saved separately from the temporary audition key.
+
+`examples/capo-conversations.song.json` demonstrates DADGAD at capo 2 with exact
+third-quarter attacks and an independently ringing low voice. Schema 5 imports
+older documents/history and preserves stale musical assignment links for repair.
+
 ## Validate
 
 ```sh
@@ -169,7 +194,7 @@ bun run test:browser
 Browser tests cover manual editing, output from the audio graph, durable reload,
 conflicting tabs, deleted-song recovery, and lost agent responses. GitHub Actions
 runs the same automated checks. Real-model evaluation evidence is recorded in
-`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, `docs/PHASE3_VALIDATION.md`, and `docs/PHASE4_VALIDATION.md`; deterministic bridge tests are not labelled model
+`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, `docs/PHASE3_VALIDATION.md`, `docs/PHASE4_VALIDATION.md`, and `docs/PHASE5_VALIDATION.md`; deterministic bridge tests are not labelled model
 reasoning evaluations.
 
 ## Current scope
@@ -184,7 +209,7 @@ reasoning evaluations.
   Schema 1 songs migrate as global music so no existing timing is reinterpreted.
   Shortening a section rejects overflowing local spans rather than cropping them.
 - Audition uses simple oscillators, with a small drum palette. Recording,
-  tablature, realistic instruments, full harmonic inference, and remote song sync
+  realistic instruments, full harmonic inference, and remote song sync
   are later phases.
 - A song is limited to 20,000 entities and bounded exact arithmetic/expansion.
   Limits return errors; events are not silently rounded or dropped.

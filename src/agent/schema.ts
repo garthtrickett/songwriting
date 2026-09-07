@@ -14,8 +14,8 @@ export function schema() {
   };
   const entity = (id: string, name: string) => ({ id, name });
   return {
-    schemaVersion: 4,
-    toolVersion: "phase4-harmony-v1",
+    schemaVersion: 5,
+    toolVersion: "phase5-fretted-v1",
     time: {
       type: "array",
       items: { type: "integer" },
@@ -26,6 +26,8 @@ export function schema() {
     },
     document: emptySong("song-id", "Title"),
     conventions: {
+      fretted:
+        "Notes remain song-relative. Fretted tonic/tuning are absolute MIDI. String 1 first (usually highest); never sort re-entrant tunings. Fret counts above capo; pitch=tuning[string-1]+capo+fret. Techniques: pluck,tap,hammer-on,pull-off,slide,mute,let-ring. Connected techniques reference source fingering in same string/voice. Musical links may become stale; tablature flags them rather than blocking note edits. Fingerings repeat with a placement. Queries bounded to5000 realised notes,512 displayed; no physical playability guarantee.",
       pitch:
         "Degree 1–7, alteration -4…4, octave -5…5, relative to major reference. Bounds are this prototype's supported pitch range.",
       edits:
@@ -86,6 +88,26 @@ export function schema() {
       },
     },
     templates: {
+      fretted: {
+        ...entity("fretted", "Drop D guitar"),
+        partId: "part",
+        tonic: 48,
+        tuning: [64, 59, 55, 50, 45, 38],
+        capo: 0,
+        maxFret: 24,
+        handSpan: 4,
+      },
+      fingerings: {
+        ...entity("fingering", "Root position"),
+        arrangementId: "fretted",
+        occurrenceId: "occurrence",
+        eventId: "event",
+        memberId: null,
+        string: 5,
+        fret: 3,
+        technique: "pluck",
+        fromId: null,
+      },
       harmony: {
         ...entity("context", "Local dominant"),
         sectionId: null,
@@ -264,6 +286,25 @@ export function schema() {
           chordId: { type: "string" },
           tonic: { type: "object" },
           mode: { type: "string" },
+        },
+      },
+      fret_positions: {
+        type: "object",
+        required: ["arrangementId", "occurrenceId", "eventId", "memberId"],
+        properties: {
+          arrangementId: { type: "string" },
+          occurrenceId: { type: "string" },
+          eventId: { type: "string" },
+          memberId: { type: ["string", "null"] },
+        },
+      },
+      tablature: {
+        type: "object",
+        required: ["arrangementId", "from", "until"],
+        properties: {
+          arrangementId: { type: "string" },
+          from: { type: "array" },
+          until: { type: "array" },
         },
       },
       voice_leading: {

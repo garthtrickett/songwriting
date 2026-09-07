@@ -144,7 +144,7 @@ shared start, create a marker with its returned exact time.
 
 ## Harmony in schema 4
 
-Discovery reports `toolVersion: "phase4-harmony-v1"`, `harmonyActions`,
+Discovery includes `harmonyActions`,
 `harmonyRecipe`, and `memberPerformance`. Older documents and history migrate
 additively. No migration changes notes, timing or operation fingerprints.
 
@@ -237,6 +237,45 @@ Read-only tools:
 
 These are composable mechanical tools. Context changes, interpretations and
 musical decisions belong to the writer/agent; queries do not save edits.
+
+## Fretted arrangements in schema 5
+
+Discovery reports `phase5-fretted-v1`. `fretted` and `fingerings` have full CRUD.
+A fretted arrangement belongs to one guitar/bass part. Its absolute tonic and
+open strings use MIDI integers; tuning lists string 1 first and is never sorted.
+Capo raises every open string. Assigned fret numbers count above the capo:
+`MIDI = tuning[string - 1] + capo + fret`. Relative note pitches stay authoritative.
+Tonic/tuning support MIDI 0–127; audition settings currently support MIDI 12–96.
+There are 1–12 strings, capo 0–24, physical last fret up to 36 and preferred hand
+span 1–12. Out-of-range musical positions remain inspectable, not auto-corrected.
+
+A fingering targets arrangementId, occurrenceId, eventId and memberId (null for a
+single-note event). It stores string, fret, technique and fromId. Techniques are
+pluck, tap, hammer-on, pull-off, slide, mute and let-ring. Connected techniques use
+another fingering as source. Position choices are physical candidates, not a
+claim that all independent voices fit together; inspect the tab after assigning.
+
+- `fret_positions`: `{arrangementId, occurrenceId, eventId, memberId}` returns
+  pitch, MIDI and all available positions with physicalFret; no octave substitution.
+- `tablature`: `{arrangementId, from, until}` returns timed rows, voice/member
+  identity, fingerings, issues, stale/unplaced assignments and total/truncated.
+  It diagnoses the full part so entering releases and cross-voice conflicts remain
+  visible. At most 5,000 realised notes and two million diagnostic comparisons;
+  at most 512 overlapping rows are displayed in the half-open query range.
+
+Use `preview` followed by revision-checked `mutate` with ordinary entity changes.
+Tuning and position edits are undoable. Structural validation retains stale
+musical targets after note/chord/placement edits so the composition can evolve;
+analysis identifies them. Delete obsolete fingerings explicitly. Arrangement
+references themselves remain validated. One target has at most one assignment
+per arrangement. Section variations copy local positions and relink technique
+sources; pattern variations receive positions when placed and explicitly assigned.
+
+Connection checks require same string/voice, appropriate fret direction and an
+actual immediately preceding sounding source. Valid connections cut only the
+source's physical string-occupancy interval, not the song's independent release.
+Open-string and tapping-hand positions are excluded from fretting-hand span.
+The view diagnoses written notes even when the part is muted for audition.
 
 ## Completion and recovery
 

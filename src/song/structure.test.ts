@@ -275,7 +275,7 @@ it("migrates legacy song and history without changing timing or retry fingerprin
   const e = hydrateEnvelope(legacy);
   expect(e.revision).toBe(legacy.revision);
   expect(e.history[0]!.fingerprint).toBe(legacy.history[0].fingerprint);
-  expect(e.song!.schemaVersion).toBe(4);
+  expect(e.song!.schemaVersion).toBe(5);
   expect(e.song!.tables.occurrences.guitar!.sectionId).toBe(null);
   expect(e.song!.tables.occurrences.guitar!.start).toEqual(
     legacy.song.tables.occurrences.guitar.start,

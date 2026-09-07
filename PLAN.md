@@ -888,3 +888,87 @@ pedals, and retain the result through concurrent edits, undo and saving.
 No guitar fingering, recording, notation engraving, remote sync, hosted reasoning,
 or automatic functional/cadential analysis. Analysis vocabulary and octave search
 are deliberately bounded; arbitrary explicit note collections remain supported.
+
+## Phase 5 — Playable guitar and bass arrangements
+
+**Status:** ACTIVE. Phase 6 and 7 are authorized next, after this phase merges.
+
+### 5.1 A fretted realisation alongside relative music
+
+Schema 5 adds `fretted` arrangements and `fingerings`. A fretted arrangement
+belongs to a guitar/bass part and stores a chosen absolute tonic (MIDI note),
+open-string tuning in string-number order (string 1 first, normally highest),
+capo, physical last fret, and a preferred fretting-hand span. Alternate and
+re-entrant tunings are valid; do not sort strings. Fret numbers are relative to
+the capo: sounding MIDI = open tuning + capo + relative fret. A realisation's
+chosen tonic is distinct from the temporary audition key.
+
+A fingering links an arrangement, pattern occurrence, event and optional chord
+member to a string, relative fret, technique and optional source fingering.
+Assignments repeat with that occurrence, including section appearances. Different
+placements can use different positions. Relative notes, chord membership, voice
+identity and exact attacks/releases remain the authoritative composition.
+
+Migrate schemas 1–4 and history additively. Keep old receipt fingerprints and
+undo. Structural validation checks arrangement references, numeric bounds and
+unique assignment targets. Musical links may become stale after deleting or
+retargeting music: retain them for explicit diagnostics/removal instead of
+blocking composition edits or silently reassigning them. Section variations copy
+local assignments and relink copied events/occurrences and technique sources;
+independent pattern variations acquire positions when explicitly placed/assigned.
+
+### 5.2 Position choices and playable diagnostics
+
+- Read-only position search returns every in-range string/fret for one relative
+  note/member under the selected arrangement's tonic/tuning/capo. No result is
+  explicit, with no octave substitution or note deletion.
+- Read-only arrangement inspection derives timed tab rows from the existing
+  realised timeline, preserving meter changes, tuplets, repeated placements,
+  independent voices, voice-scoped rests, and ringing tails. Include member IDs
+  directly in realised sounds rather than parsing concatenated identifiers.
+- Flag unassigned/stale targets, wrong pitches after transposition/retuning,
+  unavailable strings/frets, simultaneous/sustained string collisions and wide
+  fretting-hand spans. Check across voices and placements on the same instrument.
+  Touching release/attack endpoints are compatible. Span excludes open strings
+  and tapping-hand notes; it is a configurable warning, not proof of ergonomics.
+- Techniques: pluck, tap, hammer-on, pull-off, slide, mute and let-ring. Connected
+  techniques require a source on the same string and voice with appropriate fret
+  direction (up for hammer-on, down for pull-off, different for slide). Inspect
+  actual arranged timing: a source must sound up to the target, with no intervening
+  string attack. A valid connection replaces its source's string sustain for
+  physical diagnostics only; it never rewrites musical releases. Bad connections
+  and unavoidable sustained-string conflicts stay visible.
+- Bounds: 1–12 strings, MIDI 0–127, capo 0–24, physical frets up to 36; read ranges
+  use exact nonnegative quarters with at most 512 displayed attacks. Return totals
+  and truncation; collision analysis considers ringing notes entering the range.
+  Reject unbounded diagnostic work explicitly rather than claiming playability.
+
+### 5.3 Ordinary controls and tool parity
+
+Provide a fretted-arrangement workbench with standard guitar/bass and alternate
+presets, editable tuning/tonic/capo/fret/span settings, occurrence/event/member
+selection, position choices, manual assignments and technique/source selection.
+Use revision-bound previews for position edits and preserve setting drafts on
+conflict. Show a time-labelled tablature grid (string 1 at top), voice, exact
+release, technique and issues, with links back to editable objects. Show when the
+audition tonic differs and offer an explicit audition-key change.
+
+All entities retain complete CRUD and ordinary inspectors. Tools expose schemas,
+position search and arranged-tab queries and use the same validated `edit` /
+`preview` / `mutate` path. Tuning changes, position edits and deletion are undoable.
+No automatic hand solver, instrument-position canonical model, PDF engraving or
+physical playability guarantee is implied.
+
+### 5.4 Validation and exit gate
+
+Test standard/alternate/re-entrant tuning, bass, capo arithmetic, exact member
+attacks, independent sustained-string conflicts, connecting techniques, out-of-
+range notes, stale assignments after transposition/tuning changes, section copies,
+migration/history/retries/undo, and bounded queries. Browser workflows use ordinary
+controls, preserve drafts across foreign edits, and save/import/export/reload.
+Retain all prior regressions. Run a live agent composition through the bridge and
+independently verify absolute pitch/string/fret arithmetic and unchanged music.
+
+Frozen install, `bun run verify`, all browser checks and `git diff --check` must
+pass. Publish a phase5 PR, verify its final commit on GitHub, merge it, record
+`docs/PHASE5_VALIDATION.md`, then expand and implement Phase 6.
