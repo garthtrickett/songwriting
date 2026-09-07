@@ -1,4 +1,4 @@
-# UI / agent capability map — Phases 1–5
+# UI / agent capability map — Phases 1–7
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -51,7 +51,7 @@ The browser-only file picker/download and audio activation gesture are delivery
 mechanisms. Tools receive/provide the same JSON and control the same audio engine.
 
 Acceptance evidence: model/command invariants, browser manual and tool tests,
-and live external-agent compositions through these primitives. User prompt customization remains the next phase.
+and live external-agent compositions through these primitives. Writing customization and task continuation are covered below.
 
 ## Phase 6 media
 
@@ -69,3 +69,21 @@ and live external-agent compositions through these primitives. User prompt custo
 Microphone permission is enforced by the browser. Recording start returns a
 requesting state; query status before claiming capture began. Asset deletion is
 separate from musical deletion and never silently removes undo dependencies.
+
+## Phase 7 writing and task workflows
+
+| Writer outcome | Shared tool/host path |
+| --- | --- |
+| Edit project instructions and writing preferences | `mutate` metadata `writing` |
+| Create/read/update/delete reusable prompts | Full `prompts` CRUD through `mutate` / `read` |
+| Use and customize a starting recipe | `prompt_recipes`, then normal prompt edits/task objective |
+| Reuse guidance in another song | `writing_export`, `writing_import` |
+| Inspect bounded summaries, search objects, inspect a change | `context`, `search`, `read`, `receipt` |
+| Inspect task guidance/progress/checkpoint | CLI `task`; bridge `/task_info` |
+| Save progress and explicit completion | CLI `checkpoint` / `finish` |
+| Cancel/resume interrupted work | Existing task controls; new claim then fresh `context` |
+| Review/undo one agent change | Durable receipt detail and existing `mutate` undo |
+
+Task controls are orchestration, not musical edits. Every editable musical or
+writing entity still uses the same validated command model. Saved prompt use fills
+a request for the writer to adapt; it does not start an unsolicited task.

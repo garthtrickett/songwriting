@@ -173,3 +173,9 @@ An ongoing or recovered recording awaiting use in the composition.
 
 **Media bundle**:
 A portable copy of a composition and the audio needed to hear its takes.
+
+**Writing preferences**:
+A writer's guidance about musical choices, independent of the music already written.
+
+**Prompt recipe**:
+A reusable request that a writer can adapt to a particular songwriting objective.

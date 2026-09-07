@@ -1,3 +1,6 @@
+import { taskCard } from "./task.ts";
+import type { TaskView } from "../agent/tasks.ts";
+import { writingPanel } from "./writing.ts";
 import { takePlacements } from "../song/media.ts";
 import { secondsPerQuarter } from "../song/timeline.ts";
 import { mediaPanel } from "./media.ts";
@@ -46,17 +49,15 @@ import { properties } from "./inspector.ts";
 import { executeTool } from "../agent/tools.ts";
 export interface AgentView {
   connected: boolean;
-  tasks: {
-    id: string;
-    prompt: string;
-    status: string;
-    summary: string;
-    steps: { name: string; status: string }[];
-  }[];
+  tasks: TaskView[];
   submit(prompt: string): Promise<void>;
   control(id: string, action: "cancel" | "resume"): Promise<void>;
 }
 export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
+  const writing = writingPanel(c, text => {
+    const input=root.querySelector<HTMLTextAreaElement>('[aria-label="Agent request"]');
+    if(input){input.value=text;input.focus();}
+  });
   const media = mediaPanel(c), takes = takeEditor(c);
   const frets = frettedPanel(c), fretEditor = frettedEditor(c);
   const rhythm = rhythmPanel(c), harmony = harmonyPanel(c), harmonicRegions = harmonicRegionEditor(c), members = memberPerformanceEditor(c);
@@ -925,6 +926,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
             }
           </section>
           <aside class="agent-panel">
+            ${writing()}
             <div class="eyebrow">COMPOSING TOGETHER</div>
             <h2>
               Your writing partner
@@ -962,19 +964,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
             <p class="connection">
               ${agent.connected ? "Local bridge connected. A coding agent can claim your task." : "Start bun run bridge to connect an agent. You can keep writing here."}
             </p>
-            ${agent.tasks.map(
-              (t) =>
-                html`<article class="task">
-                  <small>${t.status.toUpperCase()}</small>
-                  <p>${t.prompt}</p>
-                  ${t.steps.slice(-5).map((st) => html`<div class="step">${st.status === "done" ? "✓" : "·"} ${st.name}</div>`)}${t.summary ? html`<p>${t.summary}</p>` : nothing}<button
-                    class="text-button"
-                    @click=${handle(() => agent.control(t.id, t.status === "running" || t.status === "pending" ? "cancel" : "resume"))}
-                  >
-                    ${t.status === "running" || t.status === "pending" ? "Cancel" : "Resume"}
-                  </button>
-                </article>`,
-            )}
+            ${agent.tasks.map(t => taskCard(c,t,agent.control))}
           </aside>
         </main>
         <footer>

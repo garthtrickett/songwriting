@@ -125,7 +125,7 @@ it("schema 5 documents and deleted snapshots migrate without changing receipt fi
   delete legacy.song.tables.assets;
   delete legacy.song.tables.takes;
   e = hydrateEnvelope(legacy);
-  expect(e.song!.schemaVersion).toBe(6);
+  expect(e.song!.schemaVersion).toBe(7);
   expect(e.song!.tables.assets).toEqual({});
   expect(e.history[0]!.fingerprint).toBe(legacy.history[0].fingerprint);
   const deleted = applyCommand(

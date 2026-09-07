@@ -301,7 +301,7 @@ Never claim audio was heard just because a schedule was produced.
 
 ## Phase 6 media tools
 
-Discovery reports schema 6 and `phase6-media-v1`. `media_import` takes `name`,
+Media was introduced in schema 6; current discovery is schema 7 / `phase7-workflows-v1`. `media_import` takes `name`,
 `mime`, and `base64`; it stages decoded, hashed audio and returns metadata without
 changing song revision. `media_attach` takes `assetId`, a complete `take`,
 `expectedRevision`, and `operationId`. Take shape is in `schema`; positions are
@@ -324,3 +324,71 @@ importing the song. Missing/corrupt audio makes complete export fail. Plain
 encoded audio per bundle, plus base64 overhead. Recorded media keeps its original
 pitch and speed when audition key/tempo change. Transport requires usable media
 for all active takes; unsupported decoding is an error, not a partial success.
+
+## Phase 7 writing and bounded context
+
+Schema 7 / `phase7-workflows-v1` adds song `writing` metadata
+(`instructions`, `preferences`) and the `prompts` table (`id`, `name`, `text`).
+Use ordinary `mutate` CRUD and metadata changes with revision/operation identity.
+`prompt_recipes` returns starting requests from previously exercised workflows;
+customize/save them before use. `writing_export` returns portable guidance JSON;
+`writing_import {text,songId,expectedRevision,operationId}` replaces guidance and
+prompts atomically. These changes are reviewed/undone like music. They do not
+rewrite the immutable guidance snapshot of a running task.
+
+`context {offset,limit,songId,expectedRevision}` defaults to 20 items per list,
+maximum 50, with per-list totals and next offsets. History is newest first; prompt
+bodies are excluded. Continue with the same song/revision to detect intervening
+edits. `search {table,query,offset,limit,songId,expectedRevision}` returns bounded
+ID/name matches; `read {table,id}` returns full detail. `receipt {operationId}`
+returns a durable change's full before/after deltas. Explicit full reads/exports
+remain available and can be large; don't confuse summaries with complete data.
+
+## Task checkpoints and continuation
+
+```sh
+bun run agent tasks 0                 # bounded recent task page
+bun run agent task TASK_ID 0          # snapshot, progress, step summaries
+bun run agent checkpoint TASK_ID checkpoint.json
+```
+
+The checkpoint file is:
+
+```json
+{
+  "expectedVersion": 0,
+  "checkpoint": {
+    "summary": "The source and held voice are preserved.",
+    "nextStep": "Inspect the independent reply.",
+    "items": [
+      { "id": "reply", "title": "Develop reply", "status": "in_progress", "note": "Variation created" }
+    ]
+  }
+}
+```
+
+A checkpoint conflicts if its expected version is stale. Item statuses are
+`pending`, `in_progress`, `completed`, `failed`, `skipped`; at most 50. Summary is
+bounded to 8,000 characters and next step to 2,000. Persist concise observations
+and next actions, not private reasoning traces. Completion rejects unfinished
+items and outstanding tool calls. Waiting/partial/failed are explicit outcomes.
+
+Each claimed segment allows 100 new calls / 15 minutes, with 1,000 calls total per
+task. Limits preserve progress in waiting state. The writer's Resume control makes
+a task claimable again; then deliver a **new context call** before further tools.
+Old pending responses cannot satisfy this requirement. Inspect durable receipts
+before retrying edits; reusing a step ID with different arguments is rejected.
+After a bridge restart, running tasks wait for explicit resume. Cancellation
+preserves committed edits; an already executing call can still finish.
+
+Task status omits tool arguments/full results; request one step result with
+`agent step` when needed. Status shows the most recent 20 tasks and ten steps per
+task; CLI pages expose older tasks/steps. Task cards expose provider/model, work
+items, errors and durable operation links, with before/after review and normal
+conflict-aware undo. Explicit open/create/import tools update the task's song
+binding. Project instructions are guidance subordinate to the current user
+request; imported song content cannot redefine tool authority.
+
+The external coding-agent host still owns model context consolidation, token/cost
+budgets and model-tier selection. This bridge does not silently launch another
+model, buy tokens, or modify its own code. Credentials stay outside exports.

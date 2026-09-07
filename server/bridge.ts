@@ -11,40 +11,24 @@ try {
   token = crypto.randomUUID();
   await writeFile(tokenPath, token, { mode: 0o600 });
 }
-interface Step {
-  id: string;
-  name: string;
-  args: Record<string, unknown>;
-  status: "pending" | "sent" | "done";
-  result: unknown;
-  sentAt: number;
-}
-interface Task {
-  id: string;
-  clientId: string;
-  songId: string | null;
-  prompt: string;
-  status: string;
-  summary: string;
-  provider: string;
-  model: string;
-  createdAt: number;
-  steps: Step[];
-}
+import { TaskStore } from "./task-store.ts";
+import type {
+  Checkpoint,
+  TaskSnapshot,
+  TaskStatus,
+} from "../src/agent/tasks.ts";
 const statePath = join(folder, "tasks.json");
-let tasks: Task[] = [];
+let initial: unknown = [];
 try {
-  tasks = JSON.parse(await readFile(statePath, "utf8")) as Task[];
-} catch {}
-let flush: Promise<void> = Promise.resolve();
-const persist = () => {
-  const data = JSON.stringify(tasks);
-  flush = flush.then(async () => {
-    await writeFile(statePath + ".tmp", data, { mode: 0o600 });
-    await rename(statePath + ".tmp", statePath);
-  });
-  return flush;
-};
+  initial = JSON.parse(await readFile(statePath, "utf8"));
+} catch (e) {
+  if ((e as NodeJS.ErrnoException).code !== "ENOENT")
+    throw new Error(`Cannot read task checkpoints: ${String(e)}`);
+}
+const store = new TaskStore(initial, async (tasks) => {
+  await writeFile(statePath + ".tmp", JSON.stringify(tasks), { mode: 0o600 });
+  await rename(statePath + ".tmp", statePath);
+});
 const response = (data: unknown, status = 200) =>
   Response.json(data, { status });
 const server = Bun.serve({
@@ -80,136 +64,101 @@ const server = Bun.serve({
         req.method === "POST"
           ? ((await req.json()) as Record<string, unknown>)
           : {};
+      const taskId = String(
+        body.taskId ?? url.searchParams.get("taskId") ?? "",
+      );
+      const offset = Number(url.searchParams.get("offset") ?? 0),
+        limit = Number(url.searchParams.get("limit") ?? 20);
+      if (
+        !Number.isSafeInteger(offset) ||
+        offset < 0 ||
+        !Number.isSafeInteger(limit) ||
+        limit < 1 ||
+        limit > 50
+      )
+        throw new Error("Page offset/limit invalid");
       if (path === "/status")
         return response({
           connected: true,
-          tasks: tasks.filter(
-            (t) =>
-              !url.searchParams.get("clientId") ||
-              t.clientId === url.searchParams.get("clientId"),
+          tasks: store.list(
+            url.searchParams.get("clientId") ?? undefined,
+            offset,
+            limit,
           ),
         });
-      if (path === "/task" && browser) {
-        const prompt = String(body.prompt ?? "").trim();
-        if (!prompt) throw new Error("Task needs an objective");
-        const task: Task = {
-          id: crypto.randomUUID(),
-          clientId: String(body.clientId),
-          songId: body.songId ? String(body.songId) : null,
-          prompt,
-          status: "pending",
-          summary: "Waiting for a coding agent to claim this task.",
-          provider: "",
-          model: "",
-          createdAt: Date.now(),
-          steps: [],
-        };
-        tasks.push(task);
-        await persist();
-        return response(task);
-      }
-      if (path === "/control" && browser) {
-        const task = tasks.find((t) => t.id === body.id);
-        if (!task || task.clientId !== body.clientId)
-          throw new Error("Unknown task");
-        if (body.action === "cancel") {
-          task.status = "cancelled";
-          task.summary =
-            "Cancelled. Already committed edits remain available in change history.";
-        } else {
-          task.status = "pending";
-          task.summary = "Resume requested. Agent must reread live song state.";
-        }
-        await persist();
-        return response(task);
-      }
-      if (path === "/poll" && browser) {
-        const clientId = url.searchParams.get("clientId");
-        const pending = tasks
-          .filter((t) => t.clientId === clientId && t.status === "running")
-          .flatMap((t) =>
-            t.steps
-              .filter(
-                (st) =>
-                  st.status !== "done" &&
-                  (st.status === "pending" || Date.now() - st.sentAt > 5000),
-              )
-              .map((st) => ({ taskId: t.id, songId: t.songId, step: st })),
-          );
-        for (const job of pending) {
-          job.step.status = "sent";
-          job.step.sentAt = Date.now();
-        }
-        if (pending.length) await persist();
-        return response(pending);
-      }
-      if (path === "/result" && browser) {
-        const task = tasks.find((t) => t.id === body.taskId);
-        if (!task || task.clientId !== body.clientId)
-          throw new Error("Unknown task");
-        const step = task.steps.find((st) => st.id === body.stepId);
-        if (!step) throw new Error("Unknown step");
-        step.status = "done";
-        step.result = body.result;
-        await persist();
-        return response({ saved: true });
-      }
+      if (path === "/task" && browser)
+        return response(
+          await store.create(
+            String(body.clientId),
+            body.songId ? String(body.songId) : null,
+            String(body.prompt ?? ""),
+            body.snapshot as TaskSnapshot | undefined,
+          ),
+        );
+      if (path === "/control" && browser)
+        return response(
+          await store.control(
+            String(body.id),
+            String(body.clientId),
+            body.action,
+          ),
+        );
+      if (path === "/poll" && browser)
+        return response(
+          await store.poll(String(url.searchParams.get("clientId"))),
+        );
+      if (path === "/result" && browser)
+        return response(
+          await store.result(
+            taskId,
+            String(body.clientId),
+            String(body.stepId),
+            body.result,
+          ),
+        );
       if (!worker)
         return response({ error: "Agent authorization required" }, 403);
-      if (path === "/tasks") return response(tasks);
-      const task = tasks.find(
-        (t) => t.id === body.taskId || t.id === url.searchParams.get("taskId"),
-      );
-      if (!task) throw new Error("Unknown task");
-      if (path === "/claim") {
-        if (task.status === "cancelled") throw new Error("Task cancelled");
-        task.status = "running";
-        task.provider = String(body.provider ?? "external");
-        task.model = String(body.model ?? "unspecified");
-        task.summary = "Agent connected. Working on the shared song.";
-        await persist();
-        return response(task);
-      }
+      if (path === "/tasks")
+        return response(store.list(undefined, offset, limit));
+      if (path === "/task_info")
+        return response(store.info(taskId, offset, limit));
+      if (path === "/claim")
+        return response(
+          await store.claim(
+            taskId,
+            String(body.provider ?? "external"),
+            String(body.model ?? "unspecified"),
+          ),
+        );
       if (path === "/call") {
-        if (task.status !== "running")
-          throw new Error(`Task is ${task.status}`);
-        if (task.steps.length >= 100)
-          throw new Error(
-            "100 tool-call task limit reached. Checkpoint and request a new task.",
-          );
-        const id = String(body.stepId ?? crypto.randomUUID());
-        const existing = task.steps.find((st) => st.id === id);
-        if (existing) return response(existing);
-        const step: Step = {
-          id,
-          name: String(body.name),
-          args: (body.args as Record<string, unknown>) ?? {},
-          status: "pending",
-          result: null,
-          sentAt: 0,
-        };
-        task.steps.push(step);
-        await persist();
-        return response(step);
+        const result = await store.call(
+          taskId,
+          String(body.stepId ?? crypto.randomUUID()),
+          String(body.name),
+          (body.args as Record<string, unknown>) ?? {},
+        );
+        return response(result, result.error ? 400 : 200);
       }
       if (path === "/step")
         return response(
-          task.steps.find((st) => st.id === url.searchParams.get("stepId")) ??
-            null,
+          store.step(taskId, String(url.searchParams.get("stepId"))),
         );
-      if (path === "/finish") {
-        const status = String(body.status);
-        if (!["completed", "partial", "failed", "waiting"].includes(status))
-          throw new Error("Explicit valid completion status required");
-        if (task.status === "cancelled")
-          throw new Error("Cannot finish cancelled task");
-        if (task.steps.some((st) => st.status !== "done"))
-          throw new Error("Resolve outstanding tool calls before completion");
-        task.status = status;
-        task.summary = String(body.summary ?? "");
-        await persist();
-        return response(task);
-      }
+      if (path === "/checkpoint")
+        return response(
+          await store.checkpoint(
+            taskId,
+            Number(body.expectedVersion),
+            body.checkpoint as Omit<Checkpoint, "version" | "at">,
+          ),
+        );
+      if (path === "/finish")
+        return response(
+          await store.finish(
+            taskId,
+            String(body.status) as TaskStatus,
+            String(body.summary ?? ""),
+          ),
+        );
       return response({ error: "Unknown bridge route" }, 404);
     } catch (e) {
       return response(

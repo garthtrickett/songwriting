@@ -11,6 +11,7 @@ it("exposes complete entity CRUD through the same command model, including chord
   try {
     await c.init();
     const s = arrangementSong("parity");
+    s.tables.prompts.recipe = { id: "recipe", name: "Develop a riff", text: "Preserve the bass." };
     const assetId = "0".repeat(64);
     s.tables.assets[assetId] = {
       id: assetId,

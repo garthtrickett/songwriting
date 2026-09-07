@@ -18,6 +18,7 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
   const changes: Change[] = [];
   const base = { id, name: `New ${table.replace(/s$/, "")}` };
   switch (table) {
+    case "prompts": item = { ...base, text: "Describe the writing outcome here." }; break;
     case "assets": throw new Error("Import or record audio through the media library first");
     case "takes": throw new Error("Use Preview take to attach saved audio to the song");
     case "fretted": {

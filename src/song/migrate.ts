@@ -22,11 +22,14 @@ export function migrateSong(input: unknown): unknown {
       s.schemaVersion !== 2 &&
       s.schemaVersion !== 3 &&
       s.schemaVersion !== 4 &&
-      s.schemaVersion !== 5) ||
+      s.schemaVersion !== 5 &&
+      s.schemaVersion !== 6) ||
     !record(s.tables)
   )
     return s;
-  s.schemaVersion = 6;
+  s.schemaVersion = 7;
+  s.writing ??= { instructions: "", preferences: "" };
+  s.tables.prompts ??= {};
   s.tables.phrases ??= {};
   s.tables.lyrics ??= {};
   s.tables.polyrhythms ??= {};

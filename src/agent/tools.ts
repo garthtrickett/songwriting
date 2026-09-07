@@ -1,3 +1,5 @@
+import { context, search, checkRevision } from "./context.ts";
+import { recipes, writingExport, writingChanges } from "./writing.ts";
 import { takePlacements } from "../song/media.ts";
 import type { Take } from "../song/model.ts";
 import { fretPositions } from "../song/fretted.ts";
@@ -26,6 +28,11 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  { name:"search", description:"Bounded entity name/ID search. Args table,query,offset,limit (1–50),songId,expectedRevision. Returns IDs/names/count/nextOffset; read by ID for detail." },
+  { name:"receipt", description:"Read one durable operation's full before/after deltas. Args operationId, optional songId/expectedRevision." },
+  { name:"prompt_recipes", description:"Editable starting requests based on prior songwriting workflows. Save/adapt as prompts via normal CRUD; never auto-runs." },
+  { name:"writing_export", description:"Portable JSON of project writing guidance and reusable prompts; excludes music and task history." },
+  { name:"writing_import", description:"Replace writing guidance/prompts from portable JSON. Args text,songId,expectedRevision,operationId. Validated, atomic and undoable." },
   {
     name: "media_status",
     description:
@@ -307,62 +314,18 @@ export async function executeTool(
       return { zoom: c.zoom, jumpTo: c.jumpTo, selection: c.selection };
     case "schema":
       return schema();
-    case "context":
-      await c.refresh();
-      return {
-        deletedSongs: c.deletedSongs.map((e) => ({
-          id: e.id,
-          revision: e.revision,
-          undoOperationId: e.history.at(-1)?.operationId,
-        })),
-        songs: c.songs.map((e) => ({
-          id: e.id,
-          title: e.song?.title,
-          revision: e.revision,
-        })),
-        songId: c.current?.id,
-        revision: c.current?.revision,
-        selection: c.selection,
-        viewport: { zoom: c.zoom, jumpTo: c.jumpTo },
-        sections: c.song ? sectionSpans(c.song) : [],
-        harmonicRegions: c.song ? harmonicSpans(c.song) : [],
-        recordedTakes: c.song ? takePlacements(c.song) : [],
-        undoRedo: historyStacks(c.current?.history ?? []),
-        tables: TABLES,
-        examples: [
-          {
-            name: "Crossing lines",
-            url: "/crossing-lines.song.json",
-            description:
-              "Live-agent 3:2 grid, shortened independent reply, mixed meters and a held bass; cycles meet at 8 quarters.",
-          },
-          {
-            name: "Turning rooms",
-            url: "/turning-rooms.song.json",
-            description:
-              "A–B–A′ with local patterns, phrases, lyrics and a global bass. Authored by a live agent.",
-          },
-          {
-            name: "Countercurrent",
-            url: "/countercurrent.song.json",
-            description:
-              "Editable seven/eight composition; fetch its JSON and import it as a copy.",
-          },
-        ],
-        capabilities,
-        history: c.current?.history.map((h) => ({
-          operationId: h.operationId,
-          label: h.label,
-          revision: h.revision,
-          affected: h.deltas.map((d) => ({ table: d.table, id: d.id })),
-        })),
-        transport: {
-          playing: c.audio.playing,
-          position: c.audio.position,
-          tonic: c.audio.tonic,
-          metronome: c.audio.metronome,
-        },
-      };
+    case "context": return context(c, args, capabilities);
+    case "search": return search(c, args);
+    case "receipt":
+      await c.refresh(); checkRevision(c,args);
+      return c.current?.history.find(h => h.operationId === args.operationId) ?? null;
+    case "prompt_recipes": return recipes;
+    case "writing_export":
+      if (!c.song) throw new Error("Open a song");
+      return writingExport(c.song);
+    case "writing_import":
+      if (!c.song) throw new Error("Open a song");
+      return c.mutate({ songId:String(args.songId), expectedRevision:Number(args.expectedRevision), operationId:String(args.operationId ?? ""), label:"Import writing guidance", command:{kind:"edit",changes:writingChanges(c.song,String(args.text))} });
     case "read": {
       if (!c.song) throw new Error("Open a song");
       if (args.from && args.until)

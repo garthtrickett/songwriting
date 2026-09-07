@@ -50,7 +50,7 @@ export interface Envelope {
 }
 export const equal = (a: unknown, b: unknown) =>
   JSON.stringify(a) === JSON.stringify(b);
-const META = ["title", "mode", "tempo", "arrangementOrder"];
+const META = ["writing", "title", "mode", "tempo", "arrangementOrder"];
 function write(s: Song, c: Change): void {
   if (c.table === "meta") {
     if (!META.includes(c.id)) throw new Error(`Cannot edit metadata ${c.id}`);
