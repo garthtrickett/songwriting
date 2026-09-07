@@ -39,7 +39,7 @@ and shared outcomes. No dependencies were added.
 | `bun run test:browser tests/browser/rhythm.spec.ts` | PASS; all 3 new Chromium workflows |
 | `bun run test:browser` | PASS; all 14 Chromium workflows |
 | `git diff --check` | PASS |
-| GitHub Actions | Pending publication and exact-commit verification |
+| GitHub Actions | PASS; push and pull-request verification for `be03ceb5f947425518285ef37f86b93ae8236c86` |
 
 The eleven new model checks cover exact 3:2 and 5:4, inverse scaling and fixed
 releases, negative wrapping, rest-preserving accent rotation, splice grouping
@@ -62,6 +62,17 @@ A 150 ms mutation delay reproduced the missing-created-pattern failure locally.
 The tests now wait for the successful preview dismissal (and persisted redo
 result), keeping the delay as a deterministic regression. No application check
 was skipped or weakened.
+
+## GitHub evidence
+
+- [PR verification 34109741504](https://github.com/garthtrickett/songwriting/actions/runs/34109741504): completed success.
+- [Push verification 34109737952](https://github.com/garthtrickett/songwriting/actions/runs/34109737952): completed success.
+
+Both runs verified commit `be03ceb5f947425518285ef37f86b93ae8236c86`, including
+39 unit/integration tests and all 14 Chromium workflows with deliberate save
+latency. They supersede the initial browser-test failures on `8504815`.
+[PR #3](https://github.com/garthtrickett/songwriting/pull/3) contains implementation
+and closure evidence; its final documentation commit is also verified before merge.
 
 ## Live agent evidence
 

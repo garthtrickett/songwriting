@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phase 1 is complete. Phase 2 is complete. Its evidence is in [docs/PHASE2_VALIDATION.md](docs/PHASE2_VALIDATION.md). Phase 3 is active; Phases 4–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
+Status: Phases 1–3 are complete. Phases 4–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -348,7 +348,8 @@ recording, tablature, remote sync, or a hosted model service in this phase.
 
 ## Phase 3 — Advanced rhythm and motif development
 
-**Status:** ACTIVE. The detailed specification is in
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+The detailed specification is in
 [PLAN.md — Phase 3](PLAN.md#phase-3--advanced-rhythm-and-motif-development).
 It covers explicit polyrhythm spans, pattern grouping, exact transformations,
 A/A′ comparison, alignment visualization, shared commands and acceptance checks.

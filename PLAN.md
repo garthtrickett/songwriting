@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1 and 2 complete; Phase 3 active; see PHASES.md and docs/PHASE2_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–3 complete; see PHASES.md and docs/PHASE3_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -661,7 +661,9 @@ requirements, not deferred integration work.
 
 ## Phase 3 — Advanced rhythm and motif development
 
-**Status:** ACTIVE. This is the detailed Phase 3 specification; PHASES.md links
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+Evidence: [docs/PHASE3_VALIDATION.md](docs/PHASE3_VALIDATION.md).
+This is the detailed Phase 3 specification; PHASES.md links
 here rather than maintaining a second detailed copy.
 
 ### 3.1 Musical representation and compatibility
