@@ -1,12 +1,12 @@
 # Songwriting app — implementation phases
 
-Status: Phases 1–6 are complete. Phase 7 is authorized next; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
+Status: Phases 1–6 are complete. Phase 7 is active; Phases 8–9 remain planned. Evidence: [Phase 1](docs/PHASE1_VALIDATION.md), [Phase 2](docs/PHASE2_VALIDATION.md), [Phase 3](docs/PHASE3_VALIDATION.md), [Phase 4](docs/PHASE4_VALIDATION.md), [Phase 5](docs/PHASE5_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
 delivery; it does not replace either reference.
 
-Phases 1 and 2 are expanded into implementation detail. Phases 3 and 4 are detailed in PLAN.md; Phases 5–9 remain high-level until selected. Each detailed phase replaces its high-level entry.
+Phases 1 and 2 are expanded into implementation detail. Phases 3–7 are detailed in PLAN.md; Phases 8–9 remain high-level until selected. Each detailed phase replaces its high-level entry.
 
 ## Delivery rules
 
@@ -372,11 +372,7 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 7 — Extended agent workflows and user customization
 
-**Outcome:** Build on Phase 1's functioning agent loop with editable reusable
-prompts, project instructions, songwriting preferences, richer bounded context,
-and longer resumable tasks. Improve change review and task visibility; add
-shortcuts informed by actual use while preserving primitives. Expand evaluations
-for unforeseen tool compositions and interrupted collaborative editing.
+**Status:** ACTIVE. Detailed specification: [PLAN.md — Phase 7](PLAN.md#phase-7--extended-agent-workflows-and-user-customization).
 
 ## Phase 8 — Reliable everyday use on desktop and phone
 

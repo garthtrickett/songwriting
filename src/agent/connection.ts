@@ -35,6 +35,7 @@ export function connection(
         clientId,
         songId: c.current?.id ?? null,
         prompt,
+        snapshot: {songId:c.current?.id??null,revision:c.current?.revision??null,instructions:c.song?.writing.instructions??"",preferences:c.song?.writing.preferences??"",toolVersion:"phase7-workflows-v1"},
       });
       await poll();
     },
@@ -87,7 +88,7 @@ export function connection(
                 args.songId ??= `song-${job.step.id}`;
                 args.operationId ??= job.step.id;
               }
-              if (job.step.name === "import") args.operationId ??= job.step.id;
+              if (["import","bundle_import"].includes(job.step.name)) args.operationId ??= job.step.id;
               result = await executeTool(c, job.step.name, args);
             } catch (e) {
               result = {

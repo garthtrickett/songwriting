@@ -57,9 +57,9 @@ in the writing-partner panel, and tell your coding agent:
 > its tools to work on the song. Verify the result before signalling completion.
 
 The external agent controls its model session and reasoning budget. The bridge
-limits a task to 100 tool calls, checkpoints delivery after every result, and
+limits each execution segment to 100 tool calls / 15 minutes (1,000 calls per task), checkpoints delivery after every result, and
 keeps cancellation and completion explicit. Keep the task's browser tab open;
-if it reloads, its task connection resumes. Server restarts preserve the queue.
+if it reloads, its task connection resumes. Server restarts preserve the queue and move running tasks to waiting for explicit resume.
 Reopening in a new tab currently requires reconnecting that tab to the task's
 saved client ID; automatic cross-tab task takeover is not implemented.
 
@@ -194,7 +194,7 @@ bun run test:browser
 Browser tests cover manual editing, output from the audio graph, durable reload,
 conflicting tabs, deleted-song recovery, and lost agent responses. GitHub Actions
 runs the same automated checks. Real-model evaluation evidence is recorded in
-`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, `docs/PHASE3_VALIDATION.md`, `docs/PHASE4_VALIDATION.md`, and `docs/PHASE5_VALIDATION.md`; deterministic bridge tests are not labelled model
+`docs/PHASE1_VALIDATION.md`, `docs/PHASE2_VALIDATION.md`, `docs/PHASE3_VALIDATION.md`, `docs/PHASE4_VALIDATION.md`, `docs/PHASE5_VALIDATION.md`, `docs/PHASE6_VALIDATION.md`, and `docs/PHASE7_VALIDATION.md`; deterministic bridge tests are not labelled model
 reasoning evaluations.
 
 ## Current scope
@@ -208,9 +208,9 @@ reasoning evaluations.
   Global placements keep their absolute start/span and explicit boundary policy.
   Schema 1 songs migrate as global music so no existing timing is reinterpreted.
   Shortening a section rejects overflowing local spans rather than cropping them.
-- Audition uses simple oscillators, with a small drum palette. Recording,
-  realistic instruments, full harmonic inference, and remote song sync
-  are later phases.
+- Audition mixes synthesized guitar/bass/drums with captured or imported takes.
+  Studio processing, full harmonic inference and remote song sync remain outside
+  the implemented scope.
 - A song is limited to 20,000 entities and bounded exact arithmetic/expansion.
   Limits return errors; events are not silently rounded or dropped.
 - Metadata, operation history, and tasks are stored locally. `.agent/` contains
@@ -242,3 +242,21 @@ protect referenced audio from unused-library removal. Bounds are 25 MiB and ten
 minutes per asset, and 50 MiB audio per bundle before base64 overhead. Browser
 codec support varies. Guitar/bass plucks and synthesized drums are writing aids;
 this is not a studio mixer or transcription tool.
+
+## Customize your writing partner
+
+Expand **Writing guidance and reusable prompts**. Save project instructions and
+songwriting preferences, then create a named request or adapt a starting recipe.
+**Use prompt in request** fills the request box so you can edit it before sending.
+Guidance and prompts travel with song JSON/media bundles; the guidance export also
+lets you reuse them in another song. Incoming edits preserve dirty drafts and show
+conflicts. Changes are undoable through the normal history.
+
+Tasks capture the guidance and song revision when sent. Their cards show work
+items, checkpoint summaries, tool errors and durable changes. Expand a change to
+review before/after values or undo it. A cancelled task retains applied music.
+After a host restart or execution limit, choose Resume; the agent must claim the
+task and refresh live context before continuing. Each segment is bounded to 100
+calls and 15 minutes, with 1,000 calls per task. The external agent host supplies
+reasoning and manages model costs; the bridge retains execution progress locally.
+See [agent tools](docs/AGENT_TOOLS.md) for checkpoint and pagination commands.

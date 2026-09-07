@@ -46,7 +46,7 @@ export function validateSong(input: unknown): Result<Song> {
   try {
     assert(record(input), "Song must be an object");
     const s = migrateSong(input) as Song;
-    assert(s.schemaVersion === 6, "Unsupported song schema version");
+    assert(s.schemaVersion === 7, "Unsupported song schema version");
     assert(
       id(s.id) &&
         text(s.title) &&
@@ -71,6 +71,12 @@ export function validateSong(input: unknown): Result<Song> {
         if (++count > 20000) throw new Error("Song exceeds 20,000 entities");
       }
     }
+    assert(record(s.writing) && typeof s.writing.instructions === "string" &&
+      s.writing.instructions.length <= 8000 && typeof s.writing.preferences === "string" &&
+      s.writing.preferences.length <= 4000, "Invalid writing instructions/preferences");
+    assert(Object.keys(s.tables.prompts).length <= 32, "At most 32 reusable prompts");
+    for (const p of Object.values(s.tables.prompts))
+      assert(p.name.length <= 200 && typeof p.text === "string" && p.text.length <= 8000, "Invalid reusable prompt");
     const t = s.tables;
     const ref = (table: keyof typeof t, v: unknown) =>
       assert(

@@ -18,8 +18,29 @@ async function api(path: string, data?: unknown) {
 }
 const [action, taskId, ...rest] = process.argv.slice(2);
 if (action === "tasks")
-  console.log(JSON.stringify(await api("/tasks"), null, 2));
-else if (action === "claim")
+  console.log(
+    JSON.stringify(
+      await api(`/tasks?offset=${Number(taskId ?? 0)}&limit=50`),
+      null,
+      2,
+    ),
+  );
+else if (action === "task")
+  console.log(
+    JSON.stringify(
+      await api(
+        `/task_info?taskId=${taskId}&offset=${Number(rest[0] ?? 0)}&limit=20`,
+      ),
+      null,
+      2,
+    ),
+  );
+else if (action === "checkpoint") {
+  const input = JSON.parse(await readFile(rest[0]!, "utf8"));
+  console.log(
+    JSON.stringify(await api("/checkpoint", { taskId, ...input }), null, 2),
+  );
+} else if (action === "claim")
   console.log(
     JSON.stringify(
       await api("/claim", { taskId, provider: rest[0], model: rest[1] }),
@@ -87,5 +108,5 @@ else if (action === "finish")
   );
 else
   throw new Error(
-    "Usage: bun run agent tasks | claim TASK PROVIDER MODEL | call TASK TOOL [args.json|-] | step TASK STEP | finish TASK completed|partial|failed|waiting SUMMARY",
+    "Usage: bun run agent tasks [OFFSET] | task TASK [OFFSET] | checkpoint TASK checkpoint.json | claim TASK PROVIDER MODEL | call TASK TOOL [args.json|-] | step TASK STEP | finish TASK completed|partial|failed|waiting SUMMARY",
   );

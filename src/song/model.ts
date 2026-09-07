@@ -145,7 +145,10 @@ export interface Take extends Entity {
   gain: number;
   muted: boolean;
 }
+export interface Prompt extends Entity { text: string }
+export interface Writing { instructions: string; preferences: string }
 export interface Tables {
+  prompts: Record<string, Prompt>;
   assets: Record<string, AudioAsset>;
   takes: Record<string, Take>;
   fretted: Record<string, Fretted>;
@@ -166,6 +169,7 @@ export interface Tables {
   polyrhythms: Record<string, Polyrhythm>;
 }
 export const TABLES = [
+  "prompts",
   "assets",
   "takes",
   "fretted",
@@ -187,24 +191,27 @@ export const TABLES = [
 ] as const;
 export type Table = (typeof TABLES)[number];
 export interface Song {
-  schemaVersion: 6;
+  schemaVersion: 7;
   id: string;
   title: string;
   mode: string;
   degreeReference: "major";
+  writing: Writing;
   tempo: { bpm: number; beatUnit: Time };
   arrangementOrder: string[];
   tables: Tables;
 }
 export const emptySong = (id: string, title = "Untitled idea"): Song => ({
-  schemaVersion: 6,
+  schemaVersion: 7,
   id,
   title,
   mode: "major",
   degreeReference: "major",
+  writing: { instructions: "", preferences: "" },
   tempo: { bpm: 112, beatUnit: [1, 1] },
   arrangementOrder: [],
   tables: {
+    prompts: {},
     assets: {},
     takes: {},
     fretted: {},

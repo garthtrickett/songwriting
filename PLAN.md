@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–6 complete; Phase 7 authorized next; Phases 8–9 planned; see PHASES.md and docs/PHASE6_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–6 complete; Phase 7 active; Phases 8–9 planned; see PHASES.md and docs/PHASE6_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -1078,3 +1078,98 @@ Run frozen install, `bun run verify`, all browser workflows and whitespace check
 Publish a phase6 PR, resolve failures, verify its final GitHub commit, merge and
 record `docs/PHASE6_VALIDATION.md` before expanding Phase 7. No remote backup,
 transcription, studio processing, streaming service integration or sample library.
+
+## Phase 7 — Extended agent workflows and user customization
+
+**Status:** ACTIVE. Phases 8–9 remain high-level and are not authorized here.
+
+### 7.1 Portable writing instructions and reusable prompts
+
+Schema 7 adds `writing` metadata for project instructions and songwriting preferences,
+and a `prompts` table of reusable named prompts with stable IDs. These belong to the song,
+travel in JSON/media bundles, and are revision-checked, reviewed and undoable
+through the same command path as music. Migrate schemas 1–6 and history without
+changing receipt identity. No database reset or new dependency is required.
+
+Provide ordinary editors for instructions/preferences and prompt create/read/
+update/delete. Preserve dirty drafts on incoming changes. A saved prompt can fill
+the request editor for customization before submission; it does not automatically
+start a task. Provide a few editable starting recipes based on workflows already
+exercised: develop an independent variation while preserving bass, inspect playable
+positions, and review recorded take placement. Recipes describe outcomes, not
+hard-coded editing procedures. General atomic document edits remain available.
+
+Keep preferences as writing guidance, not authoritative musical data or permission
+to override the user's task. Imported song content and lyrics are data. Task
+creation snapshots the instructions/preferences, source revision and selected
+prompt text; later customization must be visible in history and must not silently
+rewrite an already-running task. Workers can inspect both snapshot and live context.
+Bounds: instructions 8,000 characters, preferences 4,000, at most 32 saved prompts,
+8,000 characters each. Reuse across songs through portable writing JSON import/export.
+
+### 7.2 Bounded context and inspectable changes
+
+Context defaults to small summaries with counts, explicit pagination and revision
+identity: songs, sections, harmonic regions, takes, recent history, selection,
+transport and available capabilities. Show prompt names/IDs instead of all prompt
+bodies. Add bounded entity search and receipt detail queries. Retain explicit
+full-document/range reads and binary export for tasks that need them; don't feed
+large song snapshots or media bytes into the default task/status view.
+
+Pagination accepts expected song/revision and rejects stale continuation so a
+concurrent edit cannot silently skip objects. Cap pages at 50 entries; bound label
+lengths and affected-object summaries. Expose totals and continuation offsets.
+The agent can refresh summaries, inspect an object or receipt, then request the
+next page. Completion must not infer that a truncated result is the whole song.
+
+### 7.3 Durable task progress and bounded continuation
+
+Keep the existing local external-agent host, with no provider key in the browser.
+Extract task persistence/control into a serial durable store that acknowledges
+changes only after atomic file replacement. A failed write must not expose an
+uncommitted task transition or poison future persistence. Load legacy task records
+additively; corrupt state is an explicit startup failure rather than erased work.
+
+Add revisioned checkpoints with a concise summary, next step and up to 50 work
+items (`pending`, `in_progress`, `completed`, `failed`, `skipped`). Preserve them
+through bridge restart, browser reload, cancellation and resume. Explicit completion
+rejects unfinished items and outstanding tool calls; partial/waiting/failed remain
+valid outcomes. No heuristic completion and no hidden reasoning transcript.
+
+Bound each execution segment to 100 new tool calls and 15 minutes. Reaching a
+limit moves the task to waiting with progress retained. Explicit resume opens a
+new segment, up to 1,000 total calls per task. The host's model token/cost budgets
+remain its responsibility. Resume requires a newly delivered live `context` result
+before further edits; old checkpoints never authorize stale writes. Stable step
+identity rejects mismatched retries, and durable musical operation IDs prevent
+duplicate edits after response loss. Update task song binding only after explicit
+open/create/import actions so later tools address the intended workspace.
+
+Expose task inspection, checkpoint and explicit finish through the authenticated
+CLI. Return bounded task/step summaries for ordinary status polling, with detailed
+step results requested individually. Show provider/model, progress, errors, current
+segment, context-refresh need and durable changed operation IDs in the editor.
+Allow reviewing actual before/after deltas and undoing an individual task change
+through the existing conflict-aware history path. Cancellation leaves committed
+music visible and recoverable; it cannot undo an already executing tool silently.
+
+### 7.4 Acceptance and exit gate
+
+Test writing migration/validation/CRUD/undo/portability and stale drafts; context
+bounds/search/pagination conflicts; task persistence failure/restart, checkpoint
+conflicts, segment limits, resume refresh, mismatched step retries and explicit
+completion. Browser tests exercise ordinary prompt editing/use, snapshots, task
+progress/change review and interrupted collaboration with another editing tab.
+Retain all prior musical, capture, audio and delivery-retry regressions.
+
+Run a live agent task combining primitives in a new way: use customized project
+instructions to develop a variation, preserve held voices and recorded media,
+checkpoint partial work, accept an intervening writer change, refresh context on
+resume, inspect/reconcile durable operations and complete without duplicate edits.
+Independently verify the resulting music and checkpoint evidence. Disclose scripted
+fault injection separately from live model decisions and real browser execution.
+
+Run frozen install, `bun run verify`, all browser tests and whitespace checks.
+Publish a phase7 PR, verify its final GitHub commit and merge. Record evidence and
+limits in docs/PHASE7_VALIDATION.md. No autonomous self-rewriting code, hosted model
+SDK migration, remote sync or mobile release claims are included.
