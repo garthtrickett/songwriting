@@ -1,0 +1,106 @@
+{
+  "id": "e0880672-d2c7-4333-8bbb-d37509a87be5",
+  "prompt": "Create an original math-rock sketch: a seven-eighth guitar cycle over an eight-eighth drum cycle, a sustained bass voice, mixed meters, and a chord whose members have independent releases. Mark the next shared cycle start. Then make a guitar variation one eighth shorter for the next section, preserving the bass and original riff. Save and verify the structure.",
+  "provider": "Codex",
+  "model": "current-session-model-not-exposed",
+  "status": "completed",
+  "summary": "Created Countercurrent through primitive live tools; seven/eight cycles align at 56 eighth notes. Added a shortened guitar variation and preserved the original riff, chord, and bass. Export comparisons verify those constraints after runtime recovery. Audition started and stopped through the transport tool; browser tests independently verify audio-graph output.",
+  "createdAt": 1788767592008,
+  "steps": [
+    {
+      "id": "baf0bfa3-4df0-41f7-98ff-28182a28863e",
+      "tool": "context",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "73cbb4e1-9835-4a54-94a4-0ebf26992d68",
+      "tool": "create_song",
+      "status": "done",
+      "operationId": "eval-create"
+    },
+    {
+      "id": "b38a0ded-2753-457d-bfe2-9daa30c532be",
+      "tool": "read",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "adb75d22-b396-4029-b86a-ffe5fee4a975",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "eval-structure"
+    },
+    {
+      "id": "277ba320-a5bb-45ca-8a9b-9a61ceec838f",
+      "tool": "alignment",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "db8dee30-4a41-4fd4-ac07-852aad0fcc16",
+      "tool": "export",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "5b4a887a-bc86-4d5f-8115-b3bd746c1247",
+      "tool": "context",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "63424817-8adf-4b3c-a16d-42aa677fab50",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "eval-variation"
+    },
+    {
+      "id": "bd5c1276-e475-4d9c-8bb1-5ce5d3084273",
+      "tool": "export",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "cc1de55f-5e70-4199-aa9b-26acbe1d315e",
+      "tool": "schema",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "f99d0de3-8ee1-4362-9e75-3ffdba1bc62b",
+      "tool": "transport",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "86d75093-129c-4721-bd50-5b69f8cdd087",
+      "tool": "transport",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "5c20ed48-1c40-4c02-98eb-857fb71aa04e",
+      "tool": "export",
+      "status": "done",
+      "operationId": null
+    }
+  ],
+  "verification": {
+    "nextAlignmentQuarterNotes": [
+      28,
+      1
+    ],
+    "variationLengthQuarterNotes": [
+      3,
+      1
+    ],
+    "preserved": [
+      "original riff",
+      "original chord event",
+      "bass event"
+    ],
+    "recoveredRevision": 2,
+    "completedRevision": 3
+  }
+}

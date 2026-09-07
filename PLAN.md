@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: planning only. `songwriting` is a working name.
+Status: Phase 1 implementation; see PHASES.md and docs/PHASE1_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 

@@ -1,0 +1,27 @@
+{
+  "name": "songwriting",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "bridge": "bun server/bridge.ts",
+    "check": "tsc --noEmit",
+    "test": "bun test src",
+    "build": "vite build",
+    "verify": "bun run check && bun run test && bun run build",
+    "test:browser": "playwright test",
+    "agent": "bun scripts/agent.ts"
+  },
+  "dependencies": {
+    "lit-html": "^3.3.3"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^20.14.0",
+    "@types/bun": "^1.4.1",
+    "fake-indexeddb": "^6.2.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "@playwright/test": "1.63.0"
+  }
+}

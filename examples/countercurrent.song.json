@@ -1,0 +1,815 @@
+{
+  "schemaVersion": 1,
+  "id": "countercurrent",
+  "title": "Countercurrent",
+  "mode": "major",
+  "degreeReference": "major",
+  "tempo": {
+    "bpm": 112,
+    "beatUnit": [
+      1,
+      1
+    ]
+  },
+  "arrangementOrder": [
+    "verse-once",
+    "turn-once"
+  ],
+  "tables": {
+    "parts": {
+      "g": {
+        "id": "g",
+        "name": "Guitar",
+        "instrument": "guitar",
+        "volume": 0.55,
+        "muted": false
+      },
+      "b": {
+        "id": "b",
+        "name": "Bass",
+        "instrument": "bass",
+        "volume": 0.55,
+        "muted": false
+      },
+      "d": {
+        "id": "d",
+        "name": "Drums",
+        "instrument": "drums",
+        "volume": 0.55,
+        "muted": false
+      }
+    },
+    "voices": {
+      "g-voice": {
+        "id": "g-voice",
+        "name": "Ringing shapes",
+        "partId": "g"
+      },
+      "b-voice": {
+        "id": "b-voice",
+        "name": "Main voice",
+        "partId": "b"
+      },
+      "d-voice": {
+        "id": "d-voice",
+        "name": "Main voice",
+        "partId": "d"
+      },
+      "g-upper": {
+        "id": "g-upper",
+        "name": "Upper line",
+        "partId": "g"
+      }
+    },
+    "patterns": {
+      "riff": {
+        "id": "riff",
+        "name": "Sevenfold",
+        "length": [
+          7,
+          2
+        ],
+        "sourceId": null
+      },
+      "beat": {
+        "id": "beat",
+        "name": "Steady ground",
+        "length": [
+          4,
+          1
+        ],
+        "sourceId": null
+      },
+      "pedal": {
+        "id": "pedal",
+        "name": "Long root",
+        "length": [
+          40,
+          1
+        ],
+        "sourceId": null
+      },
+      "melody": {
+        "id": "melody",
+        "name": "Upper fragments",
+        "length": [
+          7,
+          2
+        ],
+        "sourceId": null
+      },
+      "riff-short": {
+        "id": "riff-short",
+        "name": "Sevenfold \u00b7 one step shorter",
+        "length": [
+          3,
+          1
+        ],
+        "sourceId": "riff"
+      }
+    },
+    "chords": {
+      "open-tonic": {
+        "id": "open-tonic",
+        "name": "Open tonic",
+        "label": "I",
+        "notes": [
+          {
+            "id": "root",
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "fifth",
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "third",
+            "pitch": {
+              "degree": 3,
+              "alteration": 0,
+              "octave": 1
+            }
+          }
+        ]
+      }
+    },
+    "events": {
+      "shape": {
+        "id": "shape",
+        "name": "Let the root ring",
+        "patternId": "riff",
+        "kind": "chord",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": "open-tonic",
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": [
+          {
+            "memberId": "third",
+            "offset": [
+              1,
+              2
+            ],
+            "duration": [
+              1,
+              1
+            ]
+          },
+          {
+            "memberId": "fifth",
+            "offset": [
+              0,
+              1
+            ],
+            "duration": [
+              2,
+              1
+            ]
+          }
+        ]
+      },
+      "pedal-root": {
+        "id": "pedal-root",
+        "name": "Root beneath the change",
+        "patternId": "pedal",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          36,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": -1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "sustain",
+        "performance": []
+      },
+      "upper-2": {
+        "id": "upper-2",
+        "name": "upper-2",
+        "patternId": "melody",
+        "kind": "note",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 2,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "upper-6": {
+        "id": "upper-6",
+        "name": "upper-6",
+        "patternId": "melody",
+        "kind": "note",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 6,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "breath": {
+        "id": "breath",
+        "name": "breath",
+        "patternId": "melody",
+        "kind": "rest",
+        "start": [
+          3,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-0": {
+        "id": "drum-0",
+        "name": "drum-0",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.9,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-1": {
+        "id": "drum-1",
+        "name": "drum-1",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          1,
+          2
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.4,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-2": {
+        "id": "drum-2",
+        "name": "drum-2",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.9,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-3": {
+        "id": "drum-3",
+        "name": "drum-3",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          3,
+          2
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.4,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-4": {
+        "id": "drum-4",
+        "name": "drum-4",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.9,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-5": {
+        "id": "drum-5",
+        "name": "drum-5",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          5,
+          2
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.4,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-6": {
+        "id": "drum-6",
+        "name": "drum-6",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          3,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.9,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-7": {
+        "id": "drum-7",
+        "name": "drum-7",
+        "patternId": "beat",
+        "kind": "drum",
+        "start": [
+          7,
+          2
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "hat",
+        "accent": 0.4,
+        "articulation": "normal",
+        "performance": []
+      },
+      "shape-short": {
+        "id": "shape-short",
+        "name": "Tonic in the shortened turn",
+        "patternId": "riff-short",
+        "kind": "chord",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": "open-tonic",
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": [
+          {
+            "memberId": "third",
+            "offset": [
+              1,
+              2
+            ],
+            "duration": [
+              1,
+              1
+            ]
+          },
+          {
+            "memberId": "fifth",
+            "offset": [
+              0,
+              1
+            ],
+            "duration": [
+              2,
+              1
+            ]
+          }
+        ]
+      }
+    },
+    "bars": {
+      "v1": {
+        "id": "v1",
+        "name": "Bar 1",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "v2": {
+        "id": "v2",
+        "name": "Bar 2",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "v3": {
+        "id": "v3",
+        "name": "Bar 3",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "v4": {
+        "id": "v4",
+        "name": "Bar 4",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "v5": {
+        "id": "v5",
+        "name": "Bar 5",
+        "sectionId": "verse",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "v6": {
+        "id": "v6",
+        "name": "Bar 6",
+        "sectionId": "verse",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      },
+      "v7": {
+        "id": "v7",
+        "name": "Bar 7",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "v8": {
+        "id": "v8",
+        "name": "Bar 8",
+        "sectionId": "verse",
+        "numerator": 4,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "t1": {
+        "id": "t1",
+        "name": "Turn 1",
+        "sectionId": "turn",
+        "numerator": 3,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      },
+      "t2": {
+        "id": "t2",
+        "name": "Turn 2",
+        "sectionId": "turn",
+        "numerator": 3,
+        "denominator": 4,
+        "groups": [
+          1,
+          1,
+          1
+        ],
+        "actual": null
+      }
+    },
+    "sections": {
+      "verse": {
+        "id": "verse",
+        "name": "Interlock",
+        "barIds": [
+          "v1",
+          "v2",
+          "v3",
+          "v4",
+          "v5",
+          "v6",
+          "v7",
+          "v8"
+        ]
+      },
+      "turn": {
+        "id": "turn",
+        "name": "One step closer",
+        "barIds": [
+          "t1",
+          "t2"
+        ]
+      }
+    },
+    "arrangement": {
+      "verse-once": {
+        "id": "verse-once",
+        "name": "verse",
+        "sectionId": "verse"
+      },
+      "turn-once": {
+        "id": "turn-once",
+        "name": "turn",
+        "sectionId": "turn"
+      }
+    },
+    "occurrences": {
+      "guitar-cycle": {
+        "id": "guitar-cycle",
+        "name": "guitar-cycle",
+        "patternId": "riff",
+        "voiceId": "g-voice",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          32,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "drum-cycle": {
+        "id": "drum-cycle",
+        "name": "drum-cycle",
+        "patternId": "beat",
+        "voiceId": "d-voice",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          38,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "bass-pedal": {
+        "id": "bass-pedal",
+        "name": "bass-pedal",
+        "patternId": "pedal",
+        "voiceId": "b-voice",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          38,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "upper-cycle": {
+        "id": "upper-cycle",
+        "name": "upper-cycle",
+        "patternId": "melody",
+        "voiceId": "g-upper",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          38,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "guitar-turn": {
+        "id": "guitar-turn",
+        "name": "Shortened turn",
+        "patternId": "riff-short",
+        "voiceId": "g-voice",
+        "start": [
+          32,
+          1
+        ],
+        "span": [
+          6,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "restart",
+        "tails": "ring"
+      }
+    },
+    "markers": {
+      "cycles-meet": {
+        "id": "cycles-meet",
+        "name": "Together again \u00b7 56 eighths",
+        "at": [
+          28,
+          1
+        ]
+      }
+    }
+  }
+}
