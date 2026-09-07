@@ -59,9 +59,15 @@ not constitute a human listening review or validation on physical audio hardware
 
 ## Publication
 
-GitHub validation is pending publication. The workflow runs frozen installation,
-`verify`, and the browser suite. Record the upstream run before marking the
-phase closed.
+GitHub verified implementation commit `ab12fa9dc64a2ef268f7a8324fb0132aefbaded7`
+on both push and pull request. Both runs completed successfully:
+
+- [Pull-request run 34099513410](https://github.com/garthtrickett/songwriting/actions/runs/34099513410)
+- [Push run 34099513246](https://github.com/garthtrickett/songwriting/actions/runs/34099513246)
+
+The workflow runs frozen installation, `verify`, and all five browser workflows.
+[PR #1](https://github.com/garthtrickett/songwriting/pull/1) contains the implementation
+and these closure notes; its final commit must also pass verification before merge.
 
 ## Scope and remaining uncertainty
 

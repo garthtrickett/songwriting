@@ -1,6 +1,6 @@
 # Songwriting app — implementation phases
 
-Status: Phase 1 is implemented locally and awaiting final publication checks. Later phases remain planned.
+Status: Phase 1 is complete. Later phases remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
@@ -26,7 +26,7 @@ next work. The detailed Phase 1 below is its sole phase entry.
 
 ## Phase 1 — A playable, persistent, agent-native math-rock sketch
 
-**Status:** IMPLEMENTED — publication checks pending
+**Status:** DONE — local checks, live-agent evaluation, and GitHub verification passed
 
 ### Outcome
 
