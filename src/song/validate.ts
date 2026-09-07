@@ -1,5 +1,7 @@
+import { migrateSong } from "./migrate.ts";
+import { sectionLength } from "./arrangement.ts";
 import { TABLES, type Song, type Pitch } from "./model.ts";
-import { cmp, time, type Time } from "./time.ts";
+import { add, cmp, time, type Time } from "./time.ts";
 import { ok, err, type Result } from "../result.ts";
 const assert = (yes: unknown, message: string): void => {
   if (!yes) throw new Error(message);
@@ -41,8 +43,8 @@ function pitch(v: unknown): asserts v is Pitch {
 export function validateSong(input: unknown): Result<Song> {
   try {
     assert(record(input), "Song must be an object");
-    const s = input as unknown as Song;
-    assert(s.schemaVersion === 1, "Unsupported song schema version");
+    const s = migrateSong(input) as Song;
+    assert(s.schemaVersion === 2, "Unsupported song schema version");
     assert(
       id(s.id) &&
         text(s.title) &&
@@ -172,6 +174,10 @@ export function validateSong(input: unknown): Result<Song> {
     }
     const assigned = new Set<string>();
     for (const sec of Object.values(t.sections)) {
+      if (sec.sourceId !== null) {
+        ref("sections", sec.sourceId);
+        assert(sec.sourceId !== sec.id, "Section cannot vary itself");
+      }
       assert(Array.isArray(sec.barIds), "Section needs bar order");
       for (const b of sec.barIds) {
         ref("bars", b);
@@ -198,11 +204,17 @@ export function validateSong(input: unknown): Result<Song> {
       "Every section occurrence needs an order",
     );
     for (const o of Object.values(t.occurrences)) {
+      if (o.sectionId !== null) ref("sections", o.sectionId);
       ref("patterns", o.patternId);
       ref("voices", o.voiceId);
       duration(o.start);
       duration(o.span, true);
       duration(o.phase);
+      if (o.sectionId !== null)
+        assert(
+          cmp(add(o.start, o.span), sectionLength(s, o.sectionId)) <= 0,
+          `Placement ${o.name} exceeds its section; adjust its start/span explicitly`,
+        );
       assert(
         cmp(o.phase, t.patterns[o.patternId]!.length) < 0,
         "Phase must be inside pattern",
@@ -213,6 +225,40 @@ export function validateSong(input: unknown): Result<Song> {
         "Invalid boundary choice",
       );
     }
+    for (const table of ["phrases", "lyrics"] as const)
+      for (const e of Object.values(t[table])) {
+        ref("sections", e.sectionId);
+        duration(e.start);
+        duration(e.duration, true);
+        assert(
+          cmp(add(e.start, e.duration), sectionLength(s, e.sectionId)) <= 0,
+          `${table}/${e.id} exceeds its section`,
+        );
+      }
+    for (const l of Object.values(t.lyrics)) {
+      assert(text(l.text), "Invalid lyric text");
+      if (l.partId !== null) ref("parts", l.partId);
+      if (l.phraseId !== null) {
+        ref("phrases", l.phraseId);
+        const p = t.phrases[l.phraseId]!;
+        assert(
+          l.sectionId === p.sectionId &&
+            cmp(l.start, p.start) >= 0 &&
+            cmp(add(l.start, l.duration), add(p.start, p.duration)) <= 0,
+          "Linked phrase must contain its lyric span",
+        );
+      }
+    }
+    for (const table of ["sections", "patterns"] as const)
+      for (const e of Object.values(t[table])) {
+        const seen = new Set([e.id]);
+        let parent = e.sourceId;
+        while (parent !== null) {
+          assert(!seen.has(parent), `Cyclic ${table} lineage`);
+          seen.add(parent);
+          parent = t[table][parent]!.sourceId;
+        }
+      }
     for (const m of Object.values(t.markers)) duration(m.at);
     return ok(structuredClone(s));
   } catch (e) {

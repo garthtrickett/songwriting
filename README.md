@@ -67,6 +67,36 @@ Agent mutations and user edits share revision checks, validation, durable
 receipts, and change history. An agent receives a conflict instead of silently
 replacing newer changes. Stopping a task preserves already committed edits.
 
+## Arrange a song
+
+Use **+ Section**, then **+ Bar in section** to build mixed-meter passages.
+Select a section card to repeat, reorder, or make an independent variation.
+Review the resulting positions and choose **Apply structural edit**. Variations
+copy their local music, chords, phrases and lyrics; the source stays intact.
+Removing an appearance preserves its reusable section in Musical objects.
+
+**+ Entrance** places a pattern in the selected section. Set its voice, start,
+repeat span and ring/cut choice in the inspector. A section placement plays in
+all its appearances; global music can span the whole song. The **Attach placement**
+control converts a fitting global placement to section time explicitly. It does
+not split crossing patterns. In a repeated section, attaching makes that placement
+play in every appearance, so check the scope and shared-use count.
+
+Use **+ Phrase** and **+ Lyric** for timed groupings and words. Lyrics support
+multiline plain text and optional phrase/part links. Choose **Save lyrics** to
+save a draft. If the song changes while typing, the draft remains available and
+a stale save is rejected; copy the draft before reloading saved words.
+
+Click a section to jump there. Use zoom and **Fit song** to navigate. With focus
+on the timeline, **Space** plays/stops, **← / →** nudges selected notes or
+placements by the exact nudge step, **Ctrl/⌘ Z** undoes, and **Ctrl/⌘ Shift Z**
+redoes. Text fields keep their normal keyboard behaviour. Navigation is not saved
+as music. History lists affected objects, including incoming agent edits.
+
+**Explore an example** opens *Turning rooms*, an editable agent-authored A–B–A′
+song with phrases, lyrics, a delayed return entrance, and an unchanged global bass.
+The Phase 1 *Countercurrent* example remains in `examples/`.
+
 ## Validate
 
 ```sh
@@ -79,7 +109,7 @@ bun run test:browser
 Browser tests cover manual editing, output from the audio graph, durable reload,
 conflicting tabs, deleted-song recovery, and lost agent responses. GitHub Actions
 runs the same automated checks. Real-model evaluation evidence is recorded in
-`docs/PHASE1_VALIDATION.md`; deterministic bridge tests are not labelled model
+`docs/PHASE1_VALIDATION.md` and `docs/PHASE2_VALIDATION.md`; deterministic bridge tests are not labelled model
 reasoning evaluations.
 
 ## Current scope
@@ -89,9 +119,10 @@ reasoning evaluations.
 - Chords contain notes. Changing a chord's pitches clears an unchanged old
   interpretation. An explicit performance can give members separate attacks and
   releases. A rest releases only its own voice; other voices can keep ringing.
-- Bars describe meter. Pattern occurrences use absolute musical positions, so
-  rearranging sections changes the meter map rather than moving their independent
-  patterns automatically. Moving the relevant occurrences is an explicit edit.
+- Section-relative placements, phrases and lyrics travel with each appearance.
+  Global placements keep their absolute start/span and explicit boundary policy.
+  Schema 1 songs migrate as global music so no existing timing is reinterpreted.
+  Shortening a section rejects overflowing local spans rather than cropping them.
 - Audition uses simple oscillators, with a small drum palette. Recording,
   tablature, realistic instruments, full harmonic inference, and remote song sync
   are later phases.

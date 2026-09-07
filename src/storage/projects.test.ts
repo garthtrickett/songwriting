@@ -45,3 +45,50 @@ it("atomically rejects competing revisions and deduplicates a lost response acro
   );
   reopened.close();
 });
+
+it("loads a schema 1 database in place and preserves old retries and undo across reopen", async () => {
+  const { acceptance } = await import("../../tests/acceptance.ts");
+  const { applyCommand } = await import("../song/commands.ts");
+  const { save, read } = await import("./projects.ts");
+  const name = crypto.randomUUID();
+  let db = await openDb(name);
+  const song: any = acceptance("legacy");
+  song.schemaVersion = 1;
+  delete song.tables.phrases;
+  delete song.tables.lyrics;
+  for (const e of Object.values(song.tables.sections) as any[])
+    delete e.sourceId;
+  for (const e of Object.values(song.tables.occurrences) as any[])
+    delete e.sectionId;
+  const m = {
+    songId: song.id,
+    expectedRevision: 0,
+    operationId: "legacy-import",
+    label: "Legacy import",
+    command: { kind: "replace" as const, song },
+  };
+  const envelope: any = applyCommand(undefined, m, 1);
+  envelope.song = song;
+  for (const d of envelope.history[0].deltas)
+    if (d.after && typeof d.after === "object") {
+      if (d.table === "sections") delete d.after.sourceId;
+      if (d.table === "occurrences") delete d.after.sectionId;
+    }
+  await save(db, "songs", envelope);
+  db.close();
+  db = await openDb(name);
+  const loaded = await read<any>(db, "songs", song.id);
+  expect(loaded.song.schemaVersion).toBe(2);
+  expect(loaded.song.tables.occurrences.guitar.sectionId).toBe(null);
+  const duplicate = await commit(db, m);
+  expect(duplicate.ok && duplicate.value.revision).toBe(1);
+  const undo = await commit(db, {
+    songId: song.id,
+    expectedRevision: 1,
+    operationId: "undo-legacy",
+    label: "Undo import",
+    command: { kind: "undo", targetId: "legacy-import" },
+  });
+  expect(undo.ok && undo.value.song).toBe(null);
+  db.close();
+});

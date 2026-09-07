@@ -1,3 +1,4 @@
+import { hydrateEnvelope } from "../song/history.ts";
 import {
   applyCommand,
   type Mutation,
@@ -25,14 +26,34 @@ export function read<T>(
 ): Promise<T | undefined> {
   return new Promise((resolve, reject) => {
     const r = db.transaction(store).objectStore(store).get(id);
-    r.onsuccess = () => resolve(r.result as T | undefined);
+    r.onsuccess = () => {
+      try {
+        resolve(
+          store === "songs" && r.result
+            ? (hydrateEnvelope(r.result) as T)
+            : (r.result as T | undefined),
+        );
+      } catch (e) {
+        reject(e);
+      }
+    };
     r.onerror = () => reject(r.error);
   });
 }
 export function list<T>(db: IDBDatabase, store: string): Promise<T[]> {
   return new Promise((resolve, reject) => {
     const r = db.transaction(store).objectStore(store).getAll();
-    r.onsuccess = () => resolve(r.result as T[]);
+    r.onsuccess = () => {
+      try {
+        resolve(
+          store === "songs"
+            ? ((r.result as Envelope[]).map(hydrateEnvelope) as T[])
+            : (r.result as T[]),
+        );
+      } catch (e) {
+        reject(e);
+      }
+    };
     r.onerror = () => reject(r.error);
   });
 }
@@ -62,7 +83,9 @@ export function commit(
         let failure: unknown;
         request.onsuccess = () => {
           try {
-            const old = request.result as Envelope | undefined;
+            const old = request.result
+              ? hydrateEnvelope(request.result as Envelope)
+              : undefined;
             const duplicate = old?.history.find(
               (h) => h.operationId === m.operationId,
             );

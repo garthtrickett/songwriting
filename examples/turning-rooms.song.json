@@ -1,0 +1,817 @@
+{
+  "schemaVersion": 2,
+  "id": "turning-rooms",
+  "title": "Turning rooms",
+  "mode": "major",
+  "degreeReference": "major",
+  "tempo": {
+    "bpm": 112,
+    "beatUnit": [
+      1,
+      1
+    ]
+  },
+  "arrangementOrder": [
+    "a-once",
+    "b-once",
+    "a-return"
+  ],
+  "tables": {
+    "parts": {
+      "guitar": {
+        "id": "guitar",
+        "name": "Guitar",
+        "instrument": "guitar",
+        "volume": 0.6,
+        "muted": false
+      },
+      "drums": {
+        "id": "drums",
+        "name": "Drums",
+        "instrument": "drums",
+        "volume": 0.6,
+        "muted": false
+      },
+      "bass": {
+        "id": "bass",
+        "name": "Bass",
+        "instrument": "bass",
+        "volume": 0.6,
+        "muted": false
+      }
+    },
+    "voices": {
+      "guitar": {
+        "id": "guitar",
+        "name": "Main line",
+        "partId": "guitar"
+      },
+      "drums": {
+        "id": "drums",
+        "name": "Main line",
+        "partId": "drums"
+      },
+      "bass": {
+        "id": "bass",
+        "name": "Main line",
+        "partId": "bass"
+      }
+    },
+    "patterns": {
+      "seven": {
+        "id": "seven",
+        "name": "Seven steps",
+        "length": [
+          7,
+          2
+        ],
+        "sourceId": null
+      },
+      "eight": {
+        "id": "eight",
+        "name": "Eight steps",
+        "length": [
+          4,
+          1
+        ],
+        "sourceId": null
+      },
+      "pedal": {
+        "id": "pedal",
+        "name": "Held tonic",
+        "length": [
+          24,
+          1
+        ],
+        "sourceId": null
+      },
+      "a-prime-6": {
+        "id": "a-prime-6",
+        "name": "Seven steps",
+        "length": [
+          7,
+          2
+        ],
+        "sourceId": "seven"
+      },
+      "a-prime-7": {
+        "id": "a-prime-7",
+        "name": "Eight steps",
+        "length": [
+          4,
+          1
+        ],
+        "sourceId": "eight"
+      }
+    },
+    "chords": {
+      "open": {
+        "id": "open",
+        "name": "Open tonic",
+        "label": "I (no third)",
+        "notes": [
+          {
+            "id": "root",
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "fifth",
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            }
+          }
+        ]
+      },
+      "a-prime-5": {
+        "id": "a-prime-5",
+        "name": "Open tonic",
+        "label": "I (no third)",
+        "notes": [
+          {
+            "id": "root",
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "fifth",
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            }
+          }
+        ]
+      }
+    },
+    "events": {
+      "opening": {
+        "id": "opening",
+        "name": "Ringing answer",
+        "patternId": "seven",
+        "kind": "chord",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": "open",
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": [
+          {
+            "memberId": "fifth",
+            "offset": [
+              1,
+              2
+            ],
+            "duration": [
+              2,
+              1
+            ]
+          }
+        ]
+      },
+      "passing": {
+        "id": "passing",
+        "name": "Passing second",
+        "patternId": "seven",
+        "kind": "note",
+        "start": [
+          5,
+          2
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 2,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-0": {
+        "id": "drum-0",
+        "name": "Pulse 1",
+        "patternId": "eight",
+        "kind": "drum",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-1": {
+        "id": "drum-1",
+        "name": "Pulse 2",
+        "patternId": "eight",
+        "kind": "drum",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-2": {
+        "id": "drum-2",
+        "name": "Pulse 3",
+        "patternId": "eight",
+        "kind": "drum",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "drum-3": {
+        "id": "drum-3",
+        "name": "Pulse 4",
+        "patternId": "eight",
+        "kind": "drum",
+        "start": [
+          3,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "bass-note": {
+        "id": "bass-note",
+        "name": "Tonic beneath the turns",
+        "patternId": "pedal",
+        "kind": "note",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          21,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": -1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "sustain",
+        "performance": []
+      },
+      "a-prime-8": {
+        "id": "a-prime-8",
+        "name": "Ringing answer",
+        "patternId": "a-prime-6",
+        "kind": "chord",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": "a-prime-5",
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": [
+          {
+            "memberId": "fifth",
+            "offset": [
+              1,
+              2
+            ],
+            "duration": [
+              2,
+              1
+            ]
+          }
+        ]
+      },
+      "a-prime-9": {
+        "id": "a-prime-9",
+        "name": "Passing second",
+        "patternId": "a-prime-6",
+        "kind": "note",
+        "start": [
+          5,
+          2
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 2,
+          "alteration": 0,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "a-prime-10": {
+        "id": "a-prime-10",
+        "name": "Pulse 1",
+        "patternId": "a-prime-7",
+        "kind": "drum",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "a-prime-11": {
+        "id": "a-prime-11",
+        "name": "Pulse 2",
+        "patternId": "a-prime-7",
+        "kind": "drum",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "a-prime-12": {
+        "id": "a-prime-12",
+        "name": "Pulse 3",
+        "patternId": "a-prime-7",
+        "kind": "drum",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "a-prime-13": {
+        "id": "a-prime-13",
+        "name": "Pulse 4",
+        "patternId": "a-prime-7",
+        "kind": "drum",
+        "start": [
+          3,
+          1
+        ],
+        "duration": [
+          1,
+          4
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": null,
+        "drum": "snare",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      }
+    },
+    "bars": {
+      "a1": {
+        "id": "a1",
+        "name": "Seven",
+        "sectionId": "a",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "a2": {
+        "id": "a2",
+        "name": "Nine",
+        "sectionId": "a",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      },
+      "b1": {
+        "id": "b1",
+        "name": "Five",
+        "sectionId": "b",
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ],
+        "actual": null
+      },
+      "a-prime-1": {
+        "id": "a-prime-1",
+        "name": "Seven",
+        "sectionId": "a-prime",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "a-prime-2": {
+        "id": "a-prime-2",
+        "name": "Nine",
+        "sectionId": "a-prime",
+        "numerator": 9,
+        "denominator": 8,
+        "groups": [
+          3,
+          3,
+          3
+        ],
+        "actual": null
+      }
+    },
+    "sections": {
+      "a": {
+        "id": "a",
+        "name": "A \u00b7 Question",
+        "barIds": [
+          "a1",
+          "a2"
+        ],
+        "sourceId": null
+      },
+      "b": {
+        "id": "b",
+        "name": "B \u00b7 Open room",
+        "barIds": [
+          "b1"
+        ],
+        "sourceId": null
+      },
+      "a-prime": {
+        "id": "a-prime",
+        "name": "A\u2032",
+        "barIds": [
+          "a-prime-1",
+          "a-prime-2"
+        ],
+        "sourceId": "a"
+      }
+    },
+    "arrangement": {
+      "a-once": {
+        "id": "a-once",
+        "name": "A",
+        "sectionId": "a"
+      },
+      "b-once": {
+        "id": "b-once",
+        "name": "B",
+        "sectionId": "b"
+      },
+      "a-return": {
+        "id": "a-return",
+        "name": "A\u2032",
+        "sectionId": "a-prime"
+      }
+    },
+    "occurrences": {
+      "a-guitar": {
+        "id": "a-guitar",
+        "name": "A guitar",
+        "sectionId": "a",
+        "patternId": "seven",
+        "voiceId": "guitar",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          8,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "a-drums": {
+        "id": "a-drums",
+        "name": "A drums",
+        "sectionId": "a",
+        "patternId": "eight",
+        "voiceId": "drums",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          8,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "b-guitar": {
+        "id": "b-guitar",
+        "name": "B guitar",
+        "sectionId": "b",
+        "patternId": "seven",
+        "voiceId": "guitar",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          5,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "b-drums": {
+        "id": "b-drums",
+        "name": "B drums",
+        "sectionId": "b",
+        "patternId": "eight",
+        "voiceId": "drums",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          5,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "global-bass": {
+        "id": "global-bass",
+        "name": "Bass across all rooms",
+        "sectionId": null,
+        "patternId": "pedal",
+        "voiceId": "bass",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          21,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "a-prime-14": {
+        "id": "a-prime-14",
+        "name": "Delayed return guitar",
+        "sectionId": "a-prime",
+        "patternId": "a-prime-6",
+        "voiceId": "guitar",
+        "start": [
+          1,
+          2
+        ],
+        "span": [
+          15,
+          2
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      },
+      "a-prime-15": {
+        "id": "a-prime-15",
+        "name": "A drums",
+        "sectionId": "a-prime",
+        "patternId": "a-prime-7",
+        "voiceId": "drums",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          8,
+          1
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      }
+    },
+    "markers": {},
+    "phrases": {
+      "question": {
+        "id": "question",
+        "name": "Question",
+        "sectionId": "a",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          8,
+          1
+        ]
+      },
+      "a-prime-3": {
+        "id": "a-prime-3",
+        "name": "Question",
+        "sectionId": "a-prime",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          8,
+          1
+        ]
+      }
+    },
+    "lyrics": {
+      "words": {
+        "id": "words",
+        "name": "Opening words",
+        "sectionId": "a",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "text": "Count the spaces\nleave a door open",
+        "phraseId": "question",
+        "partId": "guitar"
+      },
+      "a-prime-4": {
+        "id": "a-prime-4",
+        "name": "Opening words",
+        "sectionId": "a-prime",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          4,
+          1
+        ],
+        "text": "Find the doorway\nin another room",
+        "phraseId": "a-prime-3",
+        "partId": "guitar"
+      }
+    }
+  }
+}

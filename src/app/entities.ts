@@ -1,3 +1,4 @@
+import { sectionLength } from "../song/arrangement.ts";
 import {
   noteEvent,
   type Song,
@@ -40,7 +41,7 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
       item = noteEvent(id, first(t.patterns, "pattern"));
       break;
     case "sections":
-      item = { ...base, barIds: [] };
+      item = { ...base, barIds: [], sourceId: null };
       break;
     case "bars": {
       const sid = first(t.sections, "section");
@@ -70,6 +71,7 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
     case "occurrences":
       item = {
         ...base,
+        sectionId: null,
         patternId: first(t.patterns, "pattern"),
         voiceId: first(t.voices, "voice"),
         start: [0, 1],
@@ -79,6 +81,20 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
         tails: "ring",
       };
       break;
+    case "phrases":
+    case "lyrics": {
+      const sectionId = first(t.sections, "section");
+      item = {
+        ...base,
+        sectionId,
+        start: [0, 1],
+        duration: sectionLength(s, sectionId),
+        ...(table === "lyrics"
+          ? { text: "", phraseId: null, partId: null }
+          : {}),
+      };
+      break;
+    }
     case "markers":
       item = { ...base, at: [0, 1] };
       break;

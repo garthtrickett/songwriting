@@ -1,21 +1,21 @@
+import { sectionLength } from "../song/arrangement.ts";
+import type { Lyric } from "../song/model.ts";
+import type { TemplateResult } from "lit-html";
 import { html, nothing } from "lit-html";
 import type { Controller } from "./controller.ts";
 import type { Table, Entity, Chord, Pitch } from "../song/model.ts";
 import { format, parse, type Time } from "../song/time.ts";
-export function properties(c: Controller) {
+export function properties(
+  c: Controller,
+  lyrics: (l: Lyric) => TemplateResult,
+) {
   const sel = c.selection,
     s = c.song,
     e = c.entity();
   if (!sel || !s || !e || sel.table === "events") return nothing;
   const data = e as unknown as Record<string, unknown>;
   const change = async (patch: Record<string, unknown>) => {
-    const r = await c.edit(
-      {
-        kind: "edit",
-        changes: [{ table: sel.table, id: e.id, value: { ...e, ...patch } }],
-      },
-      `Edit ${e.name}`,
-    );
+    const r = await c.patchEntity(sel.table, e.id, patch, `Edit ${e.name}`);
     if (!r.ok) c.notify();
   };
   const run = (fn: () => unknown) => {
@@ -58,8 +58,8 @@ export function properties(c: Controller) {
     html`<label
       >${label}<select
         aria-label=${label}
-        .value=${String(data[key])}
-        @change=${(ev: Event) => void change({ [key]: (ev.target as HTMLSelectElement).value })}
+        .value=${String(data[key] ?? "")}
+        @change=${(ev: Event) => void change({ [key]: (ev.target as HTMLSelectElement).value || null })}
       >
         ${items.map((i) => html`<option value=${i.id}>${i.name}</option>`)}
       </select></label
@@ -83,13 +83,56 @@ export function properties(c: Controller) {
     case "patterns":
       return html`${input("length", "Cycle length · quarter notes", "time")}
         <p class="muted">
-          Seven eighth notes = 7/2 quarter notes. Notes can ring beyond the
-          cycle.
+          ${Object.values(s.tables.occurrences).filter((o) => o.patternId === e.id).length}
+          placements share this pattern. Seven eighth notes = 7/2 quarter notes.
+          Notes can ring beyond the cycle.
         </p>`;
+    case "phrases":
+    case "lyrics":
+      return html`<div class="field-grid">
+          ${choice("sectionId", "Section", refs("sections"))}${input("start", "Start in section", "time")}${input("duration", "Span duration", "time")}
+          ${sel.table === "lyrics" ? html`${choice("phraseId", "Phrase", [{ id: "", name: "No phrase" }, ...refs("phrases").filter((p) => s.tables.phrases[p.id]!.sectionId === data.sectionId)])}${choice("partId", "Lyric part", [{ id: "", name: "No part" }, ...refs("parts")])}` : nothing}
+        </div>
+        ${sel.table === "lyrics" ? lyrics(e as Lyric) : nothing}`;
     case "occurrences":
       return html`<div class="field-grid">
-        ${choice("patternId", "Pattern", refs("patterns"))}${choice("voiceId", "Voice", refs("voices"))}${input("start", "Start · quarter notes", "time")}${input("span", "Repeat span", "time")}${input("phase", "Starting phase", "time")}${choice("boundary", "At section boundaries", words(["continue", "restart", "stop"]))}${choice("tails", "At the end", words(["ring", "cut"]))}
-      </div>`;
+          ${choice("sectionId", "Placement scope", [{ id: "", name: "Global · song time" }, ...refs("sections")])}${choice("patternId", "Pattern", refs("patterns"))}${choice("voiceId", "Voice", refs("voices"))}${input("start", "Start · quarter notes", "time")}${input("span", "Repeat span", "time")}${input("phase", "Starting phase", "time")}${choice("boundary", "At section boundaries", words(["continue", "restart", "stop"]))}${choice("tails", "At the end", words(["ring", "cut"]))}
+        </div>
+        <p class="muted">
+          ${data.sectionId ? "Times are relative to this section and play on every appearance." : "Global music stays fixed when sections move. Changing scope keeps the numbers; attach below to convert a song position."}
+        </p>
+        ${
+          data.sectionId === null && s.arrangementOrder.length
+            ? html`<form
+                @submit=${(ev: SubmitEvent) => {
+                ev.preventDefault();
+                const appearanceId = new FormData(
+                  ev.currentTarget as HTMLFormElement,
+                ).get("appearanceId") as string;
+                void c.edit(
+                  {
+                    kind: "structure",
+                    action: {
+                      type: "attach",
+                      appearanceId,
+                      occurrenceId: e.id,
+                    },
+                  },
+                  "Attach placement to section",
+                );
+              }}
+              >
+                <label
+                  >Attach at appearance<select
+                    name="appearanceId"
+                    aria-label="Attach at appearance"
+                  >
+                    ${s.arrangementOrder.map((id) => html`<option value=${id}>${s.tables.arrangement[id]!.name}</option>`)}
+                  </select></label
+                ><button>Attach placement</button>
+              </form>`
+            : nothing
+        }`;
     case "markers":
       return input("at", "Position · quarter notes", "time");
     case "arrangement":
@@ -114,7 +157,50 @@ export function properties(c: Controller) {
           Move earlier
         </button>`;
     case "sections":
-      return html`<p class="muted">Bars in order</p>
+      return html`<p class="muted">
+          ${Object.values(s.tables.arrangement).filter((a) => a.sectionId === e.id).length}
+          appearances share this section.
+          ${s.tables.sections[e.id]!.sourceId ? `Variation of ${s.tables.sections[s.tables.sections[e.id]!.sourceId!]!.name}.` : ""}
+        </p>
+        <button
+          @click=${() => {
+            const id = crypto.randomUUID(),
+              last =
+                s.tables.bars[s.tables.sections[e.id]!.barIds.at(-1) ?? ""];
+            void c.edit(
+              {
+                kind: "edit",
+                changes: [
+                  {
+                    table: "bars",
+                    id,
+                    value: {
+                      id,
+                      name: `Bar ${s.tables.sections[e.id]!.barIds.length + 1}`,
+                      sectionId: e.id,
+                      numerator: last?.numerator ?? 4,
+                      denominator: last?.denominator ?? 4,
+                      groups: last?.groups ?? [1, 1, 1, 1],
+                      actual: null,
+                    },
+                  },
+                  {
+                    table: "sections",
+                    id: e.id,
+                    value: {
+                      ...e,
+                      barIds: [...s.tables.sections[e.id]!.barIds, id],
+                    },
+                  },
+                ],
+              },
+              "Add section bar",
+            );
+          }}
+        >
+          + Bar in section
+        </button>
+        <p class="muted">Bars in order</p>
         ${s.tables.sections[e.id]!.barIds.map(
           (id, i) =>
             html`<div class="entity-row">
@@ -147,8 +233,9 @@ export function properties(c: Controller) {
             @change=${(ev: Event) => run(() => change({ actual: (ev.target as HTMLInputElement).value.trim() ? parse((ev.target as HTMLInputElement).value) : null }))}
         /></label>
         <p class="muted">
-          Changing meter preserves note positions. Changing the beat count
-          starts with groups of one; enter your grouping next.
+          Meter changes preserve local offsets and move later sections. Overflow
+          is rejected. Changing the beat count starts with groups of one; enter
+          your grouping next.
         </p>`;
     case "chords": {
       const chord = e as Chord;

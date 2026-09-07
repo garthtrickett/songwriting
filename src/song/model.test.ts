@@ -45,6 +45,7 @@ export function fixture(): Song {
     start: [0, 1],
     span: [32, 1],
     phase: [0, 1],
+    sectionId: null,
     boundary: "continue",
     tails: "ring",
   };
@@ -55,8 +56,8 @@ export function fixture(): Song {
     patternId: "eight",
     voiceId: "dv",
   };
-  t.sections.a = { id: "a", name: "A", barIds: ["b1"] };
-  t.sections.b = { id: "b", name: "B", barIds: ["b2"] };
+  t.sections.a = { sourceId: null, id: "a", name: "A", barIds: ["b1"] };
+  t.sections.b = { sourceId: null, id: "b", name: "B", barIds: ["b2"] };
   t.bars.b1 = {
     id: "b1",
     name: "Bar 1",

@@ -1,5 +1,8 @@
+import { historyStacks } from "../song/history.ts";
+import { sectionSpans } from "../song/arrangement.ts";
+import { value } from "../song/time.ts";
 import { commit, list, read, save } from "../storage/projects.ts";
-import type { Command, Envelope, Mutation } from "../song/commands.ts";
+import type { Change, Command, Envelope, Mutation } from "../song/commands.ts";
 import {
   emptySong,
   type Song,
@@ -19,12 +22,18 @@ export class Controller {
   deletedSongs: Envelope[] = [];
   selection: Selection | null = null;
   error = "";
+  incoming = "";
+  zoom = 32;
+  jumpTo = 0;
+  navigationVersion = 0;
   pending = 0;
   failed: Mutation | null = null;
   audio = new AudioEngine();
   private listeners = new Set<() => void>();
   private channel: BroadcastChannel | null = null;
   private queue: Promise<unknown> = Promise.resolve();
+  private fieldQueue: Promise<unknown> = Promise.resolve();
+  private fieldOperations = new Set<string>();
   constructor(readonly db: IDBDatabase) {
     if (typeof BroadcastChannel !== "undefined") {
       this.channel = new BroadcastChannel("songwriting-edits");
@@ -73,6 +82,8 @@ export class Controller {
       if (fresh && fresh.revision !== this.current.revision) {
         this.audio.stop();
         this.current = fresh;
+        this.incoming = `Incoming revision ${fresh.revision}: ${fresh.history.at(-1)?.label ?? "Song changed"}`;
+        this.pruneSelection();
       }
     }
     this.notify();
@@ -81,8 +92,44 @@ export class Controller {
     this.audio.stop();
     this.current = (await read<Envelope>(this.db, "songs", id)) ?? null;
     this.selection = null;
+    this.incoming = "";
+    this.jumpTo = 0;
+    this.navigationVersion++;
     await save(this.db, "settings", { id: "current", songId: id });
     this.notify();
+  }
+  navigate(zoom: number, appearanceId?: string) {
+    if (!Number.isFinite(zoom) || zoom < 4 || zoom > 128)
+      throw new Error("Zoom must be 4–128 pixels per quarter note");
+    if (appearanceId) {
+      const a =
+        this.song && sectionSpans(this.song).find((a) => a.id === appearanceId);
+      if (!a) throw new Error("Unknown section appearance");
+      this.jumpTo = value(a.start);
+      this.select({ table: "arrangement", id: a.id });
+    }
+    this.zoom = zoom;
+    this.navigationVersion++;
+    this.notify();
+  }
+  historyAction(action: "undo" | "redo") {
+    const targetId = historyStacks(this.current?.history ?? [])[action].at(-1);
+    if (!targetId)
+      return Promise.resolve({
+        ok: false as const,
+        error: `Nothing to ${action}`,
+      });
+    return this.edit(
+      { kind: "undo", targetId },
+      action === "undo" ? "Undo latest edit" : "Redo latest edit",
+    );
+  }
+  private pruneSelection() {
+    if (
+      this.selection &&
+      !this.song?.tables[this.selection.table][this.selection.id]
+    )
+      this.selection = null;
   }
   select(s: Selection | null) {
     this.selection = s;
@@ -103,6 +150,70 @@ export class Controller {
     });
     if (result.ok) await this.open(song.id);
     return result;
+  }
+  // Queue user field intentions, not stale whole-entity snapshots. Only this
+  // queue's accepted operations may advance the captured revision automatically.
+  // A foreign edit still reaches commit with the old revision and is rejected.
+  patchEntity(
+    table: Table,
+    id: string,
+    fields: Record<string, unknown>,
+    label: string,
+  ) {
+    return this.queueFields((s) => {
+      const entity = s.tables[table][id];
+      if (!entity) throw new Error("The edited object no longer exists");
+      return [{ table, id, value: { ...entity, ...fields } }];
+    }, label);
+  }
+  patchTitle(title: string) {
+    return this.queueFields(
+      () => [{ table: "meta", id: "title", value: title }],
+      "Rename song",
+    );
+  }
+  private queueFields(build: (song: Song) => Change[], label: string) {
+    const captured = this.current;
+    if (!captured?.song)
+      return Promise.resolve({
+        ok: false as const,
+        error: "Open a song first",
+      });
+    const operationId = crypto.randomUUID();
+    this.pending++;
+    this.notify();
+    const task = this.fieldQueue.then(async () => {
+      const live = this.current;
+      const followsOwnEdits =
+        live?.id === captured.id &&
+        live.song &&
+        live.revision >= captured.revision &&
+        live.history
+          .filter((h) => h.revision > captured.revision)
+          .every((h) => this.fieldOperations.has(h.operationId));
+      const base = followsOwnEdits ? live! : captured;
+      let changes: Change[];
+      try {
+        changes = build(base.song!);
+      } catch (error) {
+        this.pending--;
+        this.error = String(error);
+        this.notify();
+        return { ok: false as const, error: this.error };
+      }
+      this.pending--;
+      const result = await this.mutate({
+        songId: base.id,
+        expectedRevision: base.revision,
+        operationId,
+        label,
+        command: { kind: "edit", changes },
+      });
+      if (result.ok) this.fieldOperations.add(operationId);
+      return result;
+    });
+    this.fieldQueue = task.catch(() => {});
+    return task;
   }
   edit(command: Command, label: string) {
     if (!this.current)
@@ -145,7 +256,10 @@ export class Controller {
         this.error = "";
         this.failed = null;
         this.audio.stop();
-        if (this.current?.id === m.songId) this.current = result.value;
+        if (this.current?.id === m.songId) {
+          this.current = result.value;
+          this.pruneSelection();
+        }
         this.channel?.postMessage({ id: m.songId });
         await this.refresh();
       } else {

@@ -1,3 +1,6 @@
+import { previewCommand } from "../song/commands.ts";
+import { sectionSpans, placements, annotations } from "../song/arrangement.ts";
+import { historyStacks } from "../song/history.ts";
 import type { Controller, Selection } from "../app/controller.ts";
 import type { Mutation, Command } from "../song/commands.ts";
 import { save } from "../storage/projects.ts";
@@ -6,6 +9,16 @@ import { alignment, bars, sounds } from "../song/timeline.ts";
 import { TABLES, type Table } from "../song/model.ts";
 import { cmp, type Time } from "../song/time.ts";
 export const capabilities = [
+  {
+    name: "preview",
+    description:
+      "Preview any command without saving. Args: command. Returns revision, changed entities, section positions and fixed global placements.",
+  },
+  {
+    name: "navigate",
+    description:
+      "Set transient timeline zoom (4–128 px/quarter) and/or jump to appearanceId. Args: zoom?, appearanceId?.",
+  },
   {
     name: "schema",
     description:
@@ -33,7 +46,7 @@ export const capabilities = [
   {
     name: "mutate",
     description:
-      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
+      'Atomically edit the song. Args: songId, expectedRevision, operationId, label, command. command={kind:"edit",changes:[{table,id,value}]} (null deletes); table="meta" edits title/mode/tempo/arrangementOrder. Or kind:"structure",action (see schema.structuralActions); kind:"replace",song; kind:"delete"; kind:"undo",targetId. Read/export a song to discover entity shapes.',
   },
   {
     name: "alignment",
@@ -58,6 +71,15 @@ export async function executeTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "preview":
+      if (!c.current) throw new Error("Open a song");
+      return previewCommand(c.current, args.command as Command);
+    case "navigate":
+      c.navigate(
+        Number(args.zoom ?? c.zoom),
+        args.appearanceId === undefined ? undefined : String(args.appearanceId),
+      );
+      return { zoom: c.zoom, jumpTo: c.jumpTo, selection: c.selection };
     case "schema":
       return schema();
     case "context":
@@ -76,8 +98,17 @@ export async function executeTool(
         songId: c.current?.id,
         revision: c.current?.revision,
         selection: c.selection,
+        viewport: { zoom: c.zoom, jumpTo: c.jumpTo },
+        sections: c.song ? sectionSpans(c.song) : [],
+        undoRedo: historyStacks(c.current?.history ?? []),
         tables: TABLES,
         examples: [
+          {
+            name: "Turning rooms",
+            url: "/turning-rooms.song.json",
+            description:
+              "A–B–A′ with local patterns, phrases, lyrics and a global bass. Authored by a live agent.",
+          },
           {
             name: "Countercurrent",
             url: "/countercurrent.song.json",
@@ -90,6 +121,7 @@ export async function executeTool(
           operationId: h.operationId,
           label: h.label,
           revision: h.revision,
+          affected: h.deltas.map((d) => ({ table: d.table, id: d.id })),
         })),
         transport: {
           playing: c.audio.playing,
@@ -103,6 +135,13 @@ export async function executeTool(
       if (args.from && args.until)
         return {
           bars: bars(c.song),
+          sections: sectionSpans(c.song),
+          placements: placements(c.song),
+          annotations: annotations(c.song).filter(
+            (e) =>
+              cmp(e.start, args.from as Time) >= 0 &&
+              cmp(e.start, args.until as Time) < 0,
+          ),
           events: sounds(c.song).filter(
             (e) =>
               cmp(e.start, args.from as Time) >= 0 &&
