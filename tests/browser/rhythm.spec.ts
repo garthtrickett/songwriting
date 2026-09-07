@@ -12,6 +12,15 @@ async function boot(page: Page) {
     text: JSON.stringify(acceptance()),
     asCopy: false,
   });
+  // Reproduce fast-runner reads racing an asynchronous UI save.
+  await page.evaluate(() => {
+    const c = (window as any).songwriting.controller;
+    const mutate = c.mutate.bind(c);
+    c.mutate = async (...args: unknown[]) => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      return mutate(...args);
+    };
+  });
 }
 async function transform(page: Page, action: string) {
   await page.getByLabel("Transformation", { exact: true }).selectOption(action);
@@ -23,6 +32,7 @@ async function apply(page: Page) {
   await page
     .getByRole("button", { name: "Apply rhythm edit", exact: true })
     .click();
+  await expect(page.getByLabel("Rhythm edit preview")).toHaveCount(0);
 }
 test("ordinary rhythm controls create an isolated A′, transform and compare it, then undo and reload", async ({
   page,
@@ -62,6 +72,9 @@ test("ordinary rhythm controls create an isolated A′, transform and compare it
     .poll(async () => (await tool(page, "read")).tables.patterns[p.id].length)
     .toEqual([7, 2]);
   await page.getByRole("button", { name: "Redo", exact: true }).click();
+  await expect
+    .poll(async () => (await tool(page, "read")).tables.patterns[p.id].length)
+    .toEqual([7, 3]);
   await transform(page, "rotate");
   await page.getByLabel("Rhythm pattern").selectOption(p.id);
   await page.getByLabel("Amount · quarter notes", { exact: true }).fill("-1/3");
@@ -104,6 +117,7 @@ test("polyrhythm forms generate audible independent lanes and inspectors expose 
   await page
     .getByRole("button", { name: "Apply rhythm edit", exact: true })
     .click();
+  await expect(page.getByLabel("Rhythm edit preview")).toHaveCount(0);
   let s = await tool(page, "read");
   const p: any = Object.values(s.tables.polyrhythms)[0];
   await page.getByText("Inspect polyrhythm grids", { exact: true }).click();

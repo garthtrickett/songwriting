@@ -57,7 +57,11 @@ preview during an edit from another tab. Existing eleven workflows remain.
 The first full run passed twelve workflows; two new tests queried the app before
 reload initialization finished. Explicit app-readiness waits corrected the tests;
 the focused run then passed all three. The final full run passed all fourteen.
-No application check was skipped.
+GitHub then exposed reads racing asynchronous saves in the same two workflows.
+A 150 ms mutation delay reproduced the missing-created-pattern failure locally.
+The tests now wait for the successful preview dismissal (and persisted redo
+result), keeping the delay as a deterministic regression. No application check
+was skipped or weakened.
 
 ## Live agent evidence
 
