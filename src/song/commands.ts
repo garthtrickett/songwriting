@@ -1,3 +1,5 @@
+import { structureChanges, type StructureAction } from "./structure.ts";
+import { sectionSpans, annotations } from "./arrangement.ts";
 import { TABLES, type Song, type Table } from "./model.ts";
 import { sounds } from "./timeline.ts";
 import { validateSong } from "./validate.ts";
@@ -6,6 +8,7 @@ export type Command =
   | { kind: "edit"; changes: Change[] }
   | { kind: "replace"; song: unknown }
   | { kind: "delete" }
+  | { kind: "structure"; action: StructureAction }
   | { kind: "undo"; targetId: string };
 export interface Mutation {
   songId: string;
@@ -21,6 +24,7 @@ export interface Delta {
   after: unknown;
 }
 export interface Receipt {
+  undoOf?: string;
   operationId: string;
   fingerprint: string;
   label: string;
@@ -100,7 +104,7 @@ export function applyCommand(
     m.expectedRevision < 0 ||
     typeof m.songId !== "string" ||
     !m.command ||
-    !["edit", "replace", "delete", "undo"].includes(m.command.kind)
+    !["edit", "replace", "delete", "undo", "structure"].includes(m.command.kind)
   )
     throw new Error(
       "Invalid mutation: identity, revision, label and command are required",
@@ -123,6 +127,11 @@ export function applyCommand(
     case "edit":
       if (!next) throw new Error("Song does not exist");
       for (const c of m.command.changes) write(next, c);
+      break;
+    case "structure":
+      if (!next) throw new Error("Song does not exist");
+      for (const change of structureChanges(next, m.command.action))
+        write(next, change);
       break;
     case "delete":
       if (!next) throw new Error("Song does not exist");
@@ -172,9 +181,11 @@ export function applyCommand(
     if (!valid.ok) throw new Error(valid.error);
     next = valid.value;
     sounds(next);
+    annotations(next);
   }
   const revision = (current?.revision ?? 0) + 1;
   const receipt: Receipt = {
+    ...(m.command.kind === "undo" ? { undoOf: m.command.targetId } : {}),
     operationId: m.operationId,
     fingerprint: JSON.stringify(m),
     label: m.label,
@@ -191,5 +202,27 @@ export function applyCommand(
     song: next,
     updatedAt: now,
     history: [...(current?.history ?? []), receipt],
+  };
+}
+
+export function previewCommand(current: Envelope, command: Command) {
+  const next = applyCommand(
+    current,
+    {
+      songId: current.id,
+      expectedRevision: current.revision,
+      operationId: "preview",
+      label: "Preview",
+      command,
+    },
+    0,
+  );
+  return {
+    revision: current.revision,
+    changes: next.history.at(-1)!.deltas,
+    sections: next.song ? sectionSpans(next.song) : [],
+    fixedGlobalPlacements: Object.values(next.song?.tables.occurrences ?? {})
+      .filter((o) => o.sectionId === null)
+      .map((o) => ({ id: o.id, name: o.name, start: o.start, span: o.span })),
   };
 }

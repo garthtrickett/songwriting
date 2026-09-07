@@ -10,16 +10,22 @@ A composition comprising musical sections and their arrangement, with parts,
 rhythm, and harmony.
 
 **Section**:
-A passage such as a verse, chorus, or bridge that may recur in a song.
+A reusable passage such as a verse, chorus, or bridge, comprising bars,
+musical placements, phrases, and lyrics.
 
 **Section occurrence**:
-A particular appearance of a section in the arrangement.
+A particular appearance of a section in the arrangement, carrying that
+section’s music and annotations.
 
 **Arrangement**:
 The ordered sequence of section occurrences in a song.
 
 **Phrase**:
-A musical grouping within a section, expressing a connected idea.
+A named musical span within a section, expressing a connected idea.
+
+**Lyric span**:
+Words attached to a span of music within a section, optionally associated
+with a phrase and a part.
 
 **Part**:
 A musical contribution such as a vocal melody, bass line, guitar accompaniment,
@@ -35,7 +41,7 @@ riffs and motifs without requiring a whole number of bars.
 
 **Pattern occurrence**:
 A placement of a pattern in a part, with a start, repeat span, and starting
-position within its cycle.
+position within its cycle. It may belong to a section or span the song independently.
 
 **Variation**:
 An explicitly differentiated version of a musical idea, such as a riff with a

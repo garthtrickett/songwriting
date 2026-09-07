@@ -68,6 +68,38 @@ expected revision on an old whole-song document. Reuse an operation ID only
 when retrying the exact same mutation. A lost response may still mean the edit
 committed: inspect the step/result and operation history before retrying.
 
+## Section structure in schema 2
+
+`schema` exposes `toolVersion: "phase2-structure-v1"`, new phrase/lyric templates,
+and `structuralActions`. Use a `structure` command for one mechanical action:
+
+```json
+{
+  "kind": "structure",
+  "action": {"type": "variation", "appearanceId": "return", "newId": "a-prime", "name": "A′"}
+}
+```
+
+Call `preview` with `{ "command": ... }` to inspect its expected revision,
+changed objects, resulting section positions, and global placements kept fixed.
+Submit the same command through `mutate` with that revision. `repeat`, `move`,
+`remove`, and `attach` are also available; their exact argument templates are in
+schema discovery. Underlying entity changes still support atomic combinations.
+
+A placement with `sectionId: null` is global. With a section ID, start/span are
+local quarter-note times and repeat on every arranged appearance. Local spans
+must fit the section, while ring/cut controls note releases. Phrases and lyrics
+use section-local start/duration. A linked phrase must contain its lyric span.
+Changing meters moves following sections while preserving local offsets; it
+rejects overflow. Global start/span values stay fixed; existing continue/restart/
+stop choices still determine their behaviour at section boundaries.
+
+`context` lists arranged section positions, viewport and undo/redo receipt IDs.
+`navigate` changes zoom and/or jumps to an `appearanceId` without a musical edit.
+`read` with a range returns arranged placements and annotations alongside sounds.
+To redo, invert the receipt identified by `context.undoRedo.redo` with the usual
+revision-checked `undo` command. Compare source entities before/after a variation.
+
 ## Completion and recovery
 
 ```sh

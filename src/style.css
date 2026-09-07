@@ -792,3 +792,119 @@ footer span:last-child {
   font-size: 15px;
   color: #718568;
 }
+
+/* Arrangement and annotations share the musical timeline scale. */
+.arrangement-panel {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid #d8dfd7;
+  border-radius: 12px;
+  background: #f6f8f3;
+}
+.arrangement-actions,
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.arrangement-actions {
+  margin: 10px 0;
+}
+.arrangement-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 0 12px;
+}
+.section-card {
+  display: grid;
+  gap: 5px;
+  text-align: left;
+  min-width: 160px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #d8dfd7;
+  border-radius: 8px;
+}
+.section-card.selected {
+  background: #e1ecdf;
+  border-color: #497454;
+}
+.section-card strong {
+  font-size: 16px;
+}
+.section-card small {
+  color: #667468;
+}
+.structure-preview {
+  padding: 14px;
+  margin-top: 12px;
+  background: #fff;
+  border: 1px solid #95ac93;
+  border-radius: 8px;
+}
+.structure-preview p {
+  line-height: 1.5;
+}
+.structure-preview details {
+  max-height: 160px;
+  overflow: auto;
+  margin-bottom: 12px;
+  overflow-wrap: anywhere;
+}
+.structure-preview button {
+  margin-right: 8px;
+}
+.timeline-controls {
+  margin: 12px 0;
+}
+.timeline-controls label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.timeline-controls input[aria-label="Nudge step"] {
+  width: 60px;
+}
+.timeline-controls small,
+.incoming {
+  color: #496b51;
+}
+.annotation-lane {
+  height: 42px;
+  display: flex;
+  border-bottom: 1px solid #d8dfd7;
+}
+.annotation {
+  position: absolute;
+  height: 34px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+  text-align: left;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 0;
+}
+.annotation.phrases {
+  background: #edf1e8;
+  border-top: 2px solid #94a98a;
+}
+.annotation.lyrics {
+  background: #faf5e9;
+  color: #6a5939;
+}
+.occurrence.chosen {
+  outline: 2px solid #325d41;
+  outline-offset: -2px;
+}
+textarea[aria-label="Lyric text"] {
+  min-height: 130px;
+  white-space: pre-wrap;
+}
+button:focus-visible,
+.score-scroll:focus-visible {
+  outline: 2px solid #497454;
+  outline-offset: 3px;
+}

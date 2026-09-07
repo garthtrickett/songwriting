@@ -1,14 +1,13 @@
 # Songwriting app — implementation phases
 
-Status: Phase 1 is complete. Later phases remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
+Status: Phase 1 is complete. Phase 2 is implemented; publication checks are pending. Phases 3–9 remain planned. Validation evidence is in [docs/PHASE1_VALIDATION.md](docs/PHASE1_VALIDATION.md).
 
 [PLAN.md](PLAN.md) defines the product and technical requirements.
 [CONTEXT.md](CONTEXT.md) defines the musical vocabulary. This document sequences
 delivery; it does not replace either reference.
 
-Only Phase 1 is expanded into implementation detail. Later phases describe
-outcomes and scope at a high level and should be expanded when they become the
-next work. The detailed Phase 1 below is its sole phase entry.
+Phases 1 and 2 are expanded into implementation detail. Phases 3–9 remain
+high-level until selected. Each detailed phase replaces its high-level entry.
 
 ## Delivery rules
 
@@ -251,10 +250,102 @@ undo, or the milestone's simple playback.
 
 ## Phase 2 — Fluent song structure and arrangement editing
 
-**Outcome:** Develop sketches into complete songs with phrases, reusable sections,
-section variations, lyrics, and clear instrument entrances/dropouts. Improve
-timeline navigation, selection, keyboard editing, and shared-edit visibility.
-Extend tool parity and export coverage for every added editing outcome.
+**Status:** IMPLEMENTED — publication checks pending
+
+### Outcome
+
+Arrange a complete A–B–A′ song through ordinary controls or shared agent tools.
+Repeating or moving a section carries its music, phrases, and lyrics. A variation
+can change an entrance or lyric without altering its source. The writer can see
+shared edit impact, navigate the song map, and undo or redo structural changes.
+
+### 2.1 Define section ownership and migrate existing songs
+
+- Introduce schema 2 with phrases, lyric spans, section variation lineage, and
+  an explicit section reference on pattern occurrences.
+- A section-relative occurrence uses start/span in quarter notes from the section
+  beginning and plays on each arranged appearance. Global occurrences use song
+  time and can continue across sections; show that distinction in the editor.
+- Preserve every Phase 1 occurrence as global on migration. Do not infer ownership
+  or split notes at boundaries. Upgrade imports and stored songs, including undo
+  history values, without changing revisions or durable retry identities.
+- A local placement's attacks/repetition span must fit its section. Independent
+  note releases may ring beyond it according to the existing ring/cut choice.
+  Repeated appearances start at the stored phase; ongoing cycles across section
+  boundaries remain explicit global placements.
+- Meter changes preserve local offsets and note durations, and move following
+  section appearances with their content. Reject shortened sections containing
+  out-of-range placements/phrases/lyrics until the writer adjusts them atomically.
+  Never silently crop or stretch notes. Global music and markers remain fixed.
+
+### 2.2 Deliver shared structural edits
+
+- Add deterministic commands to repeat, move earlier/later, and remove an arranged
+  appearance. Removing an appearance preserves its reusable definition.
+- Add an independent section variation command: copy bars, phrases, lyrics,
+  local placements, referenced patterns/events/chords, and relink only the chosen
+  appearance. Preserve sharing inside the copy, chord member timing, voices,
+  and source lineage; leave global music and source definitions unchanged.
+- Let writers explicitly attach a fitting global placement to a chosen section
+  appearance, converting its start to local time. Reject crossing placements
+  rather than splitting them implicitly.
+- Use the ordinary revision-checked command transaction for every operation,
+  including undo, redo, durable retries, and conflict rejection.
+- Supply a preview query reporting changed entities, resulting section positions,
+  and global placements kept fixed. UI previews capture a revision and cannot
+  apply over intervening edits. Underlying entity edits stay available.
+
+### 2.3 Add phrases, lyrics, and entrances
+
+- A phrase is a named local start/duration inside a section; support overlapping
+  phrase groupings without requiring full-bar lengths.
+- A lyric span has plain multiline text, local start/duration, and optional phrase
+  and part references. Linked phrases must contain their lyric spans. Lyrics are
+  inert text, never executable markup or agent instructions.
+- Provide normal create/edit/delete controls for both entities. Render phrase
+  brackets and lyrics on every arranged appearance. Export/import preserves them.
+- Show placement spans as instrument entrances/dropouts in the song map. Edit
+  voice, local start, span, phase, and ring/cut without a whole-document JSON edit.
+
+### 2.4 Make arrangement editing fluent
+
+- Add an arrangement strip with selectable named appearances, repeat, reorder,
+  remove, and variation controls; show shared-use counts and lineage.
+- Add timeline zoom, fit, and jump-to-section controls. Keep selection and zoom
+  transient; navigation must not create saves or stop playback unnecessarily.
+- Add keyboard play/stop, undo/redo, escape selection, and exact left/right nudge
+  of selected placements/events using an editable step. Ignore composition
+  shortcuts inside inputs, textareas, selects, and editable content.
+- Show affected entity names in history, incoming revision changes, and shared
+  pattern/section usage in inspectors. Preserve unsaved lyric drafts on incoming
+  changes and reject their stale revision rather than overwriting user work.
+- Put new interaction in focused modules instead of growing the existing view
+  into a second document model. Keep keyboard feedback immediate.
+
+### 2.5 Extend agent parity and validation
+
+- Extend schema discovery, context, range reads, CRUD, selection, structural
+  preview/mutation, navigation, and history tools for the new outcomes.
+- Test A–B–A reuse and A′ isolation, exact positions after reorder/meter changes,
+  global preservation, releases/rests, lyric containment, rejected deletions,
+  schema 1 migration with history and retries, and undo/redo conflicts.
+- Browser-test ordinary arrangement and lyric controls, keyboard input focus,
+  local saving/export/reload, and stale preview/draft rejection after agent edits.
+- Run a live agent composition using the shared tools to repeat a section, make
+  a variation, edit a lyric/entrance, and verify source preservation. Record its
+  objective, tool/host version, results, and limitations independently of CI.
+- Run frozen install, `bun run verify`, `bun run test:browser`, and
+  `git diff --check`; publish a PR and wait for exact-commit GitHub checks.
+
+### Exit gate and exclusions
+
+A writer can build and revise A–B–A′, including phrases, lyrics and part entrances,
+without writing JSON for those operations. An agent can achieve the same outcomes
+with composable commands. Migration preserves old music; structural changes,
+exports, undo/redo and concurrent edits pass the checks above.
+
+Do not implement Phase 3 rhythmic transformations, Phase 4 harmonic inference,
+recording, tablature, remote sync, or a hosted model service in this phase.
 
 ## Phase 3 — Advanced rhythm and motif development
 

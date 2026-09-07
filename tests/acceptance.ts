@@ -92,11 +92,12 @@ export function acceptance(id = "acceptance"): Song {
       start: [0, 1],
       span: [32, 1],
       phase: [0, 1],
+      sectionId: null,
       boundary: "continue",
       tails: "ring",
     };
-  t.sections.verse = { id: "verse", name: "Verse", barIds: [] };
-  t.sections.turn = { id: "turn", name: "Turn", barIds: [] };
+  t.sections.verse = { sourceId: null, id: "verse", name: "Verse", barIds: [] };
+  t.sections.turn = { sourceId: null, id: "turn", name: "Turn", barIds: [] };
   for (let i = 0; i < 8; i++) {
     const id = `bar-${i}`,
       sec = i < 4 ? "verse" : "turn";

@@ -53,12 +53,14 @@ export interface Bar extends Entity {
   actual: Time | null;
 }
 export interface Section extends Entity {
+  sourceId: string | null;
   barIds: string[];
 }
 export interface SectionOccurrence extends Entity {
   sectionId: string;
 }
 export interface Occurrence extends Entity {
+  sectionId: string | null;
   patternId: string;
   voiceId: string;
   start: Time;
@@ -69,6 +71,16 @@ export interface Occurrence extends Entity {
 }
 export interface Marker extends Entity {
   at: Time;
+}
+export interface Phrase extends Entity {
+  sectionId: string;
+  start: Time;
+  duration: Time;
+}
+export interface Lyric extends Phrase {
+  text: string;
+  phraseId: string | null;
+  partId: string | null;
 }
 export interface Tables {
   parts: Record<string, Part>;
@@ -81,6 +93,8 @@ export interface Tables {
   arrangement: Record<string, SectionOccurrence>;
   occurrences: Record<string, Occurrence>;
   markers: Record<string, Marker>;
+  phrases: Record<string, Phrase>;
+  lyrics: Record<string, Lyric>;
 }
 export const TABLES = [
   "parts",
@@ -93,10 +107,12 @@ export const TABLES = [
   "arrangement",
   "occurrences",
   "markers",
+  "phrases",
+  "lyrics",
 ] as const;
 export type Table = (typeof TABLES)[number];
 export interface Song {
-  schemaVersion: 1;
+  schemaVersion: 2;
   id: string;
   title: string;
   mode: string;
@@ -106,7 +122,7 @@ export interface Song {
   tables: Tables;
 }
 export const emptySong = (id: string, title = "Untitled idea"): Song => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
   id,
   title,
   mode: "major",
@@ -124,6 +140,8 @@ export const emptySong = (id: string, title = "Untitled idea"): Song => ({
     arrangement: {},
     occurrences: {},
     markers: {},
+    phrases: {},
+    lyrics: {},
   },
 });
 export const noteEvent = (id: string, patternId: string): MusicalEvent => ({

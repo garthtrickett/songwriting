@@ -1,0 +1,118 @@
+{
+  "id": "94f0dbd2-42fe-4a15-bf3e-40a2ac9bcc98",
+  "prompt": "Build a new A\u2013B\u2013A\u2032 math-rock arrangement with mixed meters, section-relative guitar and drum patterns, and a global sustained bass. Add a named phrase and multiline lyric to A. Repeat A after B, make that repeat an independent section variation, and delay its guitar entrance by one eighth note while shortening its span to fit. Change only the variation lyric. Verify the source phrase, lyric, notes and bass remain unchanged, and export the result.",
+  "provider": "Codex",
+  "model": "current-session-model-not-exposed",
+  "status": "completed",
+  "summary": "Built Turning rooms as A\u2013B\u2013A\u2032 with mixed meters, named phrases and multiline lyrics. The independent return delays guitar by one eighth note and changes only its lyric. Live range reads verify section starts at 0, 8 and 13 quarter notes, guitar return at 27/2, and bass release at 21. Export comparisons prove every original entity is unchanged.",
+  "createdAt": 1788771063500,
+  "schemaVersion": 2,
+  "toolVersion": "phase2-structure-v1",
+  "host": "Primary Codex session using scripts/agent.ts and the loopback browser bridge",
+  "verification": {
+    "originalEntitiesUnchanged": true,
+    "sectionStarts": [
+      [
+        0,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        13,
+        1
+      ]
+    ],
+    "variationGuitarStart": [
+      27,
+      2
+    ],
+    "bassRelease": [
+      21,
+      1
+    ],
+    "export": "examples/turning-rooms.song.json"
+  },
+  "steps": [
+    {
+      "id": "c60ce8f5-14d3-40d1-8872-37c3c6bb1a50",
+      "tool": "schema",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "fb0668c3-f505-4907-ab09-4bb5c1dc3bb8",
+      "tool": "context",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "d5d3f5c3-d50b-490a-8783-45a9a52734e7",
+      "tool": "create_song",
+      "status": "done",
+      "operationId": "phase2-create"
+    },
+    {
+      "id": "3c0fb3ff-0433-4d04-9906-d193508f3982",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "phase2-compose"
+    },
+    {
+      "id": "887e6e69-1bab-4aad-8164-4c6d17723e13",
+      "tool": "preview",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "41ba8c84-d0e2-4b33-8896-a48415e06933",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "phase2-repeat"
+    },
+    {
+      "id": "08f50823-7f82-4e18-9192-d21ab8199845",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "phase2-move"
+    },
+    {
+      "id": "cc31be08-8610-49ba-b31d-fe803c135d0c",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "phase2-variation"
+    },
+    {
+      "id": "65984d26-febf-4a19-bdc7-d928a1d9e7b0",
+      "tool": "read",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "68cb19a4-904e-4c3d-bd8a-d2440ff0d5fb",
+      "tool": "mutate",
+      "status": "done",
+      "operationId": "phase2-refine"
+    },
+    {
+      "id": "7002bbde-e59d-4db7-b4dd-a407b9d4e7a6",
+      "tool": "export",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "298ee69b-f490-4458-87d1-a3a6ac61e285",
+      "tool": "read",
+      "status": "done",
+      "operationId": null
+    },
+    {
+      "id": "ba20ca05-66ac-40af-82a0-d75878760b84",
+      "tool": "navigate",
+      "status": "done",
+      "operationId": null
+    }
+  ]
+}

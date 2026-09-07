@@ -4,13 +4,13 @@ import { Controller } from "../app/controller.ts";
 import { openDb } from "../storage/projects.ts";
 import { executeTool } from "./tools.ts";
 import { emptySong, TABLES, type Song } from "../song/model.ts";
-import { acceptance } from "../../tests/acceptance.ts";
+import { arrangementSong } from "../../tests/arrangement.ts";
 import type { Envelope } from "../song/commands.ts";
 it("exposes complete entity CRUD through the same command model, including chords and markers", async () => {
   const c = new Controller(await openDb(crypto.randomUUID()));
   try {
     await c.init();
-    const s = acceptance("parity");
+    const s = arrangementSong("parity");
     s.tables.markers.m = { id: "m", name: "Marker", at: [1, 1] };
     const created = (await executeTool(c, "mutate", {
       songId: s.id,
@@ -76,6 +76,70 @@ it("exposes complete entity CRUD through the same command model, including chord
       templates: Record<string, unknown>;
     };
     expect(Object.keys(schema.templates).sort()).toEqual([...TABLES].sort());
+  } finally {
+    c.dispose();
+  }
+});
+
+it("shares structural previews, mutations, navigation and redo with agents, and rejects stale previews", async () => {
+  const c = new Controller(await openDb(crypto.randomUUID()));
+  try {
+    await c.import(JSON.stringify(arrangementSong("structure-parity")), false);
+    const command = {
+      kind: "structure",
+      action: { type: "repeat", appearanceId: "verse", newId: "repeat" },
+    };
+    const preview = (await executeTool(c, "preview", { command })) as {
+      revision: number;
+      sections: unknown[];
+    };
+    expect(preview.sections).toHaveLength(3);
+    expect(c.song!.arrangementOrder).toHaveLength(2);
+    await c.edit(
+      {
+        kind: "edit",
+        changes: [{ table: "meta", id: "title", value: "Writer edit" }],
+      },
+      "Writer edit",
+    );
+    const stale = (await executeTool(c, "mutate", {
+      songId: c.song!.id,
+      expectedRevision: preview.revision,
+      operationId: "stale-preview",
+      label: "Repeat",
+      command,
+    })) as { ok: boolean };
+    expect(stale.ok).toBe(false);
+    const mutation = {
+      songId: c.song!.id,
+      expectedRevision: c.current!.revision,
+      operationId: "repeat-once",
+      label: "Repeat",
+      command,
+    };
+    expect(
+      ((await executeTool(c, "mutate", mutation)) as { ok: boolean }).ok,
+    ).toBe(true);
+    expect(
+      ((await executeTool(c, "mutate", mutation)) as { ok: boolean }).ok,
+    ).toBe(true);
+    expect(c.song!.arrangementOrder).toHaveLength(3);
+    const revision = c.current!.revision;
+    await executeTool(c, "navigate", { appearanceId: "turn", zoom: 64 });
+    expect(c.jumpTo).toBe(32);
+    expect(c.current!.revision).toBe(revision);
+    await c.historyAction("undo");
+    expect(c.song!.arrangementOrder).toHaveLength(2);
+    await c.historyAction("redo");
+    expect(c.song!.arrangementOrder).toHaveLength(3);
+    const range = (await executeTool(c, "read", {
+      from: [16, 1],
+      until: [32, 1],
+    })) as { annotations: unknown[] };
+    expect(range.annotations).toHaveLength(2);
+    expect(JSON.parse(c.export()).tables.lyrics.words.text).toContain(
+      "between us",
+    );
   } finally {
     c.dispose();
   }

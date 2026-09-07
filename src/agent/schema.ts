@@ -2,7 +2,8 @@ import { emptySong, noteEvent } from "../song/model.ts";
 export function schema() {
   const entity = (id: string, name: string) => ({ id, name });
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
+    toolVersion: "phase2-structure-v1",
     time: {
       type: "array",
       items: { type: "integer" },
@@ -18,7 +19,7 @@ export function schema() {
       edits:
         "Put the full entity value at table/id; null removes it. Multiple changes are atomic. Read current revision before writing. Invalid references return a rejection. Chord pitch changes clear an unchanged old label.",
       meter:
-        "Changing bars changes the meter map, preserving absolute event positions. Pattern starts are independent of bars.",
+        "Section-relative placements (sectionId set), phrases and lyrics move with every section appearance. Global placements (sectionId null) stay at absolute times. Meter edits preserve local offsets and reject overflow; they move following appearances. Releases may ring beyond a section.",
       references:
         "IDs in voice.partId, event.patternId/chordId, occurrence.patternId/voiceId, section.barIds, bar.sectionId, arrangement.sectionId and pattern.sourceId must exist.",
     },
@@ -45,7 +46,11 @@ export function schema() {
         ],
       },
       events: noteEvent("event", "pattern"),
-      sections: { ...entity("section", "Verse"), barIds: ["bar"] },
+      sections: {
+        ...entity("section", "Verse"),
+        barIds: ["bar"],
+        sourceId: null,
+      },
       bars: {
         ...entity("bar", "Bar 1"),
         sectionId: "section",
@@ -57,6 +62,7 @@ export function schema() {
       arrangement: { ...entity("section-once", "Verse"), sectionId: "section" },
       occurrences: {
         ...entity("occurrence", "Riff in guitar"),
+        sectionId: null,
         patternId: "pattern",
         voiceId: "voice",
         start: [0, 1],
@@ -65,9 +71,56 @@ export function schema() {
         boundary: "continue",
         tails: "ring",
       },
+      phrases: {
+        ...entity("phrase", "Question"),
+        sectionId: "section",
+        start: [0, 1],
+        duration: [7, 2],
+      },
+      lyrics: {
+        ...entity("lyric", "Opening words"),
+        sectionId: "section",
+        start: [0, 1],
+        duration: [1, 1],
+        text: "",
+        phraseId: null,
+        partId: null,
+      },
       markers: { ...entity("marker", "Together"), at: [28, 1] },
     },
+    structuralActions: {
+      repeat: {
+        type: "repeat",
+        appearanceId: "section-once",
+        newId: "repeat-id",
+      },
+      move: { type: "move", appearanceId: "section-once", direction: 1 },
+      remove: { type: "remove", appearanceId: "section-once" },
+      variation: {
+        type: "variation",
+        appearanceId: "section-once",
+        newId: "variation-id",
+        name: "Verse variation",
+      },
+      attach: {
+        type: "attach",
+        appearanceId: "section-once",
+        occurrenceId: "occurrence",
+      },
+    },
     toolArguments: {
+      preview: {
+        type: "object",
+        required: ["command"],
+        properties: { command: { type: "object" } },
+      },
+      navigate: {
+        type: "object",
+        properties: {
+          zoom: { type: "number", minimum: 4, maximum: 128 },
+          appearanceId: { type: "string" },
+        },
+      },
       mutate: {
         type: "object",
         required: [
@@ -84,6 +137,17 @@ export function schema() {
           label: { type: "string" },
           command: {
             oneOf: [
+              {
+                type: "object",
+                required: ["kind", "action"],
+                properties: {
+                  kind: { const: "structure" },
+                  action: {
+                    type: "object",
+                    description: "See structuralActions for exact templates",
+                  },
+                },
+              },
               {
                 type: "object",
                 required: ["kind", "changes"],

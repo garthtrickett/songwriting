@@ -1,3 +1,4 @@
+import { placements } from "./arrangement.ts";
 import type { Song, Pitch, Occurrence } from "./model.ts";
 import { add, sub, mul, cmp, time, value, ZERO, type Time } from "./time.ts";
 export interface BarSpan {
@@ -36,7 +37,7 @@ export function bars(s: Song): BarSpan[] {
 export const songEnd = (s: Song): Time => {
   let end: Time = ZERO;
   for (const b of bars(s)) end = add(b.start, b.length);
-  for (const o of Object.values(s.tables.occurrences)) {
+  for (const o of placements(s)) {
     const e = add(o.start, o.span);
     if (cmp(e, end) > 0) end = e;
   }
@@ -63,13 +64,11 @@ export function segments(s: Song, o: Occurrence): Segment[] {
   if (o.boundary === "stop")
     return [{ start: o.start, end: boundaries[0]!, phase: o.phase }];
   const points = [o.start, ...boundaries, end];
-  return points
-    .slice(0, -1)
-    .map((p, i) => ({
-      start: p,
-      end: points[i + 1]!,
-      phase: i === 0 ? o.phase : ZERO,
-    }));
+  return points.slice(0, -1).map((p, i) => ({
+    start: p,
+    end: points[i + 1]!,
+    phase: i === 0 ? o.phase : ZERO,
+  }));
 }
 export interface Sound {
   id: string;
@@ -87,7 +86,7 @@ export interface Sound {
 export function sounds(s: Song): Sound[] {
   const out: Sound[] = [];
   let iterations = 0;
-  for (const o of Object.values(s.tables.occurrences)) {
+  for (const o of placements(s)) {
     const pattern = s.tables.patterns[o.patternId]!;
     const voice = s.tables.voices[o.voiceId]!;
     const part = s.tables.parts[voice.partId]!;
@@ -124,7 +123,7 @@ export function sounds(s: Song): Sound[] {
             if (o.tails === "cut" && cmp(add(start, duration), seg.end) > 0)
               duration = sub(seg.end, start);
             out.push({
-              id: `${o.id}:${e.id}:${n.member}:${start}`,
+              id: `${o.id}:${o.appearanceId ?? "global"}:${e.id}:${n.member}:${start}`,
               occurrenceId: o.id,
               eventId: e.id,
               voiceId: voice.id,
@@ -171,20 +170,21 @@ export function alignment(
 ): Time | null {
   if (ids.length < 2) throw new Error("Select at least two occurrences");
   const sets = ids.map((id) => {
-    const o = s.tables.occurrences[id];
-    if (!o) throw new Error(`Unknown occurrence ${id}`);
+    const original = s.tables.occurrences[id];
+    if (!original) throw new Error(`Unknown occurrence ${id}`);
     const times = new Map<string, Time>();
     let count = 0;
-    for (const seg of segments(s, o))
-      for (
-        let t = sub(seg.start, seg.phase);
-        cmp(t, seg.end) < 0 && cmp(t, until) <= 0;
-        t = add(t, s.tables.patterns[o.patternId]!.length)
-      ) {
-        if (++count > 100000) throw new Error("Alignment range too dense");
-        if (cmp(t, seg.start) >= 0 && cmp(t, after) > 0)
-          times.set(t.join("/"), t);
-      }
+    for (const o of placements(s).filter((o) => o.id === id))
+      for (const seg of segments(s, o))
+        for (
+          let t = sub(seg.start, seg.phase);
+          cmp(t, seg.end) < 0 && cmp(t, until) <= 0;
+          t = add(t, s.tables.patterns[o.patternId]!.length)
+        ) {
+          if (++count > 100000) throw new Error("Alignment range too dense");
+          if (cmp(t, seg.start) >= 0 && cmp(t, after) > 0)
+            times.set(t.join("/"), t);
+        }
     return times;
   });
   for (const [key, t] of sets[0]!)
@@ -228,7 +228,7 @@ export function restSpans(
     duration: Time;
   }[] = [];
   let count = 0;
-  for (const o of Object.values(s.tables.occurrences)) {
+  for (const o of placements(s)) {
     const events = Object.values(s.tables.events).filter(
       (e) => e.patternId === o.patternId && e.kind === "rest",
     );
