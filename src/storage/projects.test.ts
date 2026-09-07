@@ -56,6 +56,9 @@ it("loads a schema 1 database in place and preserves old retries and undo across
   song.schemaVersion = 1;
   delete song.tables.phrases;
   delete song.tables.lyrics;
+  delete song.tables.polyrhythms;
+  for (const e of Object.values(song.tables.patterns) as any[]) delete e.groups;
+  for (const e of Object.values(song.tables.events) as any[]) delete e.originId;
   for (const e of Object.values(song.tables.sections) as any[])
     delete e.sourceId;
   for (const e of Object.values(song.tables.occurrences) as any[])
@@ -71,6 +74,8 @@ it("loads a schema 1 database in place and preserves old retries and undo across
   envelope.song = song;
   for (const d of envelope.history[0].deltas)
     if (d.after && typeof d.after === "object") {
+      if (d.table === "patterns") delete d.after.groups;
+      if (d.table === "events") delete d.after.originId;
       if (d.table === "sections") delete d.after.sourceId;
       if (d.table === "occurrences") delete d.after.sectionId;
     }
@@ -78,7 +83,7 @@ it("loads a schema 1 database in place and preserves old retries and undo across
   db.close();
   db = await openDb(name);
   const loaded = await read<any>(db, "songs", song.id);
-  expect(loaded.song.schemaVersion).toBe(2);
+  expect(loaded.song.schemaVersion).toBe(3);
   expect(loaded.song.tables.occurrences.guitar.sectionId).toBe(null);
   const duplicate = await commit(db, m);
   expect(duplicate.ok && duplicate.value.revision).toBe(1);

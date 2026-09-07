@@ -1,6 +1,6 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1 and 2 complete; see PHASES.md and docs/PHASE2_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–3 complete; see PHASES.md and docs/PHASE3_VALIDATION.md for delivery status. `songwriting` is a working name.
 
 ## Product
 
@@ -657,3 +657,122 @@ format, remote sync, detailed guitar fingering interactions, the browser test
 tool, and the agent provider/host/connection are still decisions to make during
 implementation. Agent parity and the shared editing interface are foundational
 requirements, not deferred integration work.
+
+
+## Phase 3 — Advanced rhythm and motif development
+
+**Status:** DONE — local checks, live-agent evaluation and GitHub verification passed.
+Evidence: [docs/PHASE3_VALIDATION.md](docs/PHASE3_VALIDATION.md).
+This is the detailed Phase 3 specification; PHASES.md links
+here rather than maintaining a second detailed copy.
+
+### 3.1 Musical representation and compatibility
+
+- Introduce schema 3: optional-in-meaning pattern beat groups represented as an
+  ordered list of exact quarter-note durations (empty means ungrouped), stable
+  event origin identities for variation comparison, and a polyrhythm table.
+- Nonempty pattern groups must sum to the cycle length. They describe a riff's
+  own grouping, independently of the song's written meters and bar groups.
+- A polyrhythm span has a name, section/global scope, exact start/duration and
+  two to eight lanes. Each lane references a distinct pattern occurrence and
+  declares 1–64 equally spaced divisions of that shared span. Referenced
+  occurrences must have the same scope and distinct voices.
+- The declaration is an intended grid, not an instruction to rewrite music.
+  Show its expected event attacks alongside actual attacks and whether they
+  match. Editing linked music can make a declaration differ; preserve both and
+  show that difference. Chord-member offsets remain independent performance
+  information; the grid compares event attacks, not every member's attack.
+- Migrate schemas 1/2, stored history and deleted-song snapshots without moving
+  existing notes or changing revision/operation fingerprints. Existing patterns
+  are ungrouped; events receive their own ID as origin. Do not infer ancestry
+  for old variations. Preserve new data through JSON export/import and undo.
+
+### 3.2 Exact, composable rhythm commands
+
+Use `kind: rhythm` on the existing revision-checked mutation path. Each command
+has a preview, one atomic commit, durable retry identity and ordinary undo/redo.
+Show shared-pattern impact before applying a transform. Keep entity primitives.
+
+- **Independent pattern variation:** copy a pattern, events and referenced
+  chords; retain event origins for comparison, preserve internal chord sharing,
+  and leave occurrences unchanged until explicitly retargeted.
+- **Displace placement:** move an occurrence start by an exact signed amount,
+  preserving its span, phase and all notes. Reject negative/out-of-section time.
+- **Change phase:** add a signed amount to an occurrence phase and wrap exactly
+  within its cycle. This changes the entry into the riff, not its placement.
+- **Rotate attacks:** move event starts within a pattern by a signed amount,
+  wrapping within the cycle; keep releases and chord-member offsets unchanged.
+- **Rotate accents:** rotate accent values among non-rest events in exact attack
+  order, breaking simultaneous-attack ties by ID. Leave notes and timing intact.
+- **Scale rhythm:** multiply cycle length, groups, event starts and performed
+  member offsets by a positive fraction. Explicitly choose whether release
+  durations scale or stay fixed, and whether occurrence phases follow the
+  transform or retain their exact values. Occurrence starts/spans stay fixed;
+  invalid retained phases are rejected.
+- **Insert/remove subdivision:** insert/remove an exact span of pattern time.
+  Shift following event and member attacks; preserve their independent durations.
+  Removal either rejects attacks in the cut or explicitly deletes whole events
+  whose base attack lies there. Reject cuts through a later chord-member attack
+  unless the entire event is being deleted. Never silently discard a chord member.
+  Adjust group lengths by the inserted/removed time, dropping only empty groups.
+  Explicitly choose phase-follow or phase-keep; follow maps a removed phase to
+  the cut point and wraps if that becomes the cycle end. The cycle stays positive.
+- **Build polyrhythm:** given scope/span, voices, division counts, relative
+  degrees/drum sounds and note duration, create ordinary patterns/events and
+  placements plus their declaration. No special playback path or model-generated
+  composition workflow. Removing the declaration leaves its music intact.
+
+For insertion at a grouping boundary, grow the following group; insertion at
+cycle end grows the last group. Pattern grouping stays in place during attack
+rotation and accent rotation. Global bass, other patterns, lyrics, meters and
+chords outside the selected transform remain unchanged.
+
+### 3.3 Rhythm workbench and comparison
+
+- Provide ordinary controls for all commands, including fraction inputs and
+  release/phase choices. Previews capture a revision, show changes and affected
+  placements, and reject application after intervening edits.
+- Edit pattern groups and polyrhythm declarations with normal inspectors. Show
+  expected/actual polyrhythm grids and the declaration's match status.
+- Compare two patterns in a shared-scale visual with a difference table for
+  added/removed events, exact timing, pitch/chord content, accent, articulation
+  and member performance. Match by event origin; explain that unrelated/legacy
+  patterns may appear as additions/removals. Include cycle length/group changes.
+- Provide a bounded cycle map for 2–8 occurrences over an exact time range,
+  including phase and arranged repeats. Show cycle starts, shared starts, empty
+  intersections, and explicit truncation when more than 512 points are available.
+  Let the writer select occurrences and mark a chosen shared start in the song.
+- Keep note tails visible and playback on the existing exact timeline/audio
+  engine. Navigation, comparisons and queries never create musical edits.
+
+### 3.4 Shared tools, validation and acceptance
+
+- Extend schema discovery with command templates and argument schemas, entity
+  CRUD, comparison, polyrhythm-grid and all-alignments queries. Extend the
+  capability map. Copy section-owned declarations and relink their occurrences
+  when making section variations.
+- Unit/integration checks cover 3:2/5:4 grids, exact scale/inverse, negative phase
+  wrap, insertion/removal at group boundaries, chord-member offsets/releases,
+  explicit deletion/rejection, rest preservation, source isolation, migration,
+  stale previews, durable retries and undo/redo through tools.
+- Browser checks exercise normal transformation and polyrhythm controls, source
+  comparison, alignment marking, stale previews, saving/reloading/exporting,
+  and audition via the existing audio engine. Retain prior regression checks.
+- Run a live agent evaluation: build 3:2 in independent voices, make a riff
+  variation, transform it, compare it to its source, and inspect cycle alignment.
+  Independently verify exact positions, unchanged source/bass, persisted JSON
+  and explicit task completion. Record objective, tool version and model identity
+  as exposed, without calling a scripted browser test a model evaluation.
+- Run frozen install, `bun run verify`, all browser checks and whitespace checks;
+  publish one Phase 3 PR, fix failures and wait for exact-commit CI before merge.
+
+### Exit gate and exclusions
+
+A writer and an agent can develop a rhythmically distinct A′, understand exactly
+what changed, hear independent polyrhythmic parts and identify shared cycle starts.
+These outcomes survive import/export/reload, undo and concurrent edits. All checks
+above pass and evidence is recorded in docs/PHASE3_VALIDATION.md.
+
+Do not implement Phase 4 harmony inference, guitar fingering, recording, remote
+sync, a notation engraver or hosted model orchestration. Rhythm tools must not
+change musical pitch unless an explicitly entered note/declaration asks for it.

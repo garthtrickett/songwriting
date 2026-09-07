@@ -1,0 +1,141 @@
+{
+  "date": "2026-09-07",
+  "taskId": "a2459b47-8a38-4ae3-8c5c-5a7ceed607c6",
+  "objective": "Create Crossing lines, a new math-rock sketch with a sustained global bass. Build a 3:2 polyrhythm in separate guitar and drum voices across four quarter notes. Make an independent variation of the three-pulse riff, scale it to two thirds with fixed note durations, then place its repetitions in a new voice. Compare source and variation, inspect expected/actual grids and cycle alignments, and mark where the two cycles next start together. Verify the original riff and bass are unchanged, export the song, and explicitly finish.",
+  "provider": "OpenAI",
+  "model": "GPT-6 Codex; exact build unavailable",
+  "host": "Primary Codex session using scripts/agent.ts and the Bun bridge; persistent Chromium only hosted the UI and submitted the objective. No model was called by the browser harness.",
+  "schemaVersion": 3,
+  "toolVersion": "phase3-rhythm-v1",
+  "status": "completed",
+  "toolCalls": [
+    {
+      "name": "context",
+      "status": "done"
+    },
+    {
+      "name": "schema",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "open_song",
+      "status": "done"
+    },
+    {
+      "name": "preview",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "preview",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "compare_patterns",
+      "status": "done"
+    },
+    {
+      "name": "polyrhythm_grid",
+      "status": "done"
+    },
+    {
+      "name": "alignments",
+      "status": "done"
+    },
+    {
+      "name": "mutate",
+      "status": "done"
+    },
+    {
+      "name": "export",
+      "status": "done"
+    }
+  ],
+  "independentVerification": {
+    "method": "Python fractions.Fraction and exported before/after entity comparisons, separate from app analysis",
+    "checks": {
+      "source_events_unchanged": true,
+      "source_patterns_unchanged": true,
+      "bass_unchanged": true,
+      "exact_scaled_attacks": true,
+      "release_durations_preserved": true,
+      "next_shared_cycle": true,
+      "independent_voices": true
+    }
+  },
+  "result": {
+    "example": "examples/crossing-lines.song.json",
+    "sourceCycle": [
+      4,
+      1
+    ],
+    "variationCycle": [
+      8,
+      3
+    ],
+    "sourceAttacks": [
+      [
+        0,
+        1
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        8,
+        3
+      ]
+    ],
+    "variationAttacks": [
+      [
+        0,
+        1
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        16,
+        9
+      ]
+    ],
+    "nextSharedStart": [
+      8,
+      1
+    ],
+    "noteDuration": [
+      1,
+      4
+    ]
+  },
+  "limitations": [
+    "Single live reasoning session, not a broad model benchmark.",
+    "No subjective listening claim; automated browser tests exercise the audio graph.",
+    "Original pulse placements deliberately extended to repeat over 16 quarters; source notes and pattern definitions unchanged."
+  ]
+}

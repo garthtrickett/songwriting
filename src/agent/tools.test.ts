@@ -11,6 +11,17 @@ it("exposes complete entity CRUD through the same command model, including chord
   try {
     await c.init();
     const s = arrangementSong("parity");
+    s.tables.polyrhythms.poly = {
+      id: "poly",
+      name: "Grid",
+      sectionId: "verse",
+      start: [0, 1],
+      duration: [4, 1],
+      lanes: [
+        { occurrenceId: "guitar", divisions: 3 },
+        { occurrenceId: "drums", divisions: 2 },
+      ],
+    };
     s.tables.markers.m = { id: "m", name: "Marker", at: [1, 1] };
     const created = (await executeTool(c, "mutate", {
       songId: s.id,
@@ -180,6 +191,86 @@ it("serializes local field intentions but never rebases them over a foreign muta
     expect((await local).ok).toBe(false);
     expect(c.song!.title).toBe("Agent title");
     expect(c.pending).toBe(0);
+  } finally {
+    c.dispose();
+  }
+});
+
+it("shares rhythm previews, queries, durable retries and undo through tools", async () => {
+  const c = new Controller(await openDb(crypto.randomUUID()));
+  try {
+    await c.import(JSON.stringify(arrangementSong("rhythm-parity")), false);
+    const command = {
+      kind: "rhythm",
+      action: {
+        type: "polyrhythm",
+        newId: "poly",
+        name: "Three against two",
+        sectionId: "verse",
+        start: [0, 1],
+        duration: [4, 1],
+        noteDuration: [1, 4],
+        lanes: [
+          {
+            voiceId: "high",
+            divisions: 3,
+            pitch: { degree: 1, alteration: 0, octave: 0 },
+            drum: "kick",
+          },
+          {
+            voiceId: "drums",
+            divisions: 2,
+            pitch: { degree: 5, alteration: 0, octave: 0 },
+            drum: "hat",
+          },
+        ],
+      },
+    };
+    const preview = (await executeTool(c, "preview", { command })) as any;
+    expect(c.song!.tables.polyrhythms).toEqual({});
+    await c.patchTitle("Intervening writer");
+    const m = {
+      songId: c.song!.id,
+      expectedRevision: preview.revision,
+      operationId: "rhythm-retry",
+      label: "Build pulse",
+      command,
+    };
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(false);
+    m.expectedRevision = c.current!.revision;
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(true);
+    const revision = c.current!.revision;
+    expect(((await executeTool(c, "mutate", m)) as any).ok).toBe(true);
+    expect(c.current!.revision).toBe(revision);
+    expect(
+      (
+        (await executeTool(c, "polyrhythm_grid", { id: "poly" })) as any
+      )[0].lanes.every((l: any) => l.matches),
+    ).toBe(true);
+    expect(
+      (
+        (await executeTool(c, "alignments", {
+          occurrenceIds: ["poly-o0", "poly-o1"],
+          from: [0, 1],
+          until: [4, 1],
+        })) as any
+      ).common,
+    ).toEqual([[0, 1]]);
+    expect(
+      (
+        (await executeTool(c, "compare_patterns", {
+          sourceId: "poly-p0",
+          variationId: "poly-p1",
+        })) as any
+      ).rows,
+    ).toHaveLength(5);
+    await c.historyAction("undo");
+    expect(c.song!.tables.polyrhythms).toEqual({});
+    await c.historyAction("redo");
+    expect(JSON.parse(c.export()).tables.polyrhythms.poly.lanes).toHaveLength(
+      2,
+    );
+    expect(c.song!.title).toBe("Intervening writer");
   } finally {
     c.dispose();
   }

@@ -1,3 +1,5 @@
+import { polyrhythmEditor } from "./polyrhythm.ts";
+import { rhythmPanel } from "./rhythm.ts";
 import { annotationLanes } from "./annotations.ts";
 import { arrangementPanel } from "./arrangement.ts";
 import { lyricEditor } from "./lyrics.ts";
@@ -47,8 +49,10 @@ export interface AgentView {
   control(id: string, action: "cancel" | "resume"): Promise<void>;
 }
 export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
+  const rhythm = rhythmPanel(c);
   const arrange = arrangementPanel(c),
-    lyrics = lyricEditor(c);
+    lyrics = lyricEditor(c),
+    polyrhythms = polyrhythmEditor(c);
   let step: Time = [1, 2];
   let tab: Table = "patterns",
     draft = "",
@@ -397,6 +401,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                       >
                     </div>
                     ${arrange()}
+                    ${rhythm()}
                     ${c.incoming ? html`<p class="incoming" role="status">${c.incoming}</p>` : nothing}
                     <div class="score-heading">
                       <h2>Song map</h2>
@@ -681,7 +686,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
                                     .value=${entity.name}
                                     @change=${(e: Event) => void handle(() => c.patchEntity(c.selection!.table, entity.id, { name: (e.target as HTMLInputElement).value }, "Rename object"))()}
                                 /></label>
-                                ${c.selection?.table === "events" ? fields(entity as MusicalEvent) : properties(c, lyrics)}
+                                ${c.selection?.table === "events" ? fields(entity as MusicalEvent) : properties(c, lyrics, polyrhythms)}
                                 ${
                                   c.selection?.table === "patterns"
                                     ? html`<button

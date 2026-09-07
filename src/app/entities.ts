@@ -1,3 +1,4 @@
+import { rhythmChanges } from "../song/rhythm.ts";
 import { sectionLength } from "../song/arrangement.ts";
 import {
   noteEvent,
@@ -24,7 +25,7 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
       item = { ...base, partId: first(t.parts, "part") };
       break;
     case "patterns":
-      item = { ...base, length: [4, 1], sourceId: null };
+      item = { ...base, length: [4, 1], groups: [], sourceId: null };
       break;
     case "chords":
       item = {
@@ -95,6 +96,28 @@ export function entityChanges(table: Table, s: Song, id: string): Change[] {
       };
       break;
     }
+    case "polyrhythms": {
+      const occurrences = Object.values(t.occurrences);
+      const left = occurrences[0],
+        right = occurrences.find(
+          (o) => o.voiceId !== left?.voiceId && o.sectionId === left?.sectionId,
+        );
+      if (!left || !right)
+        throw new Error(
+          "Create two placements in distinct voices with the same scope first, or use Build polyrhythm",
+        );
+      item = {
+        ...base,
+        sectionId: left.sectionId,
+        start: left.start,
+        duration: left.span,
+        lanes: [
+          { occurrenceId: left.id, divisions: 3 },
+          { occurrenceId: right.id, divisions: 2 },
+        ],
+      };
+      break;
+    }
     case "markers":
       item = { ...base, at: [0, 1] };
       break;
@@ -123,18 +146,10 @@ export function deleteChanges(table: Table, id: string, s: Song): Change[] {
 export function vary(s: Song, patternId: string, id: string): Change[] {
   const p = s.tables.patterns[patternId];
   if (!p) throw new Error("Select a pattern");
-  return [
-    {
-      table: "patterns",
-      id,
-      value: { ...p, id, name: `${p.name} · variation`, sourceId: p.id },
-    },
-    ...Object.values(s.tables.events)
-      .filter((e) => e.patternId === p.id)
-      .map((e) => ({
-        table: "events" as const,
-        id: `${id}-${e.id}`,
-        value: { ...e, id: `${id}-${e.id}`, patternId: id },
-      })),
-  ];
+  return rhythmChanges(s, {
+    type: "variation",
+    patternId,
+    newId: id,
+    name: `${p.name} · variation`,
+  });
 }

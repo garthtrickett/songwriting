@@ -1,3 +1,4 @@
+import { rhythmChanges, type RhythmAction } from "./rhythm.ts";
 import { structureChanges, type StructureAction } from "./structure.ts";
 import { sectionSpans, annotations } from "./arrangement.ts";
 import { TABLES, type Song, type Table } from "./model.ts";
@@ -8,6 +9,7 @@ export type Command =
   | { kind: "edit"; changes: Change[] }
   | { kind: "replace"; song: unknown }
   | { kind: "delete" }
+  | { kind: "rhythm"; action: RhythmAction }
   | { kind: "structure"; action: StructureAction }
   | { kind: "undo"; targetId: string };
 export interface Mutation {
@@ -104,7 +106,9 @@ export function applyCommand(
     m.expectedRevision < 0 ||
     typeof m.songId !== "string" ||
     !m.command ||
-    !["edit", "replace", "delete", "undo", "structure"].includes(m.command.kind)
+    !["edit", "replace", "delete", "undo", "structure", "rhythm"].includes(
+      m.command.kind,
+    )
   )
     throw new Error(
       "Invalid mutation: identity, revision, label and command are required",
@@ -127,6 +131,11 @@ export function applyCommand(
     case "edit":
       if (!next) throw new Error("Song does not exist");
       for (const c of m.command.changes) write(next, c);
+      break;
+    case "rhythm":
+      if (!next) throw new Error("Song does not exist");
+      for (const change of rhythmChanges(next, m.command.action))
+        write(next, change);
       break;
     case "structure":
       if (!next) throw new Error("Song does not exist");
@@ -217,7 +226,24 @@ export function previewCommand(current: Envelope, command: Command) {
     },
     0,
   );
+  const changes = next.history.at(-1)!.deltas;
+  const patternIds = new Set(
+    changes.flatMap((d) =>
+      d.table === "patterns"
+        ? [d.id]
+        : d.table === "events"
+          ? [((d.after ?? d.before) as { patternId: string }).patternId]
+          : [],
+    ),
+  );
   return {
+    affectedPlacements: Object.values(next.song?.tables.occurrences ?? {})
+      .filter(
+        (o) =>
+          patternIds.has(o.patternId) ||
+          changes.some((d) => d.table === "occurrences" && d.id === o.id),
+      )
+      .map((o) => ({ id: o.id, name: o.name, patternId: o.patternId })),
     revision: current.revision,
     changes: next.history.at(-1)!.deltas,
     sections: next.song ? sectionSpans(next.song) : [],

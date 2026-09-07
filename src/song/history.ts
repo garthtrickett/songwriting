@@ -1,3 +1,4 @@
+import { migrateEntity } from "./migrate.ts";
 import type { Envelope, Receipt } from "./commands.ts";
 import { validateSong } from "./validate.ts";
 
@@ -9,21 +10,12 @@ export function hydrateEnvelope(e: Envelope): Envelope {
     if (!v.ok) throw new Error(`Stored song cannot be loaded: ${v.error}`);
     return v.value;
   };
-  const legacy =
-    next.song?.schemaVersion === (1 as number) ||
-    next.history.some((h) => h.deletedSong?.schemaVersion === (1 as number));
   if (next.song) next.song = upgrade(next.song);
   for (const h of next.history) {
     if (h.deletedSong) h.deletedSong = upgrade(h.deletedSong);
-    if (legacy)
-      for (const d of h.deltas)
-        for (const key of ["before", "after"] as const) {
-          const v = d[key];
-          if (v && typeof v === "object" && !Array.isArray(v)) {
-            if (d.table === "sections") d[key] = { ...v, sourceId: null };
-            if (d.table === "occurrences") d[key] = { ...v, sectionId: null };
-          }
-        }
+    for (const d of h.deltas)
+      for (const key of ["before", "after"] as const)
+        d[key] = migrateEntity(d.table, d[key]);
   }
   return next;
 }
