@@ -18,6 +18,11 @@ Open **http://127.0.0.1:5188**. In a second terminal, enable external agents:
 bun run bridge
 ```
 
+After pulling updates, restart both `bun run dev` and `bun run bridge`, then
+reload the browser. An already running bridge keeps its previous code. Older
+tasks remain readable even when they lack checkpoint or guidance metadata;
+there is no need to clear `.agent/` or browser storage.
+
 The editor saves songs to this browser's IndexedDB. Export copies you want to
 keep independently of browser storage. Import `examples/countercurrent.song.json`
 for a complete editable sketch authored through the live agent tools.
