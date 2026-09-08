@@ -110,3 +110,19 @@ All these outcomes use schema 7 unchanged. The UI's pure note-edit helpers compo
 ordinary entity changes; agents retain the underlying primitives. Snapping and
 panel layout are view preferences, not a second musical model. The seven-degree
 axis preserves authored alterations and octaves when the audition tonic changes.
+
+## Hosted Mastra preview (M1)
+
+The protected hosted preview exposes `context`, `read`, `mutate`, and explicit
+`complete_task`. Musical mutations use the same controller, validation, exact
+time, revision checks and undo history as the editor. The browser stores the
+musical effect and outgoing receipt atomically; delivery retries reuse that
+receipt, including after an undo. Task creation, listing, execution, receipt
+delivery, cancellation and resumption are bound to a verified Neon session and
+browser workspace. Manual editing remains available without sign-in.
+
+This is the M1 transport subset, not full hosted parity. The local bridge retains
+the complete catalog above. Hosted schema discovery, structured analysis tools,
+media handles, task checkpoints and questions are later M2–M5 work. See
+[the acceptance evidence](MASTRA_VALIDATION.md) before treating the preview as a
+production agent release.

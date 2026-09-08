@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.agent.json",
+  "compilerOptions": { "types": [] },
+  "include": ["*.ts"],
+  "exclude": []
+}

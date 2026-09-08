@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Mastra bundles third-party declarations that are not internally consistent.
+    // Follow its documented server setting; all our application strict flags
+    // remain enabled, and the editor keeps its original declaration checks.
+    "skipLibCheck": true
+  },
+  "include": ["api", "server/agent", "server/mastra", "tests/hosted", "scripts/agent-migrate.ts", "scripts/hosted-dev.ts"],
+  "exclude": []
+}

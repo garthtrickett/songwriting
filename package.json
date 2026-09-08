@@ -3,25 +3,37 @@
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.2",
+  "engines": { "node": "24.x" },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "bridge": "bun server/bridge.ts",
-    "check": "tsc --noEmit",
+    "check": "tsc --noEmit && tsc --project tsconfig.agent.json",
+    "db:migrate": "bun scripts/agent-migrate.ts",
+    "test:hosted": "bun test ./tests/hosted/",
     "test": "bun test src",
     "build": "vite build",
     "verify": "bun run check && bun run test && bun run build",
     "test:browser": "playwright test",
+    "test:hosted-browser": "playwright test --config playwright.hosted.config.ts",
     "agent": "bun scripts/agent.ts"
   },
   "dependencies": {
-    "lit-html": "^3.3.3"
+    "@ai-sdk/gateway": "4.0.75",
+    "@mastra/core": "1.64.0",
+    "@mastra/memory": "1.28.2",
+    "@mastra/pg": "1.22.3",
+    "@neondatabase/auth": "0.5.0-beta",
+    "lit-html": "^3.3.3",
+    "pg": "8.20.0",
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.14.0",
+    "@playwright/test": "1.63.0",
     "@types/bun": "^1.4.1",
+    "@types/pg": "8.18.0",
     "fake-indexeddb": "^6.2.5",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
-    "@playwright/test": "1.63.0"
+    "vite": "^8.2.2"
   }
 }

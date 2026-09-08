@@ -3,6 +3,20 @@ on: [push, pull_request]
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: songwriting
+          POSTGRES_PASSWORD: local-test-only
+          POSTGRES_DB: songwriting
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U songwriting"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -10,8 +24,12 @@ jobs:
           bun-version-file: .bun-version
       - run: bun install --frozen-lockfile
       - run: bun run verify
+      - run: bun run test:hosted
+        env:
+          AGENT_TEST_DATABASE_URL: postgres://songwriting:local-test-only@localhost:5432/songwriting
       - run: bunx playwright install --with-deps chromium
       - run: bun run test:browser
+      - run: bun run test:hosted-browser
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

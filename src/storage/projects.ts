@@ -72,17 +72,19 @@ export function save<T extends { id: string }>(
 export function commit(
   db: IDBDatabase,
   m: Mutation,
+  options?: CommitOptions,
 ): Promise<Result<Envelope>> {
   return attemptAsync(
     () =>
       new Promise<Envelope>((resolve, reject) => {
-        const tx = db.transaction("songs", "readwrite");
+        const tx = db.transaction(options?.receipt ? ["songs", "sessions"] : ["songs"], "readwrite");
         const store = tx.objectStore("songs");
         const request = store.get(m.songId);
         let result: Envelope;
         let failure: unknown;
         request.onsuccess = () => {
           try {
+            if (options?.active && !options.active()) throw new Error("The operation was stopped before saving.");
             const old = request.result
               ? hydrateEnvelope(request.result as Envelope)
               : undefined;
@@ -97,6 +99,9 @@ export function commit(
               result = applyCommand(old, m, Date.now());
               store.put(result);
             }
+            // A delivery record and its musical effect become durable together.
+            // The callback is synchronous and must only build the receipt data.
+            if (options?.receipt) tx.objectStore("sessions").put(options.receipt(result));
           } catch (e) {
             failure = e;
             tx.abort();
@@ -110,4 +115,8 @@ export function commit(
         };
       }),
   );
+}
+export interface CommitOptions {
+  active?: () => boolean;
+  receipt?: (envelope: Envelope) => { id: string };
 }

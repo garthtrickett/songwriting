@@ -376,10 +376,11 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 8 — Reliable everyday use on desktop and phone
 
-**Additional proposed agent workstream:**
+**Additional active agent workstream:**
 [Built-in Mastra assistant](MASTRA_AGENT_PLAN.md), with implementation slices
-M1–M5 and a recorded revision loop. Planning only; no implementation is claimed.
-This changes the proposed agent hosting approach, not the scope or completion
+M1–M5 and a recorded revision loop. M1 implementation is in progress with Neon
+Free provisioned for development/preview; the hosted acceptance gate remains open.
+This changes the agent hosting approach, not the scope or completion
 status of the numbered musical phases or Phase 9 song sync.
 
 **Selected workstream:** the arrangement workspace and integrated 1–7 note editor

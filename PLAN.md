@@ -2,13 +2,15 @@
 
 Status: Phases 1–7 complete; the Phase 8 arrangement workspace is implemented; broader Phases 8–9 remain planned; see PHASES.md and docs/PHASE7_VALIDATION.md for delivery status. `songwriting` is a working name.
 
-## Built-in Mastra agent — proposed workstream
+## Built-in Mastra agent — active workstream
 
 [MASTRA_AGENT_PLAN.md](MASTRA_AGENT_PLAN.md) specifies the requested replacement
 of the hosted app's external-agent dependency with a built-in Mastra assistant.
 It includes the reviewed architecture, implementation slices, recovery protocol,
-acceptance gates and revision record. Status: plan only, not implemented.
-For this proposed workstream it supersedes Phase 7's local-host-only deployment
+acceptance gates and revision record. Status: M1 implementation in progress,
+using provisioned Neon Free for hosted Postgres in development/preview.
+No hosted agent release is claimed; see [evidence](docs/MASTRA_VALIDATION.md).
+For this workstream it supersedes Phase 7's local-host-only deployment
 decision while preserving its musical editing, undo and recovery requirements.
 It does not activate Phase 9 song synchronization or the remaining mobile work.
 

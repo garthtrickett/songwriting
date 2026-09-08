@@ -45,6 +45,12 @@ export interface AgentView {
   tasks: TaskView[];
   submit(prompt: string): Promise<void>;
   control(id: string, action: "cancel" | "resume"): Promise<void>;
+  hosted?: boolean;
+  status?: string;
+  streaming?: string;
+  auth?: { email: string; signedIn: boolean; allowed: boolean };
+  signIn?(email: string, password: string, register: boolean): Promise<void>;
+  signOut?(): Promise<void>;
 }
 export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
   const layout = workspaceLayout(c, root);
@@ -517,6 +523,24 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
           An agent works on the same notes and patterns you do. Every edit stays
           visible.
         </p>
+        ${agent.hosted ? html`
+          ${agent.auth?.signedIn ? html`<p>Signed in as ${agent.auth.email}
+            <button class="text-button" @click=${handle(()=>agent.signOut!())}>Sign out</button></p>` : html`
+            <form @submit=${(e:SubmitEvent)=>{
+              e.preventDefault();const form=e.currentTarget as HTMLFormElement;
+              const email=(form.elements.namedItem('email') as HTMLInputElement).value;
+              const password=(form.elements.namedItem('password') as HTMLInputElement).value;
+              const register=(e.submitter as HTMLButtonElement)?.value==='register';
+              void handle(async()=>{await agent.signIn!(email,password,register);(form.elements.namedItem('password') as HTMLInputElement).value='';})();
+            }}>
+              <label>Email<input name="email" type="email" autocomplete="email" required aria-label="Agent sign-in email"></label>
+              <label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required aria-label="Agent sign-in password"></label>
+              <button class="primary" value="login">Sign in</button>
+              <button value="register">Create account</button>
+            </form>`}
+          <p role="status">${agent.status}</p>
+          ${agent.streaming ? html`<p aria-live="polite">${agent.streaming}</p>` : nothing}
+        ` : nothing}
         <form
           @submit=${(e: SubmitEvent) => {
             e.preventDefault();
@@ -539,7 +563,7 @@ export function mount(root: HTMLElement, c: Controller, agent: AgentView) {
           </button>
         </form>
         <p class="connection">
-          ${agent.connected
+          ${agent.hosted ? 'Your songs stay on this device. Agent edits appear here and can be undone.' : agent.connected
             ? "Local bridge connected. A coding agent can claim your task."
             : "Start bun run bridge to connect an agent. You can keep writing here."}
         </p>

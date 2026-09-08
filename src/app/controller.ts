@@ -3,6 +3,7 @@ import { historyStacks } from "../song/history.ts";
 import { sectionSpans } from "../song/arrangement.ts";
 import { type Time, value } from "../song/time.ts";
 import { commit, list, read, save } from "../storage/projects.ts";
+import type { CommitOptions } from "../storage/projects.ts";
 import type { Change, Command, Envelope, Mutation } from "../song/commands.ts";
 import {
   emptySong,
@@ -256,6 +257,7 @@ export class Controller {
   }
   mutate(
     m: Mutation,
+    options?: CommitOptions,
   ): Promise<{ ok: true; value: Envelope } | { ok: false; error: string }> {
     if (!m?.command || typeof m.songId !== "string")
       return Promise.resolve({ ok: false, error: "Invalid mutation" });
@@ -275,7 +277,7 @@ export class Controller {
             return { ok: false as const, error: String(e) };
           }
       }
-      const result = await commit(this.db, m);
+      const result = await commit(this.db, m, options);
       this.pending--;
       if (result.ok) {
         this.error = "";

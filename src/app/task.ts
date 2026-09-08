@@ -97,11 +97,11 @@ After: ${JSON.stringify(d.after, null, 2)}</pre>
 ${t.snapshot.instructions}
 ${t.snapshot.preferences}</pre>`}
     </details>
-    <button
+    ${t.status !== 'completed' ? html`<button
       class="text-button"
       @click=${() => void run(() => control(t.id, t.status === "running" || t.status === "pending" ? "cancel" : "resume"))}
     >
       ${t.status === "running" || t.status === "pending" ? "Cancel" : "Resume"}
-    </button>
+    </button>` : nothing}
   </article>`;
 }

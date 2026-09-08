@@ -14,5 +14,6 @@
     "exactOptionalPropertyTypes": true,
     "types": ["bun"]
   },
-  "include": ["src", "server", "scripts", "tests", "*.ts"]
+  "include": ["src", "server", "scripts", "tests", "*.ts"],
+  "exclude": ["api", "server/agent", "server/mastra", "tests/hosted", "scripts/agent-migrate.ts", "scripts/hosted-dev.ts"]
 }

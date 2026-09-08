@@ -1,0 +1,26 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npx --yes --package=bun@1.4.2 bun install --frozen-lockfile",
+  "buildCommand": "npx --yes --package=bun@1.4.2 bun run build",
+  "outputDirectory": "dist",
+  "regions": [
+    "iad1"
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth?path=:path*"
+    }
+  ],
+  "build": {
+    "env": {
+      "VERCEL_INSTALL_COMPLETED": "1"
+    }
+  }
+}
