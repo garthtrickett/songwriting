@@ -22,8 +22,10 @@ export function taskCard(
     <small>${t.status.toUpperCase()}</small>
     <p>${t.prompt}</p>
     <p class="muted">
-      ${t.provider} ${t.model} · segment ${t.segment} · ${t.segmentCalls}/100
-      calls this segment · ${t.stepCount}/1000 total
+      ${t.provider} ${t.model} · ${t.snapshot.toolVersion === "legacy"
+        ? html`${t.stepCount} calls`
+        : html`segment ${t.segment} · ${t.segmentCalls}/100
+          calls this segment · ${t.stepCount}/1000 total`}
     </p>
     ${t.needsContext ? html`<p role="status">A fresh context read is required before continuing.</p>` : nothing}
     ${
@@ -83,13 +85,17 @@ After: ${JSON.stringify(d.after, null, 2)}</pre>
     ${t.summary ? html`<p>${t.summary}</p>` : nothing}
     <details>
       <summary>Task guidance snapshot</summary>
+      ${t.snapshot.toolVersion === "legacy" ? html`<p>
+        Guidance snapshot unavailable for this older task. Restart the bridge
+        after updating to use current agent workflows.
+      </p>` : html`
       <p>
         Song ${t.snapshot.songId ?? "none"} · revision
         ${t.snapshot.revision ?? "none"} · ${t.snapshot.toolVersion}
       </p>
       <pre>
 ${t.snapshot.instructions}
-${t.snapshot.preferences}</pre>
+${t.snapshot.preferences}</pre>`}
     </details>
     <button
       class="text-button"

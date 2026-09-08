@@ -2,6 +2,7 @@ import type { Controller } from "../app/controller.ts";
 import { executeTool } from "./tools.ts";
 import { read, save } from "../storage/projects.ts";
 import type { AgentView } from "../app/view.ts";
+import { readTaskStatus } from "./task-response.ts";
 interface Job {
   taskId: string;
   songId: string | null;
@@ -54,12 +55,12 @@ export function connection(
   async function poll() {
     if (stopped) return;
     try {
-      const status = await request(`/status?clientId=${clientId}`);
+      const tasks = readTaskStatus(await request(`/status?clientId=${clientId}`));
       const changed =
         !view.connected ||
-        JSON.stringify(view.tasks) !== JSON.stringify(status.tasks);
+        JSON.stringify(view.tasks) !== JSON.stringify(tasks);
       view.connected = true;
-      view.tasks = status.tasks;
+      view.tasks = tasks;
       if (changed) c.notify();
       const jobs = (await request(`/poll?clientId=${clientId}`)) as Job[];
       for (const job of jobs) {
