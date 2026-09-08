@@ -376,6 +376,12 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 8 — Reliable everyday use on desktop and phone
 
+**Additional proposed agent workstream:**
+[Built-in Mastra assistant](MASTRA_AGENT_PLAN.md), with implementation slices
+M1–M5 and a recorded revision loop. Planning only; no implementation is claimed.
+This changes the proposed agent hosting approach, not the scope or completion
+status of the numbered musical phases or Phase 9 song sync.
+
 **Selected workstream:** the arrangement workspace and integrated 1–7 note editor
 are detailed in [UI_REDESIGN_PLAN.md](UI_REDESIGN_PLAN.md). Implementation and local validation are complete; [evidence](docs/UI_REDESIGN_VALIDATION.md). This selection does
 not activate the broader offline/mobile release or Phase 9.
