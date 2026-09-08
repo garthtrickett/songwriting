@@ -54,7 +54,11 @@ capability map documents how agents compose the same edits with primitives.
 The existing browser tests were updated to open the appropriate named workbench;
 all prior music, media, conflict, retry and task assertions remain. The navigation
 test now zooms in before expecting a jump to scroll: the wider workspace can fit
-the entire acceptance song without scrolling.
+the entire acceptance song without scrolling. GitHub also exposed a test reading
+a newly drawn note before its async save completed. A 150 ms injected save delay
+reproduced that exact undefined-ID failure locally; the test now waits for the
+saved event before testing subsequent gestures, and keeps the delay as regression
+coverage.
 
 Browser checks cover 1440×900, 1366×768, 1024×768, 390×844 and 720×450
 (the CSS viewport equivalent of 1440×900 at 200% browser zoom). Opening/closing tools

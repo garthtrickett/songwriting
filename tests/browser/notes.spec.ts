@@ -56,9 +56,23 @@ test("draw, drag, resize, keyboard and undo use exact time and one receipt per g
   page,
 }) => {
   await boot(page);
+  // Reproduce a fast browser reading before an asynchronous note save completes.
+  await page.evaluate(() => {
+    const c = (window as any).songwriting.controller;
+    const mutate = c.mutate.bind(c);
+    c.mutate = async (...args: unknown[]) => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      return mutate(...args);
+    };
+  });
   await page.getByLabel("Note snap increment").fill("1/3");
   await page.getByLabel("Note snap increment").press("Tab");
   await page.getByRole("button", { name: "Add degree 1", exact: true }).click();
+  await expect
+    .poll(
+      async () => Object.keys((await tool(page, "read")).tables.events).length,
+    )
+    .toBe(Object.keys(acceptance().tables.events).length + 1);
   let s = await tool(page, "read");
   const id = Object.keys(s.tables.events).find(
     (id) => !acceptance().tables.events[id],
