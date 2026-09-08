@@ -24,6 +24,22 @@ for a complete editable sketch authored through the live agent tools.
 
 ## Write a sketch
 
+The song opens in an Ableton-inspired arrangement workspace. **Notes** opens the
+integrated degree editor: rows are 1–7 with alterations and octaves, and columns
+are exact musical time. Select or draw notes, drag to move, use the right edge to
+resize, or use exact fields. Arrow keys move selected notes, Shift+Left/Right
+changes length, Ctrl/⌘+A selects the pattern's notes, and Escape cancels a drag.
+Shared pattern/chord scope stays visible; Make variation gives a placement its
+own notes. Use Structure's section variation to change just one repeated section
+appearance.
+
+Open **Objects** for entity creation, **Selection** for full inspectors,
+**Changes / Advanced** for history and complete-document edits, or the named
+Structure, Rhythm, Harmony, Tab, Audio and Guidance tools. The Agent panel shares
+the right sidebar. Closing a tool retains its current-session draft and does not
+stop recording or agent work. The lower editor can be resized by pointer or with
+its keyboard-accessible separator. See [screenshots and verification](docs/UI_REDESIGN_VALIDATION.md).
+
 1. Start a song. Add a part, then a voice belonging to that part.
 2. Add a pattern and set its cycle length. `7/2` quarter notes is seven eighths.
 3. Add note, chord, rest, or drum events to that pattern. The inspector provides

@@ -12,6 +12,7 @@ async function boot(page: Page) {
     text: JSON.stringify(frettedSong()),
     asCopy: false,
   });
+  await page.getByRole("button", { name: "Open Tab", exact: true }).click();
   await page.evaluate(() => {
     const c = (window as any).songwriting.controller,
       original = c.mutate.bind(c);
@@ -104,6 +105,7 @@ test("ordinary string choices, connected techniques, retuning and undo preserve 
   expect(s.tables.occurrences).toEqual(before.tables.occurrences);
   const exported = await tool(page, "export");
   await page.reload();
+  await page.getByRole("button", { name: "Open Tab", exact: true }).click();
   await page.waitForFunction(() =>
     Boolean((window as any).songwriting?.controller.song),
   );

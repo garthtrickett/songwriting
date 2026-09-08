@@ -12,6 +12,7 @@ async function boot(page: Page) {
     text: JSON.stringify(arrangementSong()),
     asCopy: false,
   });
+  await page.getByRole("button", { name: "Open Structure", exact: true }).click();
 }
 test("ordinary arrangement controls build A–B–A′ and save phrases, lyrics and entrances", async ({
   page,
@@ -80,6 +81,7 @@ test("ordinary arrangement controls build A–B–A′ and save phrases, lyrics 
     ),
   ).toBe(true);
   await page.reload();
+  await page.getByRole("button", { name: "Open Structure", exact: true }).click();
   await expect(page.locator(".section-card")).toHaveCount(3);
   await expect(page.locator(".annotation.lyrics").last()).toContainText(
     "The return",
@@ -124,6 +126,9 @@ test("keyboard editing ignores lyrics, nudges exact time, and supports undo/redo
     .toEqual([11, 6]);
   const before = (await tool(page, "context")).revision;
   await page.getByRole("button", { name: "Fit song", exact: true }).click();
+  // The wider workspace can fit the entire song. Zoom in before asserting a jump scrolls.
+  await page.getByLabel("Timeline zoom", { exact: true }).focus();
+  await page.keyboard.press("End");
   await page
     .getByRole("button", { name: "Select section 2: B", exact: true })
     .click();
@@ -198,6 +203,7 @@ test("a fresh writer can create sections, bars, phrases and lyrics with no JSON"
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Start a song" }).click();
+  await page.getByRole("button", { name: "Open Structure", exact: true }).click();
   await page.getByRole("button", { name: "+ Section", exact: true }).click();
   await page
     .getByRole("button", { name: "+ Bar in section", exact: true })
@@ -229,6 +235,7 @@ test("a fresh writer can create sections, bars, phrases and lyrics with no JSON"
     "unexpected turn",
   );
   await page.reload();
+  await page.getByRole("button", { name: "Open Structure", exact: true }).click();
   await expect(page.locator(".ruler-body button")).toHaveCount(2);
   await expect(page.locator(".annotation.phrases")).toHaveCount(1);
   await expect(page.locator(".annotation.lyrics")).toContainText(
@@ -250,6 +257,7 @@ test("typing a title survives a same-revision repaint before blur", async ({
     .poll(async () => (await tool(page, "read")).title)
     .toBe("A title in progress");
   await page.reload();
+  await page.getByRole("button", { name: "Open Structure", exact: true }).click();
   await expect(page.getByLabel("Song title")).toHaveValue(
     "A title in progress",
   );

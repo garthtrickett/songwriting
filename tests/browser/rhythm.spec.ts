@@ -12,6 +12,7 @@ async function boot(page: Page) {
     text: JSON.stringify(acceptance()),
     asCopy: false,
   });
+  await page.getByRole("button", { name: "Open Rhythm", exact: true }).click();
   // Reproduce fast-runner reads racing an asynchronous UI save.
   await page.evaluate(() => {
     const c = (window as any).songwriting.controller;
@@ -100,6 +101,7 @@ test("ordinary rhythm controls create an isolated A′, transform and compare it
   expect(s.tables.occurrences.guitar.start).toEqual([1, 2]);
   expect(s.tables.occurrences.bass).toEqual(original.tables.occurrences.bass);
   await page.reload();
+  await page.getByRole("button", { name: "Open Rhythm", exact: true }).click();
   await page.waitForFunction(() => Boolean((window as any).songwriting));
   expect(JSON.parse(await tool(page, "export"))).toEqual(s);
 });
@@ -155,6 +157,7 @@ test("polyrhythm forms generate audible independent lanes and inspectors expose 
   await page.getByRole("button", { name: "Stop", exact: true }).click();
   s = await tool(page, "read");
   await page.reload();
+  await page.getByRole("button", { name: "Open Rhythm", exact: true }).click();
   await page.waitForFunction(() => Boolean((window as any).songwriting));
   expect(JSON.parse(await tool(page, "export"))).toEqual(s);
   const copy = await tool(page, "import", {

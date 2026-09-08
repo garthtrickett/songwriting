@@ -12,6 +12,7 @@ async function boot(page: Page) {
     text: JSON.stringify(harmonySong()),
     asCopy: false,
   });
+  await page.getByRole("button", { name: "Open Harmony", exact: true }).click();
   await page.evaluate(() => {
     const c = (window as any).songwriting.controller,
       mutate = c.mutate.bind(c);
@@ -87,6 +88,7 @@ test("ordinary chord and context controls preserve pedal notes and portable cont
   await expect(page.getByLabel("Sounding harmony")).toContainText("Main voice");
   s = await tool(page, "read");
   await page.reload();
+  await page.getByRole("button", { name: "Open Harmony", exact: true }).click();
   await page.waitForFunction(() => Boolean((window as any).songwriting));
   expect(JSON.parse(await tool(page, "export"))).toEqual(s);
   expect(
@@ -171,6 +173,7 @@ test("voicing, transposition, member drafts and expression work through ordinary
     .poll(async () => (await tool(page, "read")).tables.events.chord.chordId)
     .toBe(s.tables.events.chord.chordId);
   await page.reload();
+  await page.getByRole("button", { name: "Open Harmony", exact: true }).click();
   await page.waitForFunction(() => Boolean((window as any).songwriting));
   expect(JSON.parse(await tool(page, "export"))).toEqual(s);
 });

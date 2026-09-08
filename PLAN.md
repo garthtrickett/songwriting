@@ -1,6 +1,14 @@
 # Songwriting app — product and technical plan
 
-Status: Phases 1–7 complete; Phases 8–9 planned; see PHASES.md and docs/PHASE7_VALIDATION.md for delivery status. `songwriting` is a working name.
+Status: Phases 1–7 complete; the Phase 8 arrangement workspace is implemented; broader Phases 8–9 remain planned; see PHASES.md and docs/PHASE7_VALIDATION.md for delivery status. `songwriting` is a working name.
+
+## Song-view redesign
+
+[UI_REDESIGN_PLAN.md](UI_REDESIGN_PLAN.md) records the Ableton-inspired restyle and
+layout of the existing song arrangement, with an integrated note editor using
+non-key-specific degrees 1–7, alterations and octaves. No Session View or clip
+launcher. Implemented with passing local validation; see
+[redesign validation](docs/UI_REDESIGN_VALIDATION.md). Phases 1–7 remain complete.
 
 ## Product
 

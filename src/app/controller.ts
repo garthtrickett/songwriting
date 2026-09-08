@@ -1,7 +1,7 @@
 import { MediaWorkspace } from "../media/workspace.ts";
 import { historyStacks } from "../song/history.ts";
 import { sectionSpans } from "../song/arrangement.ts";
-import { value } from "../song/time.ts";
+import { type Time, value } from "../song/time.ts";
 import { commit, list, read, save } from "../storage/projects.ts";
 import type { Change, Command, Envelope, Mutation } from "../song/commands.ts";
 import {
@@ -22,6 +22,11 @@ export class Controller {
   songs: Envelope[] = [];
   deletedSongs: Envelope[] = [];
   selection: Selection | null = null;
+  selectionPlacement: {
+    occurrenceId: string;
+    appearanceId: string | null;
+    origin: Time;
+  } | null = null;
   error = "";
   incoming = "";
   zoom = 32;
@@ -38,7 +43,9 @@ export class Controller {
   private fieldOperations = new Set<string>();
   constructor(readonly db: IDBDatabase) {
     this.media = new MediaWorkspace(this);
-    this.audio = new AudioEngine(async id => (await this.media.library.get(id)).blob);
+    this.audio = new AudioEngine(
+      async (id) => (await this.media.library.get(id)).blob,
+    );
     if (typeof BroadcastChannel !== "undefined") {
       this.channel = new BroadcastChannel("songwriting-edits");
       this.channel.onmessage = () => void this.refresh();
@@ -97,6 +104,7 @@ export class Controller {
     this.audio.stop();
     this.current = (await read<Envelope>(this.db, "songs", id)) ?? null;
     this.selection = null;
+    this.selectionPlacement = null;
     this.incoming = "";
     this.jumpTo = 0;
     this.navigationVersion++;
@@ -136,7 +144,11 @@ export class Controller {
     )
       this.selection = null;
   }
-  select(s: Selection | null) {
+  select(
+    s: Selection | null,
+    placement: Controller["selectionPlacement"] = null,
+  ) {
+    this.selectionPlacement = placement;
     this.selection = s;
     this.notify();
   }
@@ -166,11 +178,15 @@ export class Controller {
     label: string,
     captured = this.current,
   ) {
-    return this.queueFields((s) => {
-      const entity = s.tables[table][id];
-      if (!entity) throw new Error("The edited object no longer exists");
-      return [{ table, id, value: { ...entity, ...fields } }];
-    }, label, captured);
+    return this.queueFields(
+      (s) => {
+        const entity = s.tables[table][id];
+        if (!entity) throw new Error("The edited object no longer exists");
+        return [{ table, id, value: { ...entity, ...fields } }];
+      },
+      label,
+      captured,
+    );
   }
   patchTitle(title: string) {
     return this.queueFields(
@@ -178,7 +194,11 @@ export class Controller {
       "Rename song",
     );
   }
-  private queueFields(build: (song: Song) => Change[], label: string, captured = this.current) {
+  private queueFields(
+    build: (song: Song) => Change[],
+    label: string,
+    captured = this.current,
+  ) {
     if (!captured?.song)
       return Promise.resolve({
         ok: false as const,
