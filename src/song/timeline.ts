@@ -74,6 +74,8 @@ export function segments(s: Song, o: Occurrence): Segment[] {
   }));
 }
 export interface Sound {
+  appearanceId: string | null;
+  cycleOrigin: Time;
   memberId: string | null;
   id: string;
   occurrenceId: string;
@@ -134,6 +136,8 @@ export function sounds(s: Song): Sound[] {
               id: `${o.id}:${o.appearanceId ?? "global"}:${e.id}:${n.member}:${start}`,
               memberId: n.member || null,
               occurrenceId: o.id,
+              appearanceId: o.appearanceId,
+              cycleOrigin: sub(start, add(e.start, perf?.offset ?? ZERO)),
               eventId: e.id,
               voiceId: voice.id,
               partId: part.id,

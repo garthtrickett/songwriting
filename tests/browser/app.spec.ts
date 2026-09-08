@@ -18,6 +18,7 @@ test("manual composition imports, edits, auditions, undoes, and reloads", async 
   await expect(page.getByLabel("Song title")).toHaveValue("First sketch");
   const context = await tool(page, "context");
   const s = acceptance(context.songId);
+  await page.getByRole("button", { name: "Open Changes / Advanced", exact: true }).click();
   await page.getByText("Song document · atomic editing").click();
   await page.getByRole("button", { name: "Edit complete song" }).click();
   await page.getByLabel("Song JSON").fill(JSON.stringify(s));
@@ -25,6 +26,7 @@ test("manual composition imports, edits, auditions, undoes, and reloads", async 
   await expect(page.getByLabel("Song title")).toHaveValue("Seven meets eight");
   await expect(page.locator(".note-block").first()).toBeVisible();
   await expect(page.locator(".ruler-body")).toContainText("7/8");
+  await page.getByRole("button", { name: "Open Objects", exact: true }).click();
   await page
     .getByRole("button", { name: "Find and mark next cycle alignment" })
     .click();
@@ -122,6 +124,7 @@ test("agent bridge persists task delivery and exact operation retry", async ({
     asCopy: false,
     operationId: "load",
   });
+  await page.getByRole("button", { name: "Toggle agent panel", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Send to agent" }),
   ).toBeEnabled();
@@ -187,6 +190,7 @@ test("a mutation survives a lost bridge response without being committed twice",
     asCopy: false,
     operationId: "initial",
   });
+  await page.getByRole("button", { name: "Toggle agent panel", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Send to agent" }),
   ).toBeEnabled();
@@ -271,6 +275,7 @@ test("normal inspectors create notes and recover a deleted song", async ({
 }) => {
   await boot(page);
   await page.getByRole("button", { name: "Start a song" }).click();
+  await page.getByRole("button", { name: "Open Objects", exact: true }).click();
   await page.getByRole("button", { name: "Add", exact: false }).first().click();
   await page.getByLabel("Cycle length · quarter notes").fill("7/2");
   await page.getByLabel("Cycle length · quarter notes").press("Tab");
@@ -284,6 +289,7 @@ test("normal inspectors create notes and recover a deleted song", async ({
         Object.values(JSON.parse(await tool(page, "export")).tables.events)[0],
     )
     .toMatchObject({ start: [1, 3] });
+  await page.getByRole("button", { name: "Open Changes / Advanced", exact: true }).click();
   await page.getByText("Song document · atomic editing").click();
   await page
     .getByRole("button", { name: "Move song to recently deleted" })

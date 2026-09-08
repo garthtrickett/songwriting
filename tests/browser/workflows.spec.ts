@@ -41,6 +41,8 @@ async function call(taskId: string, name: string, args: unknown = {}) {
   return (await api(`step?taskId=${taskId}&stepId=${stepId}`)).result;
 }
 async function submit(page: Page, prompt: string) {
+  const toggle = page.getByRole("button", { name: "Toggle agent panel", exact: true });
+  if (await toggle.getAttribute("aria-pressed") !== "true") await toggle.click();
   await expect(
     page.getByRole("button", { name: "Send to agent" }),
   ).toBeEnabled();
@@ -54,6 +56,7 @@ test("ordinary writing guidance and reusable prompts are portable, undoable and 
   context,
 }) => {
   await boot(page);
+  await page.getByRole("button", { name: "Open Guidance", exact: true }).click();
   await page
     .getByText("Writing guidance and reusable prompts", { exact: true })
     .click();
@@ -146,6 +149,7 @@ test("ordinary writing guidance and reusable prompts are portable, undoable and 
     page.getByLabel("Project instructions", { exact: true }),
   ).toHaveValue("My unsaved guidance");
   await page.reload();
+  await page.getByRole("button", { name: "Open Guidance", exact: true }).click();
   await page
     .getByText("Writing guidance and reusable prompts", { exact: true })
     .click();

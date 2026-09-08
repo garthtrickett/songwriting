@@ -1,4 +1,4 @@
-# UI / agent capability map — Phases 1–7
+# UI / agent capability map — Phases 1–7 and arrangement workspace
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -87,3 +87,26 @@ separate from musical deletion and never silently removes undo dependencies.
 Task controls are orchestration, not musical edits. Every editable musical or
 writing entity still uses the same validated command model. Saved prompt use fills
 a request for the writer to adapt; it does not start an unsolicited task.
+
+## Arrangement workspace and relative-note editor
+
+The transport and song map stay visible; Notes, Structure, Rhythm, Harmony, Tab,
+Audio, Objects, Changes / Advanced and Guidance have named toolbar entries.
+Selection and Agent share the right panel. Open a tool before using its controls;
+closing it retains its mounted form, while capture and tasks remain app-owned.
+
+| UI outcome | Agent equivalent |
+| --- | --- |
+| Draw a degree/alteration/octave note with exact onset and duration | Create an `events` note via `mutate` |
+| Move/resize multiple notes as one undoable gesture | One atomic `mutate` containing the changed events |
+| Edit a chord member pitch or independent onset/release | Chord `notes` and event `performance` edits; preserve unaffected member IDs and releases |
+| Delete members while keeping references valid | Atomic chord-member removal and linked performance edits; empty chords are rejected |
+| Explicitly combine individual notes into a chord | Create chord members and a chord event with original offsets/releases; remove original events in the same atomic edit |
+| Make an independently editable pattern at a selected placement | Rhythm `variation` plus occurrence retargeting in one edit; for one repeated section appearance, use structure `variation` |
+| Create a pitched part ready for first notes | Atomic part, voice, pattern and global occurrence creation |
+| Inspect a retained failed note proposal | Its revision-bound mutation is visible/copyable; agents inspect current music and receipts before composing a replacement |
+
+All these outcomes use schema 7 unchanged. The UI's pure note-edit helpers compose
+ordinary entity changes; agents retain the underlying primitives. Snapping and
+panel layout are view preferences, not a second musical model. The seven-degree
+axis preserves authored alterations and octaves when the audition tonic changes.

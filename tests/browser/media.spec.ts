@@ -12,6 +12,7 @@ async function boot(page: Page) {
     text: JSON.stringify(mediaSong()),
     asCopy: false,
   });
+  await page.getByRole("button", { name: "Open Audio", exact: true }).click();
 }
 async function imported(page: Page) {
   await page
@@ -102,6 +103,7 @@ test("audio import, ordinary take trims, bundle roundtrip and seek preserve comp
     .toBe(true);
   await tool(page, "transport", { action: "stop" });
   await page.reload();
+  await page.getByRole("button", { name: "Open Audio", exact: true }).click();
   await page.waitForFunction(() =>
     Boolean((window as any).songwriting?.controller.song),
   );
@@ -118,6 +120,7 @@ test("audio import, ordinary take trims, bundle roundtrip and seek preserve comp
   await other.waitForFunction(() => Boolean((window as any).songwriting));
   await tool(other, "import", { text: JSON.stringify(saved), asCopy: false });
   expect((await tool(other, "media_status")).missing).toHaveLength(1);
+  await other.getByRole("button", { name: "Open Audio", exact: true }).click();
   await expect(other.getByLabel("Recordings and media")).toContainText(
     "Missing audio",
   );
@@ -191,6 +194,7 @@ test("synthetic microphone capture saves final chunks, excludes another tab and 
   expect(status.captures[0].assetId).toBe(status.assets[0].id);
   expect(status.captures[0].chunks).toBe(0);
   await page.reload();
+  await page.getByRole("button", { name: "Open Audio", exact: true }).click();
   await page.waitForFunction(() =>
     Boolean((window as any).songwriting?.controller.song),
   );
@@ -281,6 +285,7 @@ test("recover persisted interrupted chunks and keep imported audio when a take p
     });
   }, encoded);
   await page.reload();
+  await page.getByRole("button", { name: "Open Audio", exact: true }).click();
   await page.waitForFunction(() =>
     Boolean((window as any).songwriting?.controller.song),
   );

@@ -6,7 +6,6 @@ import {
   type Command,
   type Mutation,
 } from "../song/commands.ts";
-import { historyStacks } from "../song/history.ts";
 import type { StructureAction } from "../song/structure.ts";
 import { format } from "../song/time.ts";
 
@@ -44,7 +43,6 @@ export function arrangementPanel(c: Controller) {
     if (!s) return nothing;
     if (review?.mutation.songId !== s.id) review = null;
     const spans = sectionSpans(s);
-    const stacks = historyStacks(c.current!.history);
     const selected = c.selection;
     const active =
       selected?.table === "arrangement"
@@ -89,18 +87,6 @@ export function arrangementPanel(c: Controller) {
       <div class="section-title">
         <h2>Arrangement</h2>
         <div class="arrangement-actions">
-          <button
-            ?disabled=${!stacks.undo.length}
-            @click=${() => void run(() => c.historyAction("undo"))}
-          >
-            Undo
-          </button>
-          <button
-            ?disabled=${!stacks.redo.length}
-            @click=${() => void run(() => c.historyAction("redo"))}
-          >
-            Redo
-          </button>
           <button
             class="secondary"
             @click=${() =>
