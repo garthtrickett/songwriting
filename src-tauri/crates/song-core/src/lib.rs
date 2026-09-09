@@ -8,6 +8,7 @@ mod harmony_pitch;
 mod model;
 mod note_edit;
 mod rhythm;
+mod rhythm_analysis;
 mod structure;
 mod time;
 mod timeline;
@@ -15,11 +16,17 @@ mod validate;
 mod voice_leading;
 
 pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State, history_stacks};
-pub use arrangement::{Placement, placements, section_length, section_spans};
+pub use arrangement::{
+    Annotation, Placement, annotations, placements, section_length, section_spans,
+};
 pub use harmony::HarmonyAction;
 pub use model::*;
 pub use note_edit::{NoteEdit, NoteTarget, WireChange, change_notes, combine_notes, remove_notes};
 pub use rhythm::{RhythmAction, RhythmLane};
+pub use rhythm_analysis::{
+    AlignmentLaneView, AlignmentMap, GridAppearance, GridLane, PatternComparison, PatternRow,
+    alignment_map, compare_patterns, polyrhythm_grid,
+};
 pub use structure::StructureAction;
 pub use time::{MAX_SAFE_INTEGER, Time};
 pub use timeline::{

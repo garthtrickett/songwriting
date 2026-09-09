@@ -1,0 +1,767 @@
+[
+  {
+    "name": "analysis",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          },
+          "bass": {
+            "id": "bass",
+            "name": "Bass",
+            "instrument": "bass",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          },
+          "bass1": {
+            "id": "bass1",
+            "name": "Bass",
+            "partId": "bass"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          },
+          "riff2": {
+            "id": "riff2",
+            "name": "Again",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "e1": {
+            "id": "e1",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff2",
+            "kind": "note",
+            "start": [
+              2,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          },
+          "lead2": {
+            "id": "lead2",
+            "name": "Second",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              7,
+              2
+            ],
+            "span": [
+              5,
+              1
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          },
+          "bass1o": {
+            "id": "bass1o",
+            "name": "Bass",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "bass1",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              2,
+              1
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {
+          "ph1": {
+            "id": "ph1",
+            "name": "Phrase",
+            "sectionId": "verse",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              2,
+              1
+            ]
+          }
+        },
+        "lyrics": {
+          "ly1": {
+            "id": "ly1",
+            "name": "Lyric",
+            "sectionId": "verse",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              1,
+              1
+            ],
+            "text": "la",
+            "phraseId": "ph1",
+            "partId": null
+          }
+        },
+        "polyrhythms": {
+          "p1": {
+            "id": "p1",
+            "name": "Poly",
+            "sectionId": "verse",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              2,
+              1
+            ],
+            "lanes": [
+              {
+                "occurrenceId": "lead1",
+                "divisions": 2
+              },
+              {
+                "occurrenceId": "bass1o",
+                "divisions": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    "annotations": {
+      "ok": true,
+      "value": [
+        {
+          "table": "phrases",
+          "id": "ph1",
+          "name": "Phrase",
+          "start": [
+            0,
+            1
+          ],
+          "duration": [
+            2,
+            1
+          ],
+          "appearanceId": "verse1"
+        },
+        {
+          "table": "lyrics",
+          "id": "ly1",
+          "name": "Lyric",
+          "start": [
+            0,
+            1
+          ],
+          "duration": [
+            1,
+            1
+          ],
+          "appearanceId": "verse1"
+        }
+      ]
+    },
+    "alignment": {
+      "ok": true,
+      "value": {
+        "from": [
+          0,
+          1
+        ],
+        "until": [
+          17,
+          2
+        ],
+        "lanes": [
+          {
+            "id": "lead1",
+            "name": "Lead",
+            "phase": [
+              0,
+              1
+            ],
+            "length": [
+              7,
+              2
+            ],
+            "starts": [
+              [
+                0,
+                1
+              ],
+              [
+                7,
+                2
+              ],
+              [
+                7,
+                1
+              ]
+            ],
+            "total": 3
+          },
+          {
+            "id": "lead2",
+            "name": "Second",
+            "phase": [
+              0,
+              1
+            ],
+            "length": [
+              7,
+              2
+            ],
+            "starts": [
+              [
+                7,
+                2
+              ],
+              [
+                7,
+                1
+              ]
+            ],
+            "total": 2
+          }
+        ],
+        "common": [
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ],
+        "totalCommon": 2,
+        "truncated": false
+      }
+    },
+    "alignmentSingle": {
+      "ok": false,
+      "error": "Select 2–8 distinct occurrences"
+    },
+    "alignmentUnknown": {
+      "ok": false,
+      "error": "Unknown occurrence gone"
+    },
+    "alignmentRange": {
+      "ok": false,
+      "error": "Range end must follow start"
+    },
+    "alignmentMany": {
+      "ok": false,
+      "error": "Select 2–8 distinct occurrences"
+    },
+    "grid": {
+      "ok": true,
+      "value": [
+        {
+          "appearanceId": "verse1",
+          "start": [
+            0,
+            1
+          ],
+          "duration": [
+            2,
+            1
+          ],
+          "lanes": [
+            {
+              "occurrenceId": "lead1",
+              "divisions": 2,
+              "expected": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "actual": [
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "totalActual": 2,
+              "truncated": false,
+              "missing": [
+                [
+                  0,
+                  1
+                ]
+              ],
+              "extra": [
+                [
+                  1,
+                  3
+                ]
+              ],
+              "matches": false
+            },
+            {
+              "occurrenceId": "bass1o",
+              "divisions": 2,
+              "expected": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "actual": [
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "totalActual": 2,
+              "truncated": false,
+              "missing": [
+                [
+                  0,
+                  1
+                ]
+              ],
+              "extra": [
+                [
+                  1,
+                  3
+                ]
+              ],
+              "matches": false
+            }
+          ]
+        }
+      ]
+    },
+    "gridUnknown": {
+      "ok": false,
+      "error": "Unknown polyrhythm"
+    },
+    "compare": {
+      "ok": true,
+      "value": {
+        "source": {
+          "id": "riff",
+          "name": "Riff",
+          "length": [
+            7,
+            2
+          ],
+          "groups": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "sourceId": null
+        },
+        "variation": {
+          "id": "riff2",
+          "name": "Again",
+          "length": [
+            7,
+            2
+          ],
+          "groups": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "sourceId": null
+        },
+        "cycleChanged": false,
+        "groupsChanged": false,
+        "rows": [
+          {
+            "originId": "note",
+            "before": {
+              "id": "note",
+              "name": "Note",
+              "originId": "note",
+              "patternId": "riff",
+              "kind": "note",
+              "start": [
+                1,
+                3
+              ],
+              "duration": [
+                2,
+                3
+              ],
+              "pitch": {
+                "degree": 7,
+                "alteration": -1,
+                "octave": 1
+              },
+              "chordId": null,
+              "drum": "kick",
+              "accent": 0.7,
+              "articulation": "normal",
+              "performance": []
+            },
+            "after": {
+              "id": "e1",
+              "name": "Note",
+              "originId": "note",
+              "patternId": "riff2",
+              "kind": "note",
+              "start": [
+                2,
+                3
+              ],
+              "duration": [
+                2,
+                3
+              ],
+              "pitch": {
+                "degree": 7,
+                "alteration": -1,
+                "octave": 1
+              },
+              "chordId": null,
+              "drum": "kick",
+              "accent": 0.7,
+              "articulation": "normal",
+              "performance": []
+            },
+            "status": "changed",
+            "fields": [
+              "start"
+            ]
+          },
+          {
+            "originId": "harmony",
+            "before": {
+              "id": "harmony",
+              "name": "Note",
+              "originId": "harmony",
+              "patternId": "riff",
+              "kind": "chord",
+              "start": [
+                1,
+                1
+              ],
+              "duration": [
+                3,
+                1
+              ],
+              "pitch": {
+                "degree": 1,
+                "alteration": 0,
+                "octave": 0
+              },
+              "chordId": "chord",
+              "drum": "kick",
+              "accent": 0.7,
+              "articulation": "normal",
+              "performance": []
+            },
+            "after": null,
+            "status": "removed",
+            "fields": []
+          }
+        ]
+      }
+    },
+    "compareUnknown": {
+      "ok": false,
+      "error": "Choose two existing patterns"
+    }
+  }
+]
