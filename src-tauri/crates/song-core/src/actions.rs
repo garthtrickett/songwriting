@@ -1,5 +1,9 @@
-use crate::{Error, MusicalEvent, Performance, Result, Song, Time, ensure, validate::identity};
+use crate::{
+    Error, MusicalEvent, Performance, Result, Song, StructureAction, Time, ensure,
+    validate::identity,
+};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ts_rs::TS)]
 #[serde(
@@ -19,6 +23,9 @@ pub enum Action {
     },
     Undo {
         target_id: String,
+    },
+    Structure {
+        action: StructureAction,
     },
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -42,6 +49,14 @@ pub enum Delta {
         id: String,
         before: Box<MusicalEvent>,
         after: Box<MusicalEvent>,
+    },
+    /// Any other table entry (or meta field) as JSON values, mirroring the
+    /// reference difference output. Missing entries read as null.
+    Table {
+        table: String,
+        id: String,
+        before: Value,
+        after: Value,
     },
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -237,23 +252,6 @@ impl Envelope {
         )?;
         let proposal = propose(self, &m.action)?;
         proposal.song.validate()?;
-        let mut deltas = vec![];
-        if self.song.title != proposal.song.title {
-            deltas.push(Delta::Title {
-                before: self.song.title.clone(),
-                after: proposal.song.title.clone(),
-            });
-        }
-        for (id, after) in &proposal.song.tables.events {
-            let before = &self.song.tables.events[id];
-            if before != after {
-                deltas.push(Delta::Event {
-                    id: id.clone(),
-                    before: Box::new(before.clone()),
-                    after: Box::new(after.clone()),
-                });
-            }
-        }
         let mut candidate = self.clone();
         candidate.revision += 1;
         candidate.song = proposal.song;
@@ -261,11 +259,124 @@ impl Envelope {
             operation_id: m.operation_id.clone(),
             mutation: m.clone(),
             revision: candidate.revision,
-            deltas,
+            deltas: difference(&self.song, &candidate.song)?,
             at: now,
         });
         Ok(candidate)
     }
+}
+
+/// Table and meta differences as generic deltas, mirroring the reference
+/// difference output. Title and note edits keep their typed variants; every
+/// other change (including arrangement order) becomes a table delta.
+fn difference(before: &Song, after: &Song) -> Result<Vec<Delta>> {
+    let mut deltas = vec![];
+    if before.title != after.title {
+        deltas.push(Delta::Title {
+            before: before.title.clone(),
+            after: after.title.clone(),
+        });
+    }
+    macro_rules! table {
+        ($field:ident, $name:literal) => {
+            for id in before
+                .tables
+                .$field
+                .keys()
+                .chain(after.tables.$field.keys())
+                .collect::<std::collections::BTreeSet<_>>()
+            {
+                let convert = |song: &Song| {
+                    song.tables.$field.get(id).map(|e| {
+                        serde_json::to_value(e).map_err(|e| {
+                            Error::new("invalid", format!("Unserializable entity: {e}"))
+                        })
+                    })
+                };
+                let b = convert(before).transpose()?.unwrap_or(Value::Null);
+                let a = convert(after).transpose()?.unwrap_or(Value::Null);
+                if b != a {
+                    deltas.push(Delta::Table {
+                        table: $name.into(),
+                        id: (*id).clone(),
+                        before: b,
+                        after: a,
+                    });
+                }
+            }
+        };
+    }
+    // Events keep typed deltas when both sides exist; additions and removals
+    // travel as table deltas so undo never indexes a missing entry.
+    for (id, after_event) in &after.tables.events {
+        match before.tables.events.get(id) {
+            Some(before_event) if before_event != after_event => {
+                deltas.push(Delta::Event {
+                    id: id.clone(),
+                    before: Box::new(before_event.clone()),
+                    after: Box::new(after_event.clone()),
+                });
+            }
+            None => {
+                deltas.push(Delta::Table {
+                    table: "events".into(),
+                    id: id.clone(),
+                    before: Value::Null,
+                    after: serde_json::to_value(after_event)?,
+                });
+            }
+            _ => {}
+        }
+    }
+    for (id, before_event) in &before.tables.events {
+        if !after.tables.events.contains_key(id) {
+            deltas.push(Delta::Table {
+                table: "events".into(),
+                id: id.clone(),
+                before: serde_json::to_value(before_event)?,
+                after: Value::Null,
+            });
+        }
+    }
+    table!(patterns, "patterns");
+    table!(chords, "chords");
+    table!(bars, "bars");
+    table!(sections, "sections");
+    table!(arrangement, "arrangement");
+    table!(parts, "parts");
+    table!(voices, "voices");
+    table!(occurrences, "occurrences");
+    table!(prompts, "prompts");
+    table!(assets, "assets");
+    table!(takes, "takes");
+    table!(fretted, "fretted");
+    table!(fingerings, "fingerings");
+    table!(harmony, "harmony");
+    table!(markers, "markers");
+    table!(phrases, "phrases");
+    table!(lyrics, "lyrics");
+    table!(polyrhythms, "polyrhythms");
+    if before.arrangement_order != after.arrangement_order {
+        deltas.push(Delta::Table {
+            table: "meta".into(),
+            id: "arrangementOrder".into(),
+            before: Value::Array(
+                before
+                    .arrangement_order
+                    .iter()
+                    .map(|id| Value::String(id.clone()))
+                    .collect(),
+            ),
+            after: Value::Array(
+                after
+                    .arrangement_order
+                    .iter()
+                    .map(|id| Value::String(id.clone()))
+                    .collect(),
+            ),
+        });
+    }
+    Ok(deltas)
 }
 
 impl Mutation {
@@ -298,6 +409,7 @@ fn propose(current: &Envelope, action: &Action) -> Result<Proposal> {
                 .ok_or_else(|| Error::new("invalid", "Unknown change to undo"))?;
             reverse(&mut song, &receipt.deltas)?;
         }
+        Action::Structure { action } => crate::structure::structure(&mut song, action)?,
     }
     Ok(Proposal { song })
 }
@@ -365,6 +477,12 @@ fn reverse(song: &mut Song, deltas: &[Delta]) -> Result<()> {
                 song.tables.events.get(id) == Some(after.as_ref()),
                 format!("events/{id}"),
             ),
+            Delta::Table {
+                table, id, after, ..
+            } => (
+                table_slot(song, table, id)? == *after,
+                format!("{table}/{id}"),
+            ),
         };
         if !matches {
             return Err(Error::new(
@@ -381,7 +499,95 @@ fn reverse(song: &mut Song, deltas: &[Delta]) -> Result<()> {
                     .events
                     .insert(id.clone(), before.as_ref().clone());
             }
+            Delta::Table {
+                table, id, before, ..
+            } => write_table_slot(song, table, id, before)?,
         }
     }
+    Ok(())
+}
+
+/// Current table entry as JSON (missing reads as null), mirroring the
+/// reference difference output for undo comparison.
+fn table_slot(song: &Song, table: &str, id: &str) -> Result<Value> {
+    if table == "meta" {
+        return match id {
+            "arrangementOrder" => Ok(Value::Array(
+                song.arrangement_order
+                    .iter()
+                    .map(|id| Value::String(id.clone()))
+                    .collect(),
+            )),
+            _ => Err(Error::new(
+                "invalid",
+                format!("Unsupported metadata slot: {id}"),
+            )),
+        };
+    }
+    let v = serde_json::to_value(song)
+        .map_err(|e| Error::new("invalid", format!("Unserializable song: {e}")))?;
+    Ok(v["tables"][table][id].clone())
+}
+
+const KNOWN_TABLES: [&str; 19] = [
+    "patterns",
+    "events",
+    "chords",
+    "bars",
+    "sections",
+    "arrangement",
+    "parts",
+    "voices",
+    "occurrences",
+    "prompts",
+    "assets",
+    "takes",
+    "fretted",
+    "fingerings",
+    "harmony",
+    "markers",
+    "phrases",
+    "lyrics",
+    "polyrhythms",
+];
+
+/// Write one table delta back. Corrupt values fail instead of mutating.
+fn write_table_slot(song: &mut Song, table: &str, id: &str, value: &Value) -> Result<()> {
+    if table == "meta" {
+        if id == "arrangementOrder" {
+            let Value::Array(items) = value else {
+                return Err(Error::new("invalid", "Corrupt arrangement order"));
+            };
+            let mut order = Vec::with_capacity(items.len());
+            for item in items {
+                order.push(
+                    item.as_str()
+                        .ok_or_else(|| Error::new("invalid", "Corrupt arrangement order"))?
+                        .to_string(),
+                );
+            }
+            song.arrangement_order = order;
+            return Ok(());
+        }
+        return Err(Error::new(
+            "invalid",
+            format!("Unsupported metadata slot: {id}"),
+        ));
+    }
+    ensure(
+        KNOWN_TABLES.contains(&table),
+        &format!("Unknown table: {table}"),
+    )?;
+    let mut v = serde_json::to_value(&*song)
+        .map_err(|e| Error::new("invalid", format!("Unserializable song: {e}")))?;
+    if value.is_null() {
+        if let Some(map) = v["tables"][table].as_object_mut() {
+            map.remove(id);
+        }
+    } else {
+        v["tables"][table][id] = value.clone();
+    }
+    *song = serde_json::from_value(v)
+        .map_err(|e| Error::new("invalid", format!("Corrupt table delta: {e}")))?;
     Ok(())
 }

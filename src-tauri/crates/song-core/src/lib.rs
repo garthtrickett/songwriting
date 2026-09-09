@@ -3,6 +3,7 @@ mod actions;
 mod arrangement;
 mod fretted;
 mod model;
+mod structure;
 mod time;
 mod timeline;
 mod validate;
@@ -10,6 +11,7 @@ mod validate;
 pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State, history_stacks};
 pub use arrangement::{Placement, placements, section_length, section_spans};
 pub use model::*;
+pub use structure::StructureAction;
 pub use time::{MAX_SAFE_INTEGER, Time};
 pub use timeline::{
     alignment, bars, clicks, cycle_starts, rest_spans, seconds_per_quarter, segments, song_end,
@@ -39,6 +41,11 @@ impl std::fmt::Display for Error {
     }
 }
 impl std::error::Error for Error {}
+impl From<serde_json::Error> for Error {
+    fn from(error: serde_json::Error) -> Self {
+        Self::new("invalid", error.to_string())
+    }
+}
 pub type Result<T> = std::result::Result<T, Error>;
 
 pub(crate) fn ensure(condition: bool, message: &str) -> Result<()> {
