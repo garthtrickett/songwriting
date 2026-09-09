@@ -62,3 +62,13 @@ then retains its real edit/drag/restart/undo assertions. Nix ARM/x86 CI and exis
 Linux/macOS/Windows checks remain required. Native audio, real-device evidence,
 full musical import/model parity, OS credential storage, streaming responses and
 full D5 task workflows remain outside this proof.
+
+## CI portability correction
+
+The initial macOS push job failed in the mock HTTP provider's `read_line` with
+`WouldBlock`, while the identical PR job passed. Accepted sockets may inherit a
+nonblocking listener's mode on BSD/macOS, unlike Linux. A local reproduction with
+an explicitly nonblocking accepted socket showed the same immediate error despite
+setting a read timeout. The fixture now explicitly sets blocking mode before its
+bounded reads; the focused Rig protocol test passes. No assertion or production
+provider behavior changed. Final cross-platform results are recorded on PR #14.

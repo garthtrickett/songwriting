@@ -134,6 +134,9 @@ mod tests {
                         Err(e) => panic!("Mock provider accept: {e}"),
                     }
                 };
+                // Accepted sockets can inherit the listener's nonblocking mode
+                // on BSD/macOS. These fixture reads use blocking I/O with a deadline.
+                socket.set_nonblocking(false).unwrap();
                 socket
                     .set_read_timeout(Some(Duration::from_secs(10)))
                     .unwrap();
