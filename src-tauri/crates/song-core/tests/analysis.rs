@@ -251,3 +251,72 @@ fn analysis_derivations_match_typescript() {
         }
     }
 }
+
+#[test]
+fn fretted_tablature_and_take_placements_match_typescript() {
+    let cases: serde_json::Value =
+        serde_json::from_str(include_str!("../../../../tests/desktop/analysis.json")).unwrap();
+    let case = &cases[1];
+    assert_eq!(case["name"], "tabtakes");
+    // Takes stay schemaless until slice 5, so this variant is derived, not validated.
+    let song: Song = serde_json::from_value(case["song"].clone()).unwrap();
+    let time = |n: i64, d: i64| song_core::Time::new(n, d).unwrap();
+    check(
+        song_core::tablature(&song, "tab1", time(0, 1), time(17, 2))
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &case["tab"],
+        "tab",
+    );
+    for (key, arrangement, from, until) in [
+        ("tabUnknown", "gone", [0, 1], [17, 2]),
+        ("tabRange", "tab1", [2, 1], [1, 1]),
+    ] {
+        check(
+            song_core::tablature(
+                &song,
+                arrangement,
+                time(from[0], from[1]),
+                time(until[0], until[1]),
+            )
+            .map(|v| serde_json::to_value(v).unwrap()),
+            &case[key],
+            key,
+        );
+    }
+    check(
+        song_core::fret_positions(&song, "tab1", "lead1", "harmony", Some("root"))
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &case["positions"],
+        "positions",
+    );
+    check(
+        song_core::fret_positions(&song, "gone", "lead1", "harmony", Some("root"))
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &case["positionsUnknown"],
+        "positionsUnknown",
+    );
+    let arrangement = song.tables.fretted["tab1"].clone();
+    check(
+        song_core::target_pitch(&song, &arrangement, "lead1", "harmony", Some("root"))
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &case["target"],
+        "target",
+    );
+    check(
+        song_core::target_pitch(&song, &arrangement, "lead1", "gone", None)
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &case["targetStale"],
+        "targetStale",
+    );
+    let fingering = song.tables.fingerings["f1"].clone();
+    check(
+        Ok(serde_json::to_value(song_core::fingering_issues(&song, &fingering)).unwrap()),
+        &case["issues"],
+        "issues",
+    );
+    check(
+        song_core::take_placements(&song).map(|v| serde_json::to_value(v).unwrap()),
+        &case["placements"],
+        "placements",
+    );
+}

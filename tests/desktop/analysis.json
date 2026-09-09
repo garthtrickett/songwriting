@@ -1362,5 +1362,889 @@
         }
       }
     }
+  },
+  {
+    "name": "tabtakes",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {
+          "take1": {
+            "id": "take1",
+            "name": "Take",
+            "assetId": "a1",
+            "partId": "guitar",
+            "sectionId": "verse",
+            "start": [
+              0,
+              1
+            ],
+            "offset": 0,
+            "duration": 2,
+            "gain": 0.8,
+            "muted": false
+          },
+          "take2": {
+            "id": "take2",
+            "name": "Take",
+            "assetId": "a1",
+            "partId": "guitar",
+            "sectionId": null,
+            "start": [
+              1,
+              1
+            ],
+            "offset": 0,
+            "duration": 1,
+            "gain": 1,
+            "muted": true
+          }
+        },
+        "fretted": {
+          "tab1": {
+            "id": "tab1",
+            "name": "Tab",
+            "partId": "guitar",
+            "tonic": 40,
+            "tuning": [
+              64,
+              59,
+              55,
+              50,
+              45,
+              40
+            ],
+            "capo": 0,
+            "maxFret": 12,
+            "handSpan": 4
+          }
+        },
+        "fingerings": {
+          "f1": {
+            "id": "f1",
+            "name": "F1",
+            "arrangementId": "tab1",
+            "occurrenceId": "lead1",
+            "eventId": "harmony",
+            "memberId": "root",
+            "string": 1,
+            "fret": 0,
+            "technique": "pluck",
+            "fromId": null
+          },
+          "f2": {
+            "id": "f2",
+            "name": "F2",
+            "arrangementId": "tab1",
+            "occurrenceId": "lead1",
+            "eventId": "gone",
+            "memberId": null,
+            "string": 2,
+            "fret": 3,
+            "technique": "tap",
+            "fromId": null
+          }
+        },
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "tab": {
+      "ok": true,
+      "value": {
+        "arrangement": {
+          "id": "tab1",
+          "name": "Tab",
+          "partId": "guitar",
+          "tonic": 40,
+          "tuning": [
+            64,
+            59,
+            55,
+            50,
+            45,
+            40
+          ],
+          "capo": 0,
+          "maxFret": 12,
+          "handSpan": 4
+        },
+        "from": [
+          0,
+          1
+        ],
+        "until": [
+          17,
+          2
+        ],
+        "rows": [
+          {
+            "id": "lead1:verse1:note::1,3",
+            "memberId": null,
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              0,
+              1
+            ],
+            "eventId": "note",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:root:1,1",
+            "memberId": "root",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              0,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": {
+              "id": "f1",
+              "name": "F1",
+              "arrangementId": "tab1",
+              "occurrenceId": "lead1",
+              "eventId": "harmony",
+              "memberId": "root",
+              "string": 1,
+              "fret": 0,
+              "technique": "pluck",
+              "fromId": null
+            },
+            "issues": [
+              "String/fret does not sound the current note in this tuning/key"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:third:1,1",
+            "memberId": "third",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              0,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 3,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:fifth:1,1",
+            "memberId": "fifth",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              0,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:note::23,6",
+            "memberId": null,
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              2
+            ],
+            "eventId": "note",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              23,
+              6
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:root:9,2",
+            "memberId": "root",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              2
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              9,
+              2
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": {
+              "id": "f1",
+              "name": "F1",
+              "arrangementId": "tab1",
+              "occurrenceId": "lead1",
+              "eventId": "harmony",
+              "memberId": "root",
+              "string": 1,
+              "fret": 0,
+              "technique": "pluck",
+              "fromId": null
+            },
+            "issues": [
+              "String/fret does not sound the current note in this tuning/key"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:third:9,2",
+            "memberId": "third",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              2
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              9,
+              2
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 3,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:fifth:9,2",
+            "memberId": "fifth",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              2
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              9,
+              2
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:note::22,3",
+            "memberId": null,
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              1
+            ],
+            "eventId": "note",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              22,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:root:8,1",
+            "memberId": "root",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              8,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": {
+              "id": "f1",
+              "name": "F1",
+              "arrangementId": "tab1",
+              "occurrenceId": "lead1",
+              "eventId": "harmony",
+              "memberId": "root",
+              "string": 1,
+              "fret": 0,
+              "technique": "pluck",
+              "fromId": null
+            },
+            "issues": [
+              "String/fret does not sound the current note in this tuning/key"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:third:8,1",
+            "memberId": "third",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              8,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 3,
+              "alteration": 0,
+              "octave": 0
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          },
+          {
+            "id": "lead1:verse1:harmony:fifth:8,1",
+            "memberId": "fifth",
+            "occurrenceId": "lead1",
+            "appearanceId": "verse1",
+            "cycleOrigin": [
+              7,
+              1
+            ],
+            "eventId": "harmony",
+            "voiceId": "lead",
+            "partId": "guitar",
+            "start": [
+              8,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            },
+            "drum": "kick",
+            "instrument": "guitar",
+            "gain": 0.5599999999999999,
+            "fingering": null,
+            "issues": [
+              "Unassigned note"
+            ]
+          }
+        ],
+        "total": 12,
+        "truncated": false,
+        "issueCount": 12,
+        "stale": [
+          {
+            "id": "f1",
+            "issues": [
+              "String/fret does not sound the current note in this tuning/key"
+            ]
+          },
+          {
+            "id": "f2",
+            "issues": [
+              "Error: Stale placement/event or different part"
+            ]
+          }
+        ],
+        "unplaced": [
+          "f2"
+        ]
+      }
+    },
+    "tabUnknown": {
+      "ok": false,
+      "error": "Unknown fretted arrangement"
+    },
+    "tabRange": {
+      "ok": false,
+      "error": "Tab end must follow start"
+    },
+    "positions": {
+      "ok": true,
+      "value": {
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "midi": 40,
+        "positions": [
+          {
+            "string": 6,
+            "fret": 0,
+            "physicalFret": 0
+          }
+        ],
+        "unplayable": false
+      }
+    },
+    "positionsUnknown": {
+      "ok": false,
+      "error": "Unknown fretted arrangement"
+    },
+    "target": {
+      "ok": true,
+      "value": {
+        "degree": 1,
+        "alteration": 0,
+        "octave": 0
+      }
+    },
+    "targetStale": {
+      "ok": false,
+      "error": "Stale placement/event or different part"
+    },
+    "issues": {
+      "ok": true,
+      "value": [
+        "String/fret does not sound the current note in this tuning/key"
+      ]
+    },
+    "placements": {
+      "ok": true,
+      "value": [
+        {
+          "id": "take1",
+          "name": "Take",
+          "assetId": "a1",
+          "partId": "guitar",
+          "sectionId": "verse",
+          "start": [
+            0,
+            1
+          ],
+          "offset": 0,
+          "duration": 2,
+          "gain": 0.8,
+          "muted": false,
+          "appearanceId": "verse1",
+          "at": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "take2",
+          "name": "Take",
+          "assetId": "a1",
+          "partId": "guitar",
+          "sectionId": null,
+          "start": [
+            1,
+            1
+          ],
+          "offset": 0,
+          "duration": 1,
+          "gain": 1,
+          "muted": true,
+          "appearanceId": null,
+          "at": [
+            1,
+            1
+          ]
+        }
+      ]
+    }
   }
 ]

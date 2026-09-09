@@ -1,5 +1,5 @@
 use serde_json::{Value, json};
-use song_core::{Envelope, MAX_SAFE_INTEGER, Mutation, Song, Time};
+use song_core::{AudioAsset, Envelope, MAX_SAFE_INTEGER, Mutation, Song, Time};
 
 fn fixture() -> Song {
     serde_json::from_str(include_str!("../../../../tests/desktop/fixture.json")).unwrap()
@@ -112,9 +112,16 @@ fn malformed_music_and_unported_features_are_rejected_without_dropping_data() {
     s.tables.voices.get_mut("lead").unwrap().part_id = "missing".into();
     assert!(s.validate().is_err());
     let mut s = fixture();
-    s.tables
-        .assets
-        .insert("recording".into(), json!({"original": "preserve me"}));
+    s.tables.assets.insert(
+        "recording".into(),
+        AudioAsset {
+            id: "recording".into(),
+            name: "Recording".into(),
+            mime: "audio/wav".into(),
+            bytes: 8,
+            duration: 1.0,
+        },
+    );
     assert_eq!(s.validate().unwrap_err().code, "unsupported");
     let mut wire = serde_json::to_value(fixture()).unwrap();
     wire["tables"]["events"]["note"]["unexpected"] = json!(true);

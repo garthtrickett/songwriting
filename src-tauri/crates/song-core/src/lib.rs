@@ -11,6 +11,8 @@ mod note_edit;
 mod rhythm;
 mod rhythm_analysis;
 mod structure;
+mod tablature;
+mod takes;
 mod time;
 mod timeline;
 mod validate;
@@ -20,6 +22,7 @@ pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State,
 pub use arrangement::{
     Annotation, Placement, annotations, placements, section_length, section_spans,
 };
+pub use fretted::{TUNINGS, connected, fingering_issues, fret_positions, target_pitch};
 pub use harmony::HarmonyAction;
 pub use harmony_analysis::{
     ChordCandidates, HarmonicContext, HarmonicSpan, Interpretations, SoundingHarmony, SoundingNote,
@@ -34,6 +37,8 @@ pub use rhythm_analysis::{
     alignment_map, compare_patterns, polyrhythm_grid,
 };
 pub use structure::StructureAction;
+pub use tablature::{StaleFingering, TabRow, Tablature, tablature};
+pub use takes::{TakePlacement, take_placements};
 pub use time::{MAX_SAFE_INTEGER, Time};
 pub use timeline::{
     alignment, bars, clicks, cycle_starts, rest_spans, seconds_per_quarter, segments, song_end,
