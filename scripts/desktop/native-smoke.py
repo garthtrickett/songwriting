@@ -45,7 +45,7 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
     driver_log = (ARTIFACTS / "driver.log").open("w")
-    driver = subprocess.Popen(["WebKitWebDriver", f"--port={port}", "--host=127.0.0.1"], env=env, stdout=driver_log, stderr=subprocess.STDOUT)
+    driver = subprocess.Popen(["WebKitWebDriver", f"--port={port}", "--host=127.0.0.1"], env=env, stdout=driver_log, stderr=subprocess.STDOUT, start_new_session=True)
     session = None
 
     def request(method, path, body=None):
@@ -98,6 +98,52 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         print("Native window loaded from packaged assets", flush=True)
         assert js("return document.querySelector('[aria-label=\"Snap\"]').value") == "3"
         assert initial["revision"] == 0
+        wait(lambda: js("return !!document.querySelector('[aria-label=\"Song assistant\"]')"), "assistant panel")
+        agent = invoke("desktop_agent_status")
+        assert agent == {"configuredModel": None, "task": None}
+        try:
+            invoke("desktop_agent_start", {"prompt": "Rename without credentials"})
+            raise AssertionError("Missing credentials should reject agent start")
+        except RuntimeError as error:
+            assert "configuration" in str(error)
+        assert invoke("desktop_open")["revision"] == 0
+
+        audio_evidence = []
+        audio_proof = os.environ.get("SONGWRITER_AUDIO_PROOF") == "1"
+        assert invoke("desktop_audio_status")["status"] == "stopped"
+        if audio_proof:
+            devices = invoke("desktop_audio_devices")
+            assert devices, "Virtual output must be discoverable"
+            assert all(d["id"].lower().startswith("pulseaudio:") for d in devices), devices
+            try:
+                invoke("desktop_audio_play", {"request": {"deviceId": "missing-device"}})
+                raise AssertionError("Unavailable output must fail")
+            except RuntimeError as error:
+                assert "unavailable" in str(error)
+            assert invoke("desktop_audio_status")["status"] == "error"
+            # Use the actual transport button, then inspect host counters.
+            click_text("Play sketch")
+            # Initial sound-server prefill is not steady-clock playback. Start
+            # the stall measurement after more than one second has been supplied.
+            before = wait(lambda: (a if a["frames"] > a["sampleRate"] and a["status"] == "playing" else None)
+                if (a := invoke("desktop_audio_status")) else None, "native frames advance")
+            started = time.monotonic()
+            js("const end=performance.now()+1200;while(performance.now()<end){};return true;")
+            after = invoke("desktop_audio_status")
+            elapsed = time.monotonic() - started
+            frames = after["frames"] - before["frames"]
+            assert after["callbacks"] > before["callbacks"]
+            assert 0.8 < frames / after["sampleRate"] / elapsed < 1.2, (before, after, elapsed)
+            audio_evidence.append({"devices": devices, "before": before, "after": after, "webviewStallSeconds": elapsed, "framesDuringStall": frames})
+            # Replacement starts a fresh generation; Stop fences that stream.
+            invoke("desktop_audio_play", {"request": {"deviceId": devices[0]["id"]}})
+            assert invoke("desktop_audio_status")["generation"] > before["generation"]
+            click_text("Stop audio")
+            stopped = wait(lambda: (a if a["status"] == "stopped" else None) if (a := invoke("desktop_audio_status")) else None, "audio stop")
+            time.sleep(0.2)
+            assert invoke("desktop_audio_status")["frames"] == stopped["frames"]
+            click_text("Play sketch")
+            wait(lambda: invoke("desktop_audio_status")["status"] == "playing", "play before manual edit")
         duplicate = subprocess.run([str(BINARY)], env=env, capture_output=True, timeout=15)
         assert duplicate.returncode == 0, duplicate.stderr.decode()
         assert invoke("desktop_open")["epoch"] == initial["epoch"]
@@ -106,6 +152,17 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         click_text("Save title")
         revision(1)
         assert invoke("desktop_open")["title"] == "Native offline sketch"
+        if audio_proof:
+            audible = invoke("desktop_audio_status")
+            assert audible["status"] == "playing" and audible["revision"] == 0
+            audio_evidence.append({"manualEditRevision": 1, "playingSnapshot": audible})
+            invoke("desktop_audio_stop")
+            # Native completion is independent of renderer polling.
+            invoke("desktop_audio_play", {"request": {"deviceId": None}})
+            ended = wait(lambda: (a if a["status"] == "ended" else None) if (a := invoke("desktop_audio_status")) else None, "natural audio completion", timeout=15)
+            assert ended["frames"] == ended["totalFrames"]
+            audio_evidence.append({"ended": ended})
+            (ARTIFACTS / "audio.json").write_text(json.dumps(audio_evidence, indent=2))
         # Exact edit of an individual chord member preserves the other attacks.
         js("document.querySelector('[data-note-key=\"harmony/root\"]').click()")
         input_value("Note start", "1/3")
@@ -158,8 +215,18 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         print("Native edits, conflicts and pointer drag passed", flush=True)
         # Reload reconnects the view. Ending WebDriver's session only detaches
         # automation on WebKit; explicitly crash this isolated app to test restart.
+        if audio_proof:
+            invoke("desktop_audio_play", {"request": {"deviceId": None}})
+            before_reload = invoke("desktop_audio_status")
         command("/refresh", {})
         revision(4)
+        if audio_proof:
+            reconnected = invoke("desktop_audio_status")
+            assert reconnected["generation"] == before_reload["generation"]
+            assert reconnected["status"] in ("playing", "ended")
+            assert reconnected["frames"] >= before_reload["frames"]
+            audio_evidence.append({"rendererReconnect": reconnected})
+            (ARTIFACTS / "audio.json").write_text(json.dumps(audio_evidence, indent=2))
         request("DELETE", f"/session/{session}")
         session = None
         if Path(f"/proc/{app_pid}/exe").exists():
@@ -167,6 +234,7 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
             os.kill(app_pid, signal.SIGKILL)
         wait(lambda: "false" in subprocess.check_output(["gdbus", "call", "--session", "--dest", "org.freedesktop.DBus", "--object-path", "/org/freedesktop/DBus", "--method", "org.freedesktop.DBus.NameHasOwner", "com.songwriter.desktop.d1.SingleInstance"], text=True), "old app released its session")
         start()
+        assert invoke("desktop_audio_status")["status"] == "stopped"
         restored = invoke("desktop_open")
         assert restored["revision"] == 4 and restored["epoch"] != saved["epoch"]
         note_label = next(n["label"] for n in initial["notes"] if n["eventId"] == "note")
@@ -192,10 +260,29 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
                 request("DELETE", f"/session/{session}")
             except Exception:
                 pass
-        driver.terminate()
+        # WebKit session deletion only detaches automation. Stop the isolated
+        # driver/app/helper group before removing its profile: surviving WebKit
+        # processes can recreate files while TemporaryDirectory is deleting them.
+        # Keep the parent unreaped until cleanup finishes so its group ID cannot
+        # be reused by an unrelated process.
+        def group_stopped():
+            for stat in Path("/proc").glob("[0-9]*/stat"):
+                try:
+                    fields = stat.read_text().rsplit(")", 1)[1].split()
+                    if int(fields[2]) == driver.pid and fields[0] != "Z":
+                        return False
+                except (FileNotFoundError, ProcessLookupError):
+                    pass
+            return True
+
         try:
-            driver.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            driver.kill()
-            driver.wait()
+            os.killpg(driver.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            wait(group_stopped, "native test process group stopped", timeout=10)
+        except AssertionError:
+            os.killpg(driver.pid, signal.SIGKILL)
+            wait(group_stopped, "native test process group killed", timeout=10)
+        driver.wait(timeout=10)
         driver_log.close()

@@ -100,3 +100,29 @@ pub struct Snapshot {
     pub undoable: Vec<UndoView>,
     pub warning: Option<String>,
 }
+
+#[derive(Clone, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct AgentView {
+    pub configured_model: Option<String>,
+    pub task: Option<TaskView>,
+}
+#[derive(Clone, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskView {
+    pub id: String,
+    pub status: String,
+    pub prompt: String,
+    pub model: String,
+    pub message: String,
+    pub rounds: u32,
+}
+// No Debug/Serialize: credentials enter the host once and are never returned or
+// written into workspace tasks. The proof uses session-only credential storage.
+#[derive(Deserialize, TS)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct AgentConfig {
+    pub provider: String,
+    pub model: String,
+    pub api_key: String,
+}

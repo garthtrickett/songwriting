@@ -1,8 +1,8 @@
 # Songwriter desktop port — Rust SAM core, Tauri and lit/TypeScript view
 
 Status: D1 in progress, 2026-09-09. The Rust SAM/SQLite slice is
-connected to a Tauri window and Lit view. Native audio/media, packaged Mastra and
-cross-platform release evidence remain outstanding. See
+connected to a Tauri window and Lit view. Native audition and Rig are implemented.
+Physical-output, media, live-model and cross-platform release evidence remain outstanding. See
 [D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete.
 
 This is the selected product direction for the next implementation workstream.
@@ -14,7 +14,7 @@ Desktop phases below use D1–D7 to avoid confusing them with the existing roadm
 
 The selected architecture moves the authoritative SAM (State–Action–Model) loop
 and musical rules into Rust. Lit renders state representations and sends intents;
-Mastra is another client of the same Rust action interface. This replaces the
+The Rig task runner is another client of the same Rust action interface. This replaces the
 earlier proposal to run the musical workspace in a TypeScript sidecar. The older
 TypeScript implementation remains a migration reference, not the desktop authority.
 
@@ -55,25 +55,24 @@ password is an optional product decision; the planned default uses the OS login.
 | Musical semantics | Port the song model, exact time, validation, commands, history and analysis to Rust. Preserve behavior using differential fixtures against the existing TypeScript implementation. |
 | Headless workspace | A Rust SAM module owns actions, proposal acceptance, canonical model, derived state representations and next-action decisions. UI and agent use the same interface through thin adapters. |
 | Durable local data | Rust-owned SQLite transactions using a dedicated database worker, initially rusqlite. Store versioned song envelopes as JSON plus indexed identity/revision fields, operation receipts and task ledger. No generic SQL exposed to the UI or agent. |
-| Native audio | Rust engine with CPAL device I/O; native synthesis/mixing, sample scheduling, decoding, capture and waveform work. Codec stack is selected by the D1 compatibility spike. |
-| Agent | Keep Mastra in an on-demand bundled Node sidecar that calls Rust actions and reads Rust state representations. Use local file-backed @mastra/libsql for SDK memory/snapshots and the Rust-owned SQLite ledger for task/effect authority. No Postgres server. |
+| Native audio | Rust engine with CPAL device I/O; native synthesis/mixing, sample scheduling, decoding, capture and waveform work. D1 selects a minimal FFmpeg decoder process; native WAV recovery is independent of it. |
+| Agent | Selected D1 candidate: Rig provider/tool contracts with a Rust-owned bounded task runner. Journal checkpoints and atomic musical results in workspace.sqlite. Prove recovery before adoption; see RIG_PROOF_PLAN.md. |
 | Secrets | Rust credential module using OS credential storage, evaluated via keyring. If unavailable, offer session-only credentials; never silently save plaintext keys. |
-| Packaging | Tauri installers plus a pinned, bundled Node runtime, bundled JS and required native dependencies for each supported target. No user-installed Node/Bun/Rust requirement. |
+| Packaging | Tauri installers with compiled Rust, bundled frontend assets and required native dependencies for each supported target. No user-installed Node/Bun/Rust requirement. |
 
-The Node sidecar is a deliberate cost of retaining Mastra. Launch it when agent
-work requires it; ordinary editing, saving, playback and recording work with it
-stopped, unavailable or crashed. It owns no authoritative musical state or rules.
-Tauri's small shell does not imply a tiny total installer once Node and codecs
-are included. D1 measures the actual artifact and proves packaging before a
-large port. Do not assume a development script or a single-file JS build can
-package Mastra and libSQL's native dependencies on every OS.
+The selected Rig proof removes the Node/Mastra sidecar requirement. Model work
+runs outside the SAM/SQLite worker and audio callback. Ordinary editing, saving,
+playback and recording must remain independent of provider availability. An
+in-process Rust agent does not provide process crash isolation: a host crash
+requires restart and durable recovery. D1 measures actual package and runtime
+behavior; native Rust alone does not establish a performance guarantee.
 
 ## Module interfaces and ownership
 
 ```mermaid
 flowchart TD
     UI[Lit view and local interaction state] --> Actions[Rust actions]
-    Agent[Mastra sidecar tools] --> Actions
+    Agent[Rig task runner tools] --> Actions
     Actions --> Proposals[Proposals]
     Proposals --> Model[Rust model: accept and persist]
     Model <--> Store[Rust SQLite worker]
@@ -89,23 +88,23 @@ flowchart TD
     Engine --> Media
 ```
 
-The diagram shows logical calls. All Node/Rust messages go through the host's
-private process channel. The renderer does not receive a general shell, SQL
-connection, raw filesystem interface, provider credentials or agent process handle.
+The diagram shows logical calls. Rig tools and Tauri commands enter the shared
+Rust session worker. The renderer receives no general shell, SQL connection,
+raw filesystem interface or saved provider credentials.
 
 ### Rust SAM workspace module
 
 Expose a small interface for opening/reading a song, dispatching a named action,
 reading an operation receipt and subscribing to state representations. Both UI and
 agent cross this seam. Keep the core independent of Tauri so tests can exercise
-the same interface without a webview. Tauri and Mastra transport adapters supply
+the same interface without a webview. Tauri and Rig tool adapters supply
 trusted session context; neither contains musical acceptance rules.
 
 - **Actions** turn input into proposals. They may arrange work through storage,
   media or analysis adapters, but cannot directly mutate the model. The external
   interface accepts scoped intents such as move-note or change-meter, not arbitrary
   memory patches, prevalidated song replacements or SQL. Imports are validated
-  actions too. Mastra chooses which actions to request; it does not own acceptors.
+  actions too. The model chooses which actions to request; it does not own acceptors.
 - **Model** is the sole authority for accepting proposals and changing song and
   application state. Rust acceptors enforce exact time, relative pitch, membership,
   voice identity, revision checks and operation identity. Atomic musical edits are
@@ -195,19 +194,16 @@ interface. CPAL provides I/O, not a complete instrument/recording implementation
 
 ### Process and failure interface
 
-Version all messages and bind them to profile epoch, workspace/task identity,
-request ID and execution generation. Use a bounded framed channel over inherited
-pipes, with explicit responses, events, timeouts and backpressure. Keep diagnostics
-on stderr. Refuse incompatible sidecar/host versions; no public localhost server.
+Bind UI messages to protocol/session epoch and agent work to durable task identity
+and execution generation. Cancel or restart fences old generations before further
+effects can enter the model. Provider requests have explicit limits and deadlines,
+run outside the serialized worker, and cannot block manual edits. A renderer reload
+resubscribes to Rust state; it does not start a second agent execution.
 
-A crashed Mastra sidecar interrupts agent work only. Rust continues accepting
-manual edits, saving, playback and recording. Restart the matching agent sidecar,
-reload SDK snapshots and reconcile Rust task receipts before resuming agent work.
-No invisible endlessly restarting loop. A renderer reload resubscribes to current
-Rust state. A Rust host crash requires application restart and durable workspace/
-capture recovery; no claim that audio survives that crash. Closing the last window
-quits by default: stop audio, finalize capture and checkpoint work. No promise that agents continue
-after app exit or the machine sleeps. Resume interrupted tasks explicitly.
+Close stops the agent request, journals interruption, drains accepted workspace
+work and exits. A crash requires application restart and durable recovery; no
+claim that audio survives a host crash. Resume interrupted tasks explicitly.
+See [the Rig proof](RIG_PROOF_PLAN.md) for checkpoint and atomic-result sequencing.
 
 ## Storage, media and browser migration
 
@@ -216,7 +212,6 @@ Proposed per-profile layout under the OS application-data directory:
 ```text
 profiles/<profile_id>/
   workspace.sqlite     # songs, revisions, history, receipts, task ledger, settings
-  agent.sqlite         # SDK memory and snapshots; SDK is the only writer
   assets/<sha256>       # immutable original audio
   captures/<capture_id>/
   backups/
@@ -227,13 +222,10 @@ ordinary backups omit credentials; conversation export is an explicit option.
 JSON remains the portable composition format. SQLite is its transactional local
 container, not a reason to remodel every chord and note into SQL tables.
 
-Two SQLite files do not share a transaction. The app-owned task ledger and musical
-receipt are authoritative. Persist the command identity before executing it;
-record the successful musical change and result atomically in workspace.sqlite.
-If Mastra's SDK snapshot lags, replay the recorded result or start a fresh segment
-with current context. Never replay a mutation merely because agent.sqlite lost
-its latest snapshot. Preserve bounded retries, explicit completion, cancellation,
-partial progress, review/undo and stale-generation rejection.
+The Rust task journal and musical receipts share workspace.sqlite. Persist the
+model response and tool identity before dispatch. Commit successful musical edits
+and tool results atomically. Recovery replays recorded results, not mutations.
+Keep bounded retries, explicit completion, cancellation, partial progress and undo.
 
 For media, stage and flush the binary first, then attach its hash/metadata through
 an atomic musical command. Retain staged files after an interrupted attachment.
@@ -263,20 +255,16 @@ an explicit export/import from the browser that currently owns the songs:
 
 ## Agent credentials, scope and local execution
 
-Keep Mastra's loop in JavaScript. Tauri does not execute a Node SDK inside Rust.
-Replace server HTTP/session middleware with the desktop profile/execution epoch,
-and replace hosted browser delivery with the shared Rust SAM action/state interface.
-Tool implementations are thin clients: Rust performs musical analysis, validation,
-acceptance and persistence. Mastra handles model reasoning and task orchestration.
-Its local state cannot override a Rust receipt, revision or cancellation generation.
-Reuse recovery invariants from the hosted prototype, not its Neon deployment gate.
+Use Rig's provider/message/tool contracts with a Rust task runner. Thin tools
+submit to the shared Rust SAM action/state interface; provider calls never own
+musical acceptance. The task journal is authoritative for completed effects.
 
-The user selects a supported cloud model/provider and enters their own key in
-settings. Rust saves it in credential storage and passes it only to the packaged
-agent module over the private channel when needed. Do not inherit the developer's
-Vercel OIDC token or bake a shared provider/Neon key into the installer. Show the
-selected provider, connectivity, model and local budget; local budgets are user
-controls, not tamper-proof server billing enforcement. Redact keys from logs.
+The proof supports Anthropic/OpenRouter with the user's model and session-only
+API key. A subsequent credential module can store keys in OS credential storage;
+never silently save plaintext. Keys are excluded from tasks, exports and logs.
+The panel shows provider/model and bounded request count. Local budgets are user
+controls, not tamper-proof billing enforcement. Do not inherit Vercel tokens or
+bake provider/Neon credentials into an installer.
 
 Agent tools use scoped project/entity/media handles and the same commands as the
 UI. Preserve primitive CRUD, schema discovery, bounded search/read, analysis,
@@ -294,7 +282,7 @@ instructions cannot grant filesystem access or broaden the selected profile.
 
 | Phase | Outcome | Exit evidence |
 | --- | --- | --- |
-| D1 — Prove the packaged foundation | Existing editor shell in Tauri, local profile, a thin Rust SAM editing slice, native audio and an independent Mastra client. | Packaged smoke tests, TypeScript/Rust behavior comparisons, durable recovery and agent-off editing. |
+| D1 — Prove the packaged foundation | Existing editor shell in Tauri, local profile, a thin Rust SAM editing slice, native audio and a Rig task client. | Packaged smoke tests, TypeScript/Rust behavior comparisons, durable recovery and agent-off editing. |
 | D2 — Rust musical workspace and migration | Complete Rust model/actions/state/analysis, SQLite/profile persistence, portable import/export, history and recovery. | Musical parity against TypeScript, browser-to-desktop round trip, conflicts, restart/restore and profile fencing. |
 | D3 — Native instrumental playback | Full current guitar/bass/drum audition, exact schedules, metronome, device controls and transport. | Shared musical fixtures, deterministic offline renders and real-device timing/dropout tests. |
 | D4 — Native recording and media | Rust capture, durable takes, decoding, waveform caches and complete media bundles. | Permissions, interruption/disk-full recovery and browser codec compatibility on supported OSes. |
@@ -315,7 +303,7 @@ and 5, with a disposable fixture runner and TypeScript comparison fixtures. This
 slice starts before the shell because it can be checked independently. It does
 not satisfy the D1 acceptance gate.
 
-Second implementation slice (current): complete the shell/view portions of steps
+Second implementation slice (delivered): complete the shell/view portions of steps
 2, 3 and 5. A single Tauri application owns a default local-profile worker. Typed
 commands carry protocol, session epoch, operation ID and captured revision. Rust
 projects full arrangement/note snapshots; generated TypeScript bindings keep Lit
@@ -324,7 +312,7 @@ snapshots, resnapshot on reconnect, retain drafts on conflicts and retry uncerta
 saves with their original operation ID. Show rename, horizontal note/member moves
 and undo; keep the fixture limitation visible. Test the actual packaged Linux
 window, including a real pointer drag, restart and undo, and compile/check the
-host on Windows and macOS. Native audio and Mastra stay in later D1 slices.
+host on Windows and macOS. The current third slice is [the Rig proof](RIG_PROOF_PLAN.md). The native audio proof is implemented. The selected next slice is [the media compatibility/capture proof](MEDIA_PROOF_PLAN.md).
 
 **Purpose:** prove one thin path through the intended production architecture,
 using disposable fixtures and a local profile. Keep the old web implementation
@@ -333,8 +321,8 @@ available while this is evaluated.
 1. **Freeze the baseline and target matrix.** Record the current 94 unit, 12
    hosted integration and 38 browser tests as historical baseline, rerun relevant
    checks, and inventory every existing capability. Start with Windows x64,
-   macOS arm64 and Linux x64. Decide exact minimum OS versions from the tested
-   WebView, Node and audio dependencies. macOS Intel is an additional explicit
+   macOS arm64 and Linux x64/arm64. Decide exact minimum OS versions from the tested
+   WebView, Rig and audio dependencies. macOS Intel is an additional explicit
    build target, not an assumed property of the arm64 binary.
 2. **Create the shell and lifecycle.** Add src-tauri, a pinned Rust toolchain and
    desktop build scripts. Load packaged local Vite assets with minimal Tauri
@@ -351,11 +339,10 @@ available while this is evaluated.
    after acceptance or rejection. Keep the old browser as the separate reference;
    unsupported desktop actions must be visibly unavailable, never routed to a
    second TypeScript model. Full model/import support belongs to D2.
-4. **Prove packaged Node and local SDK persistence.** Bundle a pinned Node runtime,
-   Mastra and its Rust tool adapter, plus local libSQL dependencies. Launch on
-   demand from Rust through private pipes with a version/profile handshake. Test a
-   Mastra tool suspension, process termination and continuation from a file-backed
-   SDK store. The package must run without development runtimes in PATH.
+4. **Prove the Rust agent loop.** Implement [RIG_PROOF_PLAN.md](RIG_PROOF_PLAN.md):
+   inspect/rename with an actual model, atomic tool-result persistence, process
+   interruption and receipt replay, cancellation and concurrent manual editing.
+   Package with Tauri without a separate Node/Mastra runtime.
 5. **Prove the atomic SAM path.** Create a small workspace.sqlite using a
    versioned migration. UI intent → Rust action/proposal → model acceptance and
    atomic commit → state representation → Lit render. Kill the Rust host after
@@ -376,8 +363,8 @@ available while this is evaluated.
 8. **Join the vertical slice.** In the packaged app, use a configured test model
    to inspect and rename the fixture through the same command interface, verify
    completion, restart and undo. Use fake-model faults separately to prove
-   duplicate delivery, stale revisions and sidecar crashes. Launch with the sidecar
-   disabled and kill it during a task; manual editing, saving and playback must
+   duplicate delivery, stale revisions and interrupted model requests. Launch with
+   no configured provider and cancel a running request; manual editing, saving and playback must
    remain usable. Demonstrate the same with missing credentials and network loss.
 9. **Record the measured decision.** Keep results in docs/DESKTOP_D1_VALIDATION.md:
    actual binaries/OS versions, cold launch, idle memory, installer size, tests,
@@ -386,8 +373,8 @@ available while this is evaluated.
 
 **D1 acceptance:** successful packaged launch on all declared targets; demonstrated
 Rust/TypeScript parity for the selected musical slice, local save/restart/undo,
-state resubscription and SDK process recovery; manual operations with no running
-sidecar; native audio proof on real devices
+state resubscription and durable agent recovery; manual operations with no
+configured provider; native audio proof on real devices
 with explicit platform coverage; no hosted auth/database calls; no embedded
 credentials. A Linux droplet build cannot prove macOS/Windows microphone behavior.
 Document blocked platform evidence instead of marking an untested target complete.
@@ -422,8 +409,8 @@ hardware monitoring guidance must match what the implementation supports.
 agent prompts/preferences and task work items. Bind tools to the same Rust actions
 and state queries used by the UI; do not port musical decisions back into tool
 adapters. Keep provider work outside SAM steps so a slow network call cannot
-block manual edits. Test actual local-file SDK recovery rather than assuming the
-Postgres proof transfers. Preserve budget accounting and bound provider retries.
+block manual edits. Test Rust journal recovery rather than assuming the hosted
+prototype proof transfers. Preserve budget accounting and bound provider retries.
 
 **D6:** use a reference project of 32 parts / 1,024 mixed-meter bars / 10,000 events
 and a 50,000-event stress project, with representative chords and recorded takes.
@@ -457,7 +444,7 @@ Likely locations (create only when a phase needs them):
 - src/platform/browser/ — legacy browser adapter for comparison and existing tests.
 - src/platform/desktop/ — thin action/state client and presentation adapter.
 - src/generated/ — generated TypeScript wire contracts from Rust definitions.
-- desktop/agent/ — bundled Node entry, Mastra loop and Rust action/state tool client.
+- src-tauri/crates/song-agent/ — Rig provider adapter and durable task execution.
 - src-tauri/crates/song-core/ — headless Rust musical model, SAM actions/acceptors/
   reactors/state, exact time, history and analysis, independent of Tauri and devices.
 - src-tauri/src/ — application/profile owner, SAM execution and effect adapters,
@@ -485,7 +472,7 @@ normalizing only incidental IDs/timestamps, and compare results, errors, exact
 times, history and analysis. Document any intended semantic change separately;
 do not excuse a mismatch as a language difference. Cover rational overflow and
 serialization, schema defaults and migrations, stable IDs and imported history.
-Test UI and Mastra adapters against the same Rust SAM interface and ensure neither
+Test UI and Rig adapters against the same Rust SAM interface and ensure neither
 can bypass acceptors. Verify stale asynchronous proposals, bounded next actions,
 failed commits, receipt replay, agent-off operation and view resubscription.
 Add Rust tests and deterministic offline audio renders for scheduling/DSP, then
@@ -517,6 +504,11 @@ Planning review, 2026-09-09:
   local preview reconciliation and bounded next-action handling. Kept all SAM work
   off the audio callback and made agent-sidecar failure independent of manual work.
 
+- Pass 5 — Rust agent proof: user selected Rig instead of the Node/Mastra sidecar.
+  Added RIG_PROOF_PLAN.md, a single SQLite effect/result journal, bounded provider
+  calls and generation-fenced cancellation. Prior review passes describe the
+  historical Mastra design; this revision supersedes their sidecar/SDK decisions.
+
 Open implementation discoveries belong in D1: exact OS floors/dependency versions,
 codec packaging and measured footprint/performance. They do not reopen the selected
 local-first architecture or reinstate Neon login. An optional app password remains
@@ -530,14 +522,12 @@ a product preference, not a prerequisite for the default local profile.
 - [Tauri process model](https://tauri.app/concept/process-model/) and
   [IPC](https://tauri.app/concept/inter-process-communication/): Rust/webview process
   separation and asynchronous command transport, not an audio timing channel.
-- [Tauri sidecars](https://tauri.app/develop/sidecar/): external binaries packaged
-  per target; this enables but does not prove our Node/Mastra distribution.
+- [Rig](https://github.com/0xPlaygrounds/rig): Rust provider/tool/message contracts;
+  application-specific effect recovery remains our responsibility.
 - [Tauri capabilities](https://tauri.app/security/capabilities/): restrict which
   privileged commands each window can invoke.
 - [CPAL](https://docs.rs/cpal/latest/cpal/): native audio device streams/callbacks;
   sequencing, instruments, recording durability and codec coverage remain our work.
-- [Mastra libSQL](https://mastra.ai/integrations/databases/libsql): local file-backed
-  SDK storage, with actual suspension compatibility to be demonstrated in D1.
 - [Rust keyring](https://docs.rs/keyring/latest/keyring/): credential-store adapter
   candidate; platform/backend availability must be verified in packaged builds.
 - [SQLite backup](https://sqlite.org/backup.html): consistent database snapshots.

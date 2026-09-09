@@ -1,0 +1,28 @@
+{
+  "version": "9.0.1",
+  "sourceSha256": "cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635",
+  "flags": [
+    "--disable-avdevice",
+    "--disable-swscale",
+    "--disable-everything",
+    "--disable-autodetect",
+    "--disable-network",
+    "--disable-doc",
+    "--disable-debug",
+    "--disable-shared",
+    "--enable-static",
+    "--disable-x86asm",
+    "--disable-gpl",
+    "--disable-nonfree",
+    "--disable-programs",
+    "--enable-ffmpeg",
+    "--enable-protocol=file",
+    "--enable-demuxer=matroska,ogg,mov,wav",
+    "--enable-decoder=opus,aac,pcm_f32le,pcm_s16le,pcm_s24le,pcm_s32le,pcm_u8",
+    "--enable-parser=opus,aac",
+    "--enable-encoder=pcm_f32le",
+    "--enable-muxer=wav",
+    "--enable-filter=aresample,aformat,anull",
+    "--enable-swresample"
+  ]
+}

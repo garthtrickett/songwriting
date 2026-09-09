@@ -1,5 +1,6 @@
-//! Single-owner, synchronous persistence adapter. The future Tauri host must run
-//! this on its workspace worker, never its UI thread or audio callback.
+pub mod agent;
+// Single-owner, synchronous persistence adapter. The future Tauri host must run
+// this on its workspace worker, never its UI thread or audio callback.
 use rusqlite::{Connection, OptionalExtension, TransactionBehavior, params};
 use song_core::{Envelope, Error, Mutation, Result, Song, State};
 use std::{
@@ -50,11 +51,16 @@ impl Workspace {
             tx.pragma_update(None, "application_id", APPLICATION_ID)
                 .map_err(storage)?;
             tx.pragma_update(None, "user_version", 1).map_err(storage)?;
-        } else if app != APPLICATION_ID || version != 1 {
+        } else if app != APPLICATION_ID || !(1..=2).contains(&version) {
             return Err(Error::new(
                 "storage",
                 "Unsupported desktop database identity or version",
             ));
+        }
+        if version < 2 {
+            tx.execute_batch("CREATE TABLE agent_tasks (id TEXT PRIMARY KEY, task TEXT NOT NULL);")
+                .map_err(storage)?;
+            tx.pragma_update(None, "user_version", 2).map_err(storage)?;
         }
         tx.commit().map_err(storage)?;
         connection
@@ -97,30 +103,45 @@ impl Workspace {
     }
 
     pub fn dispatch(&mut self, mutation: &Mutation) -> Result<State> {
-        let now = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map_err(storage)?
-            .as_millis();
-        let now = u64::try_from(now).map_err(storage)?;
         let tx = self
             .connection
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
-        let before = load(&tx, &mutation.song_id)?
-            .ok_or_else(|| Error::new("missing", "Song does not exist"))?;
-        let candidate = before.accept(mutation, now)?;
-        if candidate.revision != before.revision {
-            let changed = tx.execute("UPDATE workspace SET revision = ?1, envelope = ?2 WHERE id = ?3 AND revision = ?4",
-                params![i64::try_from(candidate.revision).map_err(storage)?, serde_json::to_string(&candidate).map_err(storage)?, mutation.song_id, i64::try_from(before.revision).map_err(storage)?]).map_err(storage)?;
-            if changed != 1 {
-                return Err(Error::new("conflict", "Workspace changed while saving"));
-            }
-        }
-        // Envelope, history and typed operation receipt are one atomic value.
-        // Never publish speculative state. A failed commit drops the candidate.
+        let state = apply(&tx, mutation)?;
         tx.commit().map_err(storage)?;
-        Ok(candidate.state())
+        Ok(state)
     }
+}
+
+/// Shared musical path for both UI dispatch and journaled agent tools. The caller
+/// may add a task result to the transaction before committing, but cannot bypass
+/// acceptance or publish a candidate before that commit succeeds.
+fn apply(tx: &rusqlite::Transaction<'_>, mutation: &Mutation) -> Result<State> {
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(storage)?
+        .as_millis();
+    let now = u64::try_from(now).map_err(storage)?;
+    let before =
+        load(tx, &mutation.song_id)?.ok_or_else(|| Error::new("missing", "Song does not exist"))?;
+    let candidate = before.accept(mutation, now)?;
+    if candidate.revision != before.revision {
+        let changed = tx
+            .execute(
+                "UPDATE workspace SET revision = ?1, envelope = ?2 WHERE id = ?3 AND revision = ?4",
+                params![
+                    i64::try_from(candidate.revision).map_err(storage)?,
+                    serde_json::to_string(&candidate).map_err(storage)?,
+                    mutation.song_id,
+                    i64::try_from(before.revision).map_err(storage)?
+                ],
+            )
+            .map_err(storage)?;
+        if changed != 1 {
+            return Err(Error::new("conflict", "Workspace changed while saving"));
+        }
+    }
+    Ok(candidate.state())
 }
 
 fn load(connection: &Connection, id: &str) -> Result<Option<Envelope>> {

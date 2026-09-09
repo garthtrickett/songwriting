@@ -3,6 +3,12 @@
 Status: core and Tauri/Lit connection implemented; D1 remains in progress. This
 is a restricted desktop preview, not a completed native agent/audio integration.
 
+The next delivered feasibility slice is the standalone
+[native media compatibility/capture proof](MEDIA_PROOF_VALIDATION.md). It selects
+FFmpeg after real browser-format comparison and tests recoverable CPAL input;
+it does not add media controls to the restricted desktop window or close physical
+device, Safari, live-model or release-packaging gates.
+
 ## Delivered
 
 - Rust 1.97.1 workspace with `song-core` independent of Tauri, storage and devices.
@@ -73,9 +79,10 @@ generated files to LF on every platform. Musical comparisons remain unchanged.
 ## Outstanding D1 work
 
 - General asynchronous audio/agent effect scheduling and bounded next actions.
-- Native audio callback, prepared schedules, device and codec/capture feasibility.
-- Packaged Node/Mastra with local SDK snapshots, full commit/task-result integration
-  and an actual model evaluation through the shared Rust interface.
+- Native audio implementation and virtual-device proof: see [audio evidence](NATIVE_AUDIO_PROOF_VALIDATION.md). Physical-device evidence and codec/capture feasibility remain outstanding.
+- The Node/Mastra desktop proposal is superseded by [the Rig proof](../RIG_PROOF_PLAN.md).
+  Its Rust journal/agent implementation and deterministic tests are documented in
+  [Rig evidence](RIG_PROOF_VALIDATION.md); actual-model evaluation remains pending.
 - Cross-platform packaged launch, footprint, real-device evidence and signing.
 
 D2 still owns full musical model/analysis parity, browser history/media migration,

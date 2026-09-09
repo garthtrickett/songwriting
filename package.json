@@ -20,7 +20,9 @@
     "build:desktop": "vite build --config vite.desktop.config.ts",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build --no-bundle",
-    "bindings:desktop": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-session --example bindings -- src/generated/desktop"
+    "bindings:desktop": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-session --example bindings -- src/generated/desktop",
+    "desktop:media": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-media --",
+    "build:decoder": "python3 scripts/desktop/build-ffmpeg.py"
   },
   "dependencies": {
     "@tauri-apps/api": "2.11.1",

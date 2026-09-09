@@ -5,7 +5,7 @@ shows the starter's arrangement and relative 1–7 note editor. Rename the song,
 drag a note horizontally, enter an exact fractional start, or undo a saved edit.
 Rust owns the song and saves every accepted edit to local SQLite. No Neon sign-in,
 account, model key, browser database or agent process is needed. Native audio,
-Mastra and general project import remain outstanding. The browser app still works.
+the live Rig proof and general project import remain outstanding. The browser app still works.
 
 - `song-core`: exact musical time, a restricted schema-7 model, named actions,
   private proposals, validation/acceptance, undo and detached state representations.
@@ -160,3 +160,66 @@ bounded, normalized integers. This proves the selected cohort, not all schema-7
 behavior or playback expansion limits.
 
 See [D1 evidence](../docs/DESKTOP_D1_VALIDATION.md) for checks and outstanding work.
+
+## Rig assistant proof
+
+The desktop assistant accepts an Anthropic or OpenRouter model ID and your API
+key. Credentials last only for the app session; re-enter them after restarting.
+Requests and inspected song content are sent to that provider. The assistant uses
+the same Rust rename/move/undo actions as the view. Saved edits appear in History.
+Cancel preserves saved edits; interrupted tasks offer Resume after configuration.
+Model calls are limited to 12 per task, with a 60-second timeout per call.
+
+For a reproducible **live-model** test against a new disposable database, set
+`SONGWRITER_AGENT_PROVIDER`, `SONGWRITER_AGENT_MODEL`, and `SONGWRITER_AGENT_KEY`
+in your shell using your normal secret manager. Never commit them or pass the key
+as a command argument. Then, inside `nix develop`:
+
+```bash
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite start --exit-after-edit
+# Exit 73 is intentional: the edit/result committed, but the agent got no reply.
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite inspect
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite resume
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite undo
+```
+
+Expect revision 1/title `Crooked Steps` before and after resume, then revision 2
+and the original title after undo. The crash command refuses an existing database.
+This harness uses a separate fixture path; it does not open your desktop profile.
+A fake model test is separate recovery evidence and does not satisfy the live gate.
+
+## Native audition proof
+
+`bun run desktop:dev` now includes Play sketch, Stop audio and output selection.
+The Nix shell includes ALSA on Linux (including aarch64-linux); enter `nix develop`
+again after pulling this change. Debian/Ubuntu builds need `libasound2-dev` in
+addition to the existing Tauri dependencies. No model key is needed for playback. Linux uses CPAL’s direct PulseAudio backend when a PulseAudio/pipewire-pulse server is available, otherwise ALSA.
+
+The D1 audition uses simple tones in C4 and grouped metronome clicks, with a
+30-second bound. It plays the committed revision shown in the transport. Editing
+remains available while playing; press Play again to hear the changes. Unsupported
+music or unavailable outputs produce an error. Full instruments and live schedule
+updates arrive in D3. Natural completion leaves an open silent stream until Stop,
+replacement or app exit so the last queued sound is not truncated.
+
+Linux integration proof (virtual output, not physical latency):
+
+```sh
+bun run desktop:build --debug
+# Requires pulseaudio, libasound2-plugins, WebKitWebDriver, Xvfb and dbus-run-session.
+xvfb-run -a dbus-run-session -- python3 scripts/desktop/audio-smoke.py src-tauri/target/debug/songwriter-desktop .agent/audio-native
+```
+
+The harness creates and destroys its own PulseAudio null sink and temporary local
+profile; it does not change system sound settings. See NATIVE_AUDIO_PROOF_PLAN.md
+and docs/NATIVE_AUDIO_PROOF_VALIDATION.md for scope and outstanding device evidence.
+# Media feasibility commands
+
+The D1 media harness is separate from the desktop window. It preserves imported
+recordings and proves short CPAL capture/recovery through a Rust API and CLI.
+See [commands and evidence](../docs/MEDIA_PROOF_VALIDATION.md) and
+[the pinned FFmpeg decoder recipe](../docs/FFMPEG.md). `nix develop` provides the
+decoder on ARM/x86 Linux and Apple Silicon. Outside Nix, run
+`bun run build:decoder` and set `SONGWRITER_FFMPEG` to its resulting executable
+before the compressed-format tests. No FFmpeg install is needed for WAV capture
+recovery. Desktop recording controls and take placement remain D4 work.

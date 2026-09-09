@@ -9,10 +9,13 @@ carry full committed snapshots; uncertain saves retry the identical request.
 The Rust session worker, core and SQLite adapter own validation and persistence.
 
 The native cohort is the disposable mixed-meter starter, not a general importer.
-Mastra desktop tools and native playback are not wired yet, so desktop UI/agent
-parity is not claimed. The future Mastra adapter must use this same session/core
-path. See [D1 evidence](DESKTOP_D1_VALIDATION.md). The map below describes the
-existing web app, whose broader features remain available in the browser.
+The Rig proof exposes `read_song`, `edit_song` (rename, moveNote, undo) and
+`complete_task`. UI and agent edits share Rust acceptance and musical receipts;
+agent effects also commit their tool result atomically. The assistant panel can
+configure a session-only provider key, send a request, cancel and resume.
+Native audio remains outstanding, and live-model proof evidence must be recorded
+separately. See [Rig proof](../RIG_PROOF_PLAN.md) and [D1 evidence](DESKTOP_D1_VALIDATION.md).
+The map below describes the broader existing browser app.
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
@@ -124,3 +127,39 @@ All these outcomes use schema 7 unchanged. The UI's pure note-edit helpers compo
 ordinary entity changes; agents retain the underlying primitives. Snapping and
 panel layout are view preferences, not a second musical model. The seven-degree
 axis preserves authored alterations and octaves when the audition tonic changes.
+
+## Desktop D1 native audition
+
+| Writer outcome | Shared Rust host / Rig primitive |
+| --- | --- |
+| Inspect transport and available outputs | `Engine::view/devices` / `audio_status` |
+| Play or restart the committed fixture, optionally on a selected output | Shared host `audio::play` / `play_audio` |
+| Stop, including while a start is pending | `Engine::stop` / `stop_audio` |
+
+Lit sends intents; Rust reads the saved song and prepares audio off the workspace
+worker. Neither caller supplies a replacement document or arbitrary PCM. Playback
+uses C4 as the audition tonic; canonical notes stay relative. Edits affect the next
+play. This D1 cohort supports normal/sustained pitched notes and chord members,
+zero-phase continuing occurrences and ring/cut tails, plus grouped mixed-meter
+clicks. Other playback semantics return visible unsupported errors pending D3.
+The audition is limited to 30 seconds, 2048 attacks/cycles and 120 cumulative voice
+seconds at 8–192 kHz; these are explicit proof limits, not final product limits.
+
+Audio is ephemeral, not musical history. A task journals an attempted transport
+call before issuing it; interrupted playback attempts are never automatically
+replayed. A restart opens stopped. Model tools receive saved results and can inspect
+current status; counters do not establish physical audibility. A cancelled pending
+play fences only its own generation, preserving a newer manual transport command.
+
+## D1 standalone media feasibility harness
+
+`song-media` exposes input discovery, bounded capture, capture inspection/recovery,
+original import/export and decoding through a Rust API and proof CLI. It uses a
+separate disposable media profile; it cannot attach takes or alter a song.
+No desktop UI action or Rig tool has been added in this feasibility slice.
+Tauri/Rig parity and full media CRUD remain explicit D4 integration requirements;
+the existing browser media capabilities above retain their current status.
+
+Capture IDs are stable caller-owned IDs. Reuse rejects instead of restarting a
+microphone. Restart marks pending captures interrupted; recovery is explicit and
+idempotent. The profile's OS lock prevents recovery while another host owns it.
