@@ -1,0 +1,6346 @@
+[
+  {
+    "name": "build-ok",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "build",
+          "newId": "chorus",
+          "name": "Chorus",
+          "recipe": {
+            "root": "I",
+            "quality": "major",
+            "extension": 0,
+            "seventh": "major",
+            "tones": [],
+            "omit": [],
+            "inversion": 0,
+            "octave": 0,
+            "target": null,
+            "tonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          "eventId": null,
+          "performance": "reset"
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          },
+          "chorus": {
+            "id": "chorus",
+            "name": "Chorus",
+            "notes": [
+              {
+                "id": "tone-1",
+                "pitch": {
+                  "degree": 1,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "tone-3",
+                "pitch": {
+                  "degree": 3,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "tone-5",
+                "pitch": {
+                  "degree": 5,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              }
+            ],
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I"
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "build-event",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "build",
+          "newId": "chorus",
+          "name": "Chorus",
+          "recipe": {
+            "root": "I",
+            "quality": "major",
+            "extension": 0,
+            "seventh": "major",
+            "tones": [],
+            "omit": [],
+            "inversion": 0,
+            "octave": 0,
+            "target": null,
+            "tonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          "eventId": "harmony",
+          "performance": "reset"
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          },
+          "chorus": {
+            "id": "chorus",
+            "name": "Chorus",
+            "notes": [
+              {
+                "id": "tone-1",
+                "pitch": {
+                  "degree": 1,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "tone-3",
+                "pitch": {
+                  "degree": 3,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "tone-5",
+                "pitch": {
+                  "degree": 5,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              }
+            ],
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I"
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chorus",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "build-reject",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "root",
+                "offset": [
+                  0,
+                  1
+                ],
+                "duration": [
+                  1,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "build",
+          "newId": "chorus",
+          "name": "Chorus",
+          "recipe": {
+            "root": "I",
+            "quality": "major",
+            "extension": 0,
+            "seventh": "major",
+            "tones": [],
+            "omit": [],
+            "inversion": 0,
+            "octave": 0,
+            "target": null,
+            "tonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          "eventId": "harmony",
+          "performance": "reject"
+        }
+      }
+    },
+    "ok": false,
+    "error": "Event has member performance; explicitly reset it before replacing the chord"
+  },
+  {
+    "name": "build-policy",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "build",
+          "newId": "chorus",
+          "name": "Chorus",
+          "recipe": {
+            "root": "I",
+            "quality": "major",
+            "extension": 0,
+            "seventh": "major",
+            "tones": [],
+            "omit": [],
+            "inversion": 0,
+            "octave": 0,
+            "target": null,
+            "tonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          "eventId": null,
+          "performance": "swap"
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose member performance handling"
+  },
+  {
+    "name": "build-recipe",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "build",
+          "newId": "chorus",
+          "name": "Chorus",
+          "recipe": {
+            "root": "I",
+            "quality": "mystic",
+            "extension": 0,
+            "seventh": "major",
+            "tones": [],
+            "omit": [],
+            "inversion": 0,
+            "octave": 0,
+            "target": null,
+            "tonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          "eventId": null,
+          "performance": "reset"
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose chord quality, extension and seventh quality"
+  },
+  {
+    "name": "transpose-ok",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "transpose",
+          "patternId": "riff",
+          "newId": "t",
+          "steps": 1,
+          "semitones": 2
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          },
+          "t-0": {
+            "id": "t-0",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": null,
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 2,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 4,
+                  "octave": 0,
+                  "alteration": 1
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 6,
+                  "octave": 1,
+                  "alteration": 0
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 1,
+              "octave": 2,
+              "alteration": 0
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "t-0",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "transpose-fraction",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "transpose",
+          "patternId": "riff",
+          "newId": "t",
+          "steps": 1.5,
+          "semitones": 2
+        }
+      }
+    },
+    "ok": false,
+    "error": "Intervals require integer steps and semitones"
+  },
+  {
+    "name": "transpose-missing",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "transpose",
+          "patternId": "gone",
+          "newId": "t",
+          "steps": 1,
+          "semitones": 2
+        }
+      }
+    },
+    "ok": false,
+    "error": "Unknown pattern"
+  },
+  {
+    "name": "voicelead-ok",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          },
+          "second": {
+            "id": "second",
+            "name": "Second",
+            "labelTonic": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "V",
+            "notes": [
+              {
+                "id": "a",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "b",
+                "pitch": {
+                  "degree": 2,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "voiceLead",
+          "sourceId": "chord",
+          "targetId": "second",
+          "octaveRadius": 1
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          },
+          "second": {
+            "id": "second",
+            "name": "Second",
+            "labelTonic": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": null,
+            "notes": [
+              {
+                "id": "a",
+                "pitch": {
+                  "degree": 5,
+                  "octave": 1,
+                  "alteration": 0
+                }
+              },
+              {
+                "id": "b",
+                "pitch": {
+                  "degree": 2,
+                  "octave": 0,
+                  "alteration": 0
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "voicelead-missing",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "voiceLead",
+          "sourceId": "chord",
+          "targetId": "gone",
+          "octaveRadius": 1
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose two chords"
+  },
+  {
+    "name": "voicelead-radius",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "voiceLead",
+          "sourceId": "chord",
+          "targetId": "chord",
+          "octaveRadius": 5
+        }
+      }
+    },
+    "ok": false,
+    "error": "Voice leading supports 1–8 notes per chord and octave radius 0–2"
+  },
+  {
+    "name": "perform-ok",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "perform",
+          "eventId": "harmony",
+          "order": [
+            "fifth",
+            "root",
+            "third"
+          ],
+          "step": [
+            1,
+            4
+          ],
+          "duration": null
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "fifth",
+                "offset": [
+                  0,
+                  1
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              },
+              {
+                "memberId": "root",
+                "offset": [
+                  1,
+                  4
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              },
+              {
+                "memberId": "third",
+                "offset": [
+                  1,
+                  2
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "perform-order",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "perform",
+          "eventId": "harmony",
+          "order": [
+            "root",
+            "third"
+          ],
+          "step": [
+            1,
+            4
+          ],
+          "duration": null
+        }
+      }
+    },
+    "ok": false,
+    "error": "Order must contain every chord member exactly once"
+  },
+  {
+    "name": "perform-event",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "perform",
+          "eventId": "note",
+          "order": [
+            "root"
+          ],
+          "step": [
+            1,
+            4
+          ],
+          "duration": null
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose a chord event"
+  },
+  {
+    "name": "expression-ok",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "expression",
+          "eventIds": [
+            "note",
+            "harmony"
+          ],
+          "from": 0.5,
+          "to": 1,
+          "articulation": "staccato",
+          "gate": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    "ok": true,
+    "songAfter": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              1,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.5,
+            "articulation": "staccato",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              2
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 1,
+            "articulation": "staccato",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    }
+  },
+  {
+    "name": "expression-range",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "expression",
+          "eventIds": [
+            "note"
+          ],
+          "from": 0,
+          "to": 2,
+          "articulation": "normal",
+          "gate": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose 1–512 events, accents 0–1 and articulation"
+  },
+  {
+    "name": "expression-rest",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "rest1": {
+            "id": "rest1",
+            "name": "Note",
+            "originId": "rest1",
+            "patternId": "riff",
+            "kind": "rest",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              1,
+              2
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "expression",
+          "eventIds": [
+            "rest1"
+          ],
+          "from": 0,
+          "to": 1,
+          "articulation": "normal",
+          "gate": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "ok": false,
+    "error": "Select sounding events; rests stay independent"
+  },
+  {
+    "name": "expression-pattern",
+    "song": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          },
+          "riff2": {
+            "id": "riff2",
+            "name": "Again",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "e2": {
+            "id": "e2",
+            "name": "Note",
+            "originId": "e2",
+            "patternId": "riff2",
+            "kind": "note",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              1,
+              2
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "mutation": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "op",
+      "label": "op",
+      "command": {
+        "kind": "harmony",
+        "action": {
+          "type": "expression",
+          "eventIds": [
+            "note",
+            "e2"
+          ],
+          "from": 0,
+          "to": 1,
+          "articulation": "normal",
+          "gate": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "ok": false,
+    "error": "Choose expression events from one pattern"
+  }
+]

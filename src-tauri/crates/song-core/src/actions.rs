@@ -1,6 +1,6 @@
 use crate::{
-    Error, MusicalEvent, Performance, Result, RhythmAction, Song, StructureAction, Time, ensure,
-    validate::identity,
+    Error, HarmonyAction, MusicalEvent, Performance, Result, RhythmAction, Song, StructureAction,
+    Time, ensure, validate::identity,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -25,10 +25,13 @@ pub enum Action {
         target_id: String,
     },
     Structure {
-        action: StructureAction,
+        action: Box<StructureAction>,
     },
     Rhythm {
-        action: RhythmAction,
+        action: Box<RhythmAction>,
+    },
+    Harmony {
+        action: Box<HarmonyAction>,
     },
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -253,7 +256,17 @@ impl Envelope {
             self.revision < crate::MAX_SAFE_INTEGER as u64 && now <= crate::MAX_SAFE_INTEGER as u64,
             "Revision or timestamp exceeds exact bounds",
         )?;
-        let proposal = propose(self, &m.action)?;
+        let mut proposal = propose(self, &m.action)?;
+        // Mirror applyCommand: a chord whose notes changed under an unchanged
+        // label loses the stale label.
+        for (id, chord) in proposal.song.tables.chords.iter_mut() {
+            if let Some(old) = self.song.tables.chords.get(id)
+                && old.notes != chord.notes
+                && old.label == chord.label
+            {
+                chord.label = None;
+            }
+        }
         proposal.song.validate()?;
         let mut candidate = self.clone();
         candidate.revision += 1;
@@ -414,6 +427,7 @@ fn propose(current: &Envelope, action: &Action) -> Result<Proposal> {
         }
         Action::Structure { action } => crate::structure::structure(&mut song, action)?,
         Action::Rhythm { action } => crate::rhythm::rhythm(&mut song, action)?,
+        Action::Harmony { action } => crate::harmony::harmony(&mut song, action)?,
     }
     Ok(Proposal { song })
 }

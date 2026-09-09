@@ -23,13 +23,19 @@ data!(Note {
 });
 data!(Chord { id: String, name: String, label_tonic: Pitch, notes: Vec<Note>, label: Option<String> });
 data!(Pattern { id: String, name: String, groups: Vec<Time>, length: Time, source_id: Option<String> });
-data!(Performance {
-    member_id: String,
-    offset: Time,
-    duration: Time,
-    gain: Option<f64>,
-    articulation: Option<String>
-});
+/// Optional performance overrides omit absent keys, matching the reference
+/// JSON shape; deserialization still accepts explicit nulls.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct Performance {
+    pub member_id: String,
+    pub offset: Time,
+    pub duration: Time,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gain: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub articulation: Option<String>,
+}
 data!(MusicalEvent {
     id: String, name: String, origin_id: String, pattern_id: String,
     kind: String, start: Time, duration: Time, pitch: Pitch, chord_id: Option<String>,
