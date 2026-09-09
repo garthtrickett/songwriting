@@ -2,7 +2,7 @@
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
-import { emptySong, noteEvent, semitone } from "../../src/song/model.ts";
+import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
 import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
 import { changeNotes } from "../../src/song/note-edit.ts";
 import { validateSong } from "../../src/song/validate.ts";
@@ -173,7 +173,8 @@ const validateCases = [
   broken("prompts-overflow", s => { for (let i = 0; i < 33; i++) s.tables.prompts[`p${i}`] = { id: `p${i}`, name: "P", text: "x" }; }),
   broken("prompt-name", s => { s.tables.prompts.p = { id: "p", name: longText(201), text: "x" }; }),
   broken("perf-gain", s => { s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1], gain: 2 }]; }),
-  broken("perf-articulation", s => { s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1], articulation: "wild" }]; }),
+  // Deliberately invalid values below: validateSong must reject each one.
+  broken("perf-articulation", s => { s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1], articulation: "wild" } as unknown as Performance]; }),
   broken("pattern-self", s => { s.tables.patterns.riff!.sourceId = "riff"; }),
   broken("pattern-missing", s => { s.tables.patterns.riff!.sourceId = "gone"; }),
   broken("pattern-cycle", s => {
@@ -213,7 +214,7 @@ const validateCases = [
   }),
   broken("fingering-dup", s => {
     s.tables.fretted.f1 = { id: "f1", name: "F", partId: "guitar", tonic: 40, tuning: [64, 59, 55, 50, 45, 40], capo: 0, maxFret: 12, handSpan: 4 };
-    const g = { id: "g1", name: "G", arrangementId: "f1", occurrenceId: "lead1", eventId: "note", memberId: null, string: 1, fret: 0, technique: "pluck", fromId: null };
+    const g: Fingering = { id: "g1", name: "G", arrangementId: "f1", occurrenceId: "lead1", eventId: "note", memberId: null, string: 1, fret: 0, technique: "pluck", fromId: null };
     s.tables.fingerings.g1 = g;
     s.tables.fingerings.g2 = { ...g, id: "g2", name: "G2" };
   }),
