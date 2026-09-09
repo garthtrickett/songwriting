@@ -25,8 +25,8 @@ pub fn shift_pitch(pitch: &Pitch, steps: i64, semitones: i64) -> Result<Pitch> {
     // Euclidean division matches Math.floor for negative distances.
     let octave = d.div_euclid(7);
     let degree = d - octave * 7 + 1;
-    let alteration =
-        i64::from(semitone(pitch)) + semitones - (i64::from(MAJOR[(degree - 1) as usize]) + octave * 12);
+    let alteration = i64::from(semitone(pitch)) + semitones
+        - (i64::from(MAJOR[(degree - 1) as usize]) + octave * 12);
     ensure(
         (-5..=5).contains(&octave) && (-4..=4).contains(&alteration),
         "Relative pitch outside supported range",
@@ -45,15 +45,6 @@ pub fn integer_value(value: f64) -> Result<i64> {
         "Intervals require integer steps and semitones",
     )?;
     Ok(value as i64)
-}
-
-pub fn relative_pitch(pitch: &Pitch, tonic: &Pitch) -> Result<Pitch> {
-    checked_pitch(tonic)?;
-    shift_pitch(
-        pitch,
-        -i64::from(tonic.degree - 1 + 7 * tonic.octave),
-        -i64::from(semitone(tonic)),
-    )
 }
 
 pub fn roman_root(text: &str) -> Result<Pitch> {
@@ -106,8 +97,4 @@ pub fn roman_pitch(pitch: &Pitch, minor: bool) -> String {
             numeral.to_string()
         }
     )
-}
-
-pub fn pitch_class(n: i32) -> i32 {
-    n.rem_euclid(12)
 }

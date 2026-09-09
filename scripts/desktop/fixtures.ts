@@ -3,6 +3,8 @@
 import { historyStacks } from "../../src/song/history.ts";
 import type { StructureAction } from "../../src/song/structure.ts";
 import type { RhythmAction } from "../../src/song/rhythm.ts";
+import type { HarmonyAction } from "../../src/song/harmony.ts";
+import type { ChordRecipe } from "../../src/song/chord-builder.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -323,7 +325,55 @@ const rhythms = [
     ],
   }),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms })) {
+const harmonic = (
+  name: string,
+  setup: (s: typeof song) => void,
+  action: HarmonyAction,
+) => {
+  const input = structuredClone(song);
+  setup(input);
+  const mutation = { songId: input.id, expectedRevision: 0, operationId: "op", label: "op", command: { kind: "harmony", action } as const };
+  try {
+    const envelope = applyCommand({ id: input.id, revision: 0, song: input, updatedAt: 0, history: [] }, mutation, 100);
+    return { name, song: input, mutation, ok: true as const, songAfter: envelope.song };
+  } catch (error) {
+    return { name, song: input, mutation, ok: false as const, error: (error as Error).message };
+  }
+};
+const majorTriad: ChordRecipe = {
+  root: "I", quality: "major", extension: 0, seventh: "major", tones: [], omit: [],
+  inversion: 0, octave: 0, target: null, tonic: { degree: 1, alteration: 0, octave: 0 },
+};
+const harmonies = [
+  harmonic("build-ok", () => {}, { type: "build", newId: "chorus", name: "Chorus", recipe: { ...majorTriad }, eventId: null, performance: "reset" }),
+  harmonic("build-event", () => {}, { type: "build", newId: "chorus", name: "Chorus", recipe: { ...majorTriad }, eventId: "harmony", performance: "reset" }),
+  harmonic("build-reject", s => {
+    s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1] }];
+  }, { type: "build", newId: "chorus", name: "Chorus", recipe: { ...majorTriad }, eventId: "harmony", performance: "reject" }),
+  harmonic("build-policy", () => {}, { type: "build", newId: "chorus", name: "Chorus", recipe: { ...majorTriad }, eventId: null, performance: "swap" as unknown as "reset" }),
+  harmonic("build-recipe", () => {}, { type: "build", newId: "chorus", name: "Chorus", recipe: { ...majorTriad, quality: "mystic" as unknown as "major" }, eventId: null, performance: "reset" }),
+  harmonic("transpose-ok", () => {}, { type: "transpose", patternId: "riff", newId: "t", steps: 1, semitones: 2 }),
+  harmonic("transpose-fraction", () => {}, { type: "transpose", patternId: "riff", newId: "t", steps: 1.5, semitones: 2 }),
+  harmonic("transpose-missing", () => {}, { type: "transpose", patternId: "gone", newId: "t", steps: 1, semitones: 2 }),
+  harmonic("voicelead-ok", s => {
+    s.tables.chords.second = { id: "second", name: "Second", labelTonic: { degree: 5, alteration: 0, octave: 0 }, label: "V", notes: [{ id: "a", pitch: { degree: 5, alteration: 0, octave: 0 } }, { id: "b", pitch: { degree: 2, alteration: 0, octave: 1 } }] };
+  }, { type: "voiceLead", sourceId: "chord", targetId: "second", octaveRadius: 1 }),
+  harmonic("voicelead-missing", () => {}, { type: "voiceLead", sourceId: "chord", targetId: "gone", octaveRadius: 1 }),
+  harmonic("voicelead-radius", () => {}, { type: "voiceLead", sourceId: "chord", targetId: "chord", octaveRadius: 5 }),
+  harmonic("perform-ok", () => {}, { type: "perform", eventId: "harmony", order: ["fifth", "root", "third"], step: [1, 4], duration: null }),
+  harmonic("perform-order", () => {}, { type: "perform", eventId: "harmony", order: ["root", "third"], step: [1, 4], duration: null }),
+  harmonic("perform-event", () => {}, { type: "perform", eventId: "note", order: ["root"], step: [1, 4], duration: null }),
+  harmonic("expression-ok", () => {}, { type: "expression", eventIds: ["note", "harmony"], from: 0.5, to: 1, articulation: "staccato", gate: [1, 2] }),
+  harmonic("expression-range", () => {}, { type: "expression", eventIds: ["note"], from: 0, to: 2, articulation: "normal", gate: [1, 1] }),
+  harmonic("expression-rest", s => {
+    s.tables.events.rest1 = { ...noteEvent("rest1", "riff"), kind: "rest", start: [0, 1], duration: [1, 2] };
+  }, { type: "expression", eventIds: ["rest1"], from: 0, to: 1, articulation: "normal", gate: [1, 1] }),
+  harmonic("expression-pattern", s => {
+    s.tables.patterns.riff2 = { ...s.tables.patterns.riff!, id: "riff2", name: "Again" };
+    s.tables.events.e2 = { ...noteEvent("e2", "riff2"), start: [0, 1] };
+  }, { type: "expression", eventIds: ["note", "e2"], from: 0, to: 1, articulation: "normal", gate: [1, 1] }),
+];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {

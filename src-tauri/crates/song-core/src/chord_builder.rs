@@ -61,18 +61,18 @@ pub fn build_chord(id: String, name: String, recipe: &ChordRecipe) -> Result<cra
     ensure(
         recipe.tones.len() <= 13
             && recipe.omit.len() <= 13
-            && recipe.omit.iter().collect::<std::collections::BTreeSet<_>>().len()
+            && recipe
+                .omit
+                .iter()
+                .collect::<std::collections::BTreeSet<_>>()
+                .len()
                 == recipe.omit.len()
             && recipe.omit.iter().all(|n| integer(*n, 1, 13))
             && recipe.octave.abs() <= 4,
         "Invalid chord tones, omissions or octave",
     )?;
     let root = roman_root(&recipe.root)?;
-    let target = recipe
-        .target
-        .as_ref()
-        .map(|t| roman_root(t))
-        .transpose()?;
+    let target = recipe.target.as_ref().map(|t| roman_root(t)).transpose()?;
     let base = match &target {
         Some(target) => shift_pitch(
             &recipe.tonic,
@@ -163,7 +163,10 @@ pub fn build_chord(id: String, name: String, recipe: &ChordRecipe) -> Result<cra
     for degree in &recipe.omit {
         tone_map.remove(degree);
     }
-    ensure(!tone_map.is_empty(), "A chord must retain at least one note")?;
+    ensure(
+        !tone_map.is_empty(),
+        "A chord must retain at least one note",
+    )?;
     let has_third = tone_map.contains_key(&3);
     // Sorted by sounding pitch; ties keep degree order on both sides.
     let mut notes: Vec<(i32, crate::Note)> = tone_map
@@ -238,10 +241,7 @@ pub fn build_chord(id: String, name: String, recipe: &ChordRecipe) -> Result<cra
         })
         .chain(recipe.omit.iter().map(|n| format!("no{n}")))
         .collect();
-    if recipe.quality == "power"
-        && recipe.extension != 0
-        && !has_third
-        && !recipe.omit.contains(&3)
+    if recipe.quality == "power" && recipe.extension != 0 && !has_third && !recipe.omit.contains(&3)
     {
         details.push("no3".into());
     }
@@ -263,7 +263,11 @@ pub fn build_chord(id: String, name: String, recipe: &ChordRecipe) -> Result<cra
                 recipe.quality == "minor" || recipe.quality == "diminished"
             ),
             suffix,
-            recipe.target.as_ref().map(|t| format!("/{t}")).unwrap_or_default(),
+            recipe
+                .target
+                .as_ref()
+                .map(|t| format!("/{t}"))
+                .unwrap_or_default(),
             if details.is_empty() {
                 String::new()
             } else {

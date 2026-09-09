@@ -11,7 +11,11 @@ use crate::{ensure, lookup};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ts_rs::TS)]
-#[serde(tag = "type", rename_all = "camelCase", rename_all_fields = "camelCase")]
+#[serde(
+    tag = "type",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
 pub enum HarmonyAction {
     Build {
         new_id: String,
@@ -125,7 +129,8 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
                 song.tables.patterns.contains_key(pattern_id),
                 "Unknown pattern",
             )?;
-            let mut copied = std::collections::BTreeMap::new();
+            let mut copied: std::collections::BTreeMap<String, String> =
+                std::collections::BTreeMap::new();
             for event in song
                 .tables
                 .events
@@ -134,10 +139,10 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
                 .cloned()
                 .collect::<Vec<_>>()
             {
-                if event.kind == "note" {
-                    if let Some(entry) = song.tables.events.get_mut(&event.id) {
-                        entry.pitch = shift_pitch(&entry.pitch, steps, semitones)?;
-                    }
+                if event.kind == "note"
+                    && let Some(entry) = song.tables.events.get_mut(&event.id)
+                {
+                    entry.pitch = shift_pitch(&entry.pitch, steps, semitones)?;
                 }
                 if event.kind == "chord" {
                     let chord_id = event.chord_id.clone().unwrap_or_default();
@@ -145,7 +150,7 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
                         Some(id) => id.clone(),
                         None => {
                             let id = format!("{new_id}-{}", copied.len());
-                            fresh(song, &id)?;
+                            fresh(song, &id, 100)?;
                             copied.insert(chord_id.clone(), id.clone());
                             let mut chord =
                                 lookup(&song.tables.chords, "chord", &chord_id)?.clone();
@@ -155,12 +160,8 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
                                 .notes
                                 .iter()
                                 .map(|n| {
-                                    shift_pitch(&n.pitch, steps, semitones).map(|pitch| {
-                                        crate::Note {
-                                            pitch,
-                                            ..n.clone()
-                                        }
-                                    })
+                                    shift_pitch(&n.pitch, steps, semitones)
+                                        .map(|pitch| crate::Note { pitch, ..n.clone() })
                                 })
                                 .collect::<Result<Vec<_>>>()?;
                             song.tables.chords.insert(id.clone(), chord);
@@ -189,16 +190,26 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
             step,
             duration,
         } => {
-            ensure(*step >= Time::ZERO, "Use normalized nonnegative time; duration must be positive")?;
+            ensure(
+                *step >= Time::ZERO,
+                "Use normalized nonnegative time; duration must be positive",
+            )?;
             if let Some(duration) = duration {
                 positive(*duration)?;
             }
             let event = lookup(&song.tables.events, "event", event_id)?.clone();
             ensure(event.kind == "chord", "Choose a chord event")?;
-            let chord = lookup(&song.tables.chords, "chord", event.chord_id.as_deref().unwrap_or(""))?;
+            let chord = lookup(
+                &song.tables.chords,
+                "chord",
+                event.chord_id.as_deref().unwrap_or(""),
+            )?;
             ensure(
                 order.len() == chord.notes.len()
-                    && order.iter().collect::<std::collections::BTreeSet<_>>().len()
+                    && order
+                        .iter()
+                        .collect::<std::collections::BTreeSet<_>>()
+                        .len()
                         == chord.notes.len()
                     && order
                         .iter()
@@ -211,9 +222,7 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
                 performance.push(crate::Performance {
                     member_id: member_id.clone(),
                     offset: step.checked_mul(Time::new(i as i64, 1)?)?,
-                    duration: duration.unwrap_or(
-                        prior.map_or(event.duration, |m| m.duration),
-                    ),
+                    duration: duration.unwrap_or(prior.map_or(event.duration, |m| m.duration)),
                     gain: prior.and_then(|m| m.gain),
                     articulation: prior.and_then(|m| m.articulation.clone()),
                 });
@@ -233,9 +242,14 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
             ensure(
                 !event_ids.is_empty()
                     && event_ids.len() <= 512
-                    && event_ids.iter().collect::<std::collections::BTreeSet<_>>().len()
+                    && event_ids
+                        .iter()
+                        .collect::<std::collections::BTreeSet<_>>()
+                        .len()
                         == event_ids.len()
-                    && [*from, *to].iter().all(|x| x.is_finite() && (0.0..=1.0).contains(x))
+                    && [*from, *to]
+                        .iter()
+                        .all(|x| x.is_finite() && (0.0..=1.0).contains(x))
                     && ["normal", "staccato", "sustain", "muted", "ghost"]
                         .contains(&articulation.as_str()),
                 "Choose 1–512 events, accents 0–1 and articulation",
@@ -251,7 +265,12 @@ pub fn harmony(song: &mut Song, action: &HarmonyAction) -> Result<()> {
             }
             events.sort_by(|a, b| a.start.cmp(&b.start).then(a.id.cmp(&b.id)));
             ensure(
-                events.iter().map(|e| &e.pattern_id).collect::<std::collections::BTreeSet<_>>().len() == 1,
+                events
+                    .iter()
+                    .map(|e| &e.pattern_id)
+                    .collect::<std::collections::BTreeSet<_>>()
+                    .len()
+                    == 1,
                 "Choose expression events from one pattern",
             )?;
             for (i, event) in events.iter().enumerate() {

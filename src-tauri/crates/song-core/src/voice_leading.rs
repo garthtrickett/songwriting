@@ -40,15 +40,10 @@ pub fn voice_leading(
 ) -> Result<VoiceLeading> {
     let source = song.tables.chords.get(source_id);
     let target = song.tables.chords.get(target_id);
-    ensure(
-        source.is_some() && target.is_some(),
-        "Choose two chords",
-    )?;
+    ensure(source.is_some() && target.is_some(), "Choose two chords")?;
     let (source, target) = (source.unwrap(), target.unwrap());
     ensure(
-        source.notes.len() <= 8
-            && target.notes.len() <= 8
-            && (0..=2).contains(&radius),
+        source.notes.len() <= 8 && target.notes.len() <= 8 && (0..=2).contains(&radius),
         "Voice leading supports 1–8 notes per chord and octave radius 0–2",
     )?;
     let mut left = source.notes.clone();
@@ -57,11 +52,11 @@ pub fn voice_leading(
     let n = left.len().max(right.len());
     // Cost matrix with octave-shifted options; ties keep generation order.
     let mut matrix = vec![vec![(0i32, None); n]; n];
-    for i in 0..n {
-        for j in 0..n {
+    for (i, row) in matrix.iter_mut().enumerate() {
+        for (j, cell) in row.iter_mut().enumerate() {
             let (a, b) = (left.get(i), right.get(j));
             if a.is_none() || b.is_none() {
-                matrix[i][j] = (0, b.map(|note| note.pitch.clone()));
+                *cell = (0, b.map(|note| note.pitch.clone()));
                 continue;
             }
             let (a, b) = (a.unwrap(), b.unwrap());
@@ -73,15 +68,12 @@ pub fn voice_leading(
             let mut options = Vec::new();
             for k in offsets {
                 if let Ok(pitch) = shift_pitch(&b.pitch, k * 7, k * 12) {
-                    options.push((
-                        (semitone(&pitch) - semitone(&a.pitch)).abs(),
-                        pitch,
-                    ));
+                    options.push(((semitone(&pitch) - semitone(&a.pitch)).abs(), pitch));
                 }
             }
             options.sort_by_key(|(cost, _)| *cost);
             let (cost, pitch) = options.into_iter().next().unwrap();
-            matrix[i][j] = (cost, Some(pitch));
+            *cell = (cost, Some(pitch));
         }
     }
     // Bitmask shortest assignment over rows.
@@ -130,9 +122,7 @@ pub fn voice_leading(
             from: before.map(|note| note.pitch.clone()),
             to: pitch.clone(),
             semitones: match (before, &pitch) {
-                (Some(before), Some(pitch)) => {
-                    Some(semitone(pitch) - semitone(&before.pitch))
-                }
+                (Some(before), Some(pitch)) => Some(semitone(pitch) - semitone(&before.pitch)),
                 _ => None,
             },
             status: if before.is_none() {
