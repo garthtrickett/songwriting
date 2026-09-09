@@ -74,8 +74,9 @@ generated files to LF on every platform. Musical comparisons remain unchanged.
 
 - General asynchronous audio/agent effect scheduling and bounded next actions.
 - Native audio callback, prepared schedules, device and codec/capture feasibility.
-- Packaged Node/Mastra with local SDK snapshots, full commit/task-result integration
-  and an actual model evaluation through the shared Rust interface.
+- The Node/Mastra desktop proposal is superseded by [the Rig proof](../RIG_PROOF_PLAN.md).
+  Its Rust journal/agent implementation and deterministic tests are documented in
+  [Rig evidence](RIG_PROOF_VALIDATION.md); actual-model evaluation remains pending.
 - Cross-platform packaged launch, footprint, real-device evidence and signing.
 
 D2 still owns full musical model/analysis parity, browser history/media migration,

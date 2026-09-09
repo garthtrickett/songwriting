@@ -1,11 +1,14 @@
 import "../../style.css";
 import "./style.css";
 import { DesktopClient } from "./client.ts";
-import { nativeTransport } from "./native.ts";
+import { AgentClient } from "./agent.ts";
+import { nativeTransport, nativeAgentTransport } from "./native.ts";
 import { mountDesktop } from "./view.ts";
 const client = new DesktopClient(nativeTransport);
-const disposeView = mountDesktop(document.getElementById("app")!, client);
+const agent = new AgentClient(nativeAgentTransport);
+void agent.connect();
+const disposeView = mountDesktop(document.getElementById("app")!, client, agent);
 void client.connect();
 const focus = () => { if (client.status !== "saving") void client.connect(); };
 addEventListener("focus", focus);
-addEventListener("pagehide", () => { removeEventListener("focus", focus); disposeView(); client.dispose(); }, { once: true });
+addEventListener("pagehide", () => { removeEventListener("focus", focus); disposeView(); client.dispose(); agent.dispose(); }, { once: true });

@@ -1,3 +1,4 @@
+pub mod agent;
 mod projection;
 pub mod protocol;
 use protocol::{EditRequest, Failure, PROTOCOL, Snapshot};
@@ -18,6 +19,10 @@ type Reply = oneshot::Sender<Result<Snapshot, Failure>>;
 enum Work {
     Read(Reply),
     Edit(EditRequest, Reply),
+    Agent(
+        agent::AgentWork,
+        oneshot::Sender<Result<Option<agent::Task>, Failure>>,
+    ),
     Close,
 }
 
@@ -35,6 +40,22 @@ impl Session {
             let mut workspace = open(path);
             while let Ok(work) = receiver.recv() {
                 let (request, reply) = match work {
+                    Work::Agent(work, reply) => {
+                        let is_tool = matches!(work, agent::AgentWork::Tool { .. });
+                        let result = match workspace.as_mut() {
+                            Err(e) => Err(e.clone()),
+                            Ok(w) => agent::run(w, work).map_err(Failure::from),
+                        };
+                        if is_tool
+                            && result.is_ok()
+                            && let Ok(w) = workspace.as_mut()
+                            && let Ok(snapshot) = run(w, None, &epoch)
+                        {
+                            changed(snapshot);
+                        }
+                        let _ = reply.send(result);
+                        continue;
+                    }
                     Work::Read(r) => (None, r),
                     Work::Edit(m, r) => (Some(m), r),
                     Work::Close => break,
@@ -123,6 +144,7 @@ fn open(path: PathBuf) -> Result<Workspace, Failure> {
         .map_err(|e| Failure::new("storage", e.to_string()))?;
     let mut workspace = Workspace::open(path).map_err(Failure::from)?;
     workspace.initialize_fixture(song).map_err(Failure::from)?;
+    workspace.agent_recover().map_err(Failure::from)?;
     Ok(workspace)
 }
 fn run(
@@ -154,4 +176,15 @@ fn run(
     }
     let envelope = workspace.read("desktop-fixture").map_err(Failure::from)?;
     Ok(projection::snapshot(&envelope, epoch))
+}
+
+async fn receive_task(
+    rx: oneshot::Receiver<Result<Option<agent::Task>, Failure>>,
+) -> Result<Option<agent::Task>, Failure> {
+    rx.await.map_err(|_| {
+        Failure::new(
+            "unavailable",
+            "Workspace stopped; reconnect to inspect the durable task",
+        )
+    })?
 }

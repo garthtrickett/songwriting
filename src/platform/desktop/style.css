@@ -35,3 +35,11 @@
 .desktop-note-fields span, .desktop-note-fields p { color: var(--muted); font-size: 11px; }
 .desktop-loading { margin: auto; display: grid; gap: 16px; max-width: 600px; padding: 32px; }
 @media (max-width: 1050px) { .desktop-library { flex-basis: 125px; } .desktop-profile { display: none; } .desktop-header { gap: 8px; } }
+
+.desktop-agent { border-top: 1px solid #525556; margin-top: 18px; padding-top: 12px; }
+.desktop-agent form { display: grid; gap: 8px; margin: 10px 0; }
+.desktop-agent label { display: grid; gap: 4px; }
+.desktop-agent input, .desktop-agent textarea, .desktop-agent select { width: 100%; min-width: 0; box-sizing: border-box; }
+.desktop-agent textarea { min-height: 76px; resize: vertical; }
+.desktop-agent p, .desktop-agent small { overflow-wrap: anywhere; }
+.desktop-agent-task { border-top: 1px solid #525556; padding-top: 10px; }

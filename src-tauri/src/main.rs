@@ -1,7 +1,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use song_agent::runtime::Runtime;
 use song_session::{
     Session,
-    protocol::{EditRequest, Failure, STATE_EVENT, Snapshot},
+    protocol::{AgentConfig, AgentView, EditRequest, Failure, STATE_EVENT, Snapshot},
 };
 use std::sync::{
     Arc,
@@ -32,6 +33,50 @@ async fn desktop_dispatch(
     check_window(&window)?;
     session.dispatch(request).await
 }
+#[tauri::command]
+async fn desktop_agent_status(
+    window: tauri::WebviewWindow,
+    agent: tauri::State<'_, Arc<Runtime>>,
+) -> Result<AgentView, Failure> {
+    check_window(&window)?;
+    agent.view().await
+}
+#[tauri::command]
+async fn desktop_agent_configure(
+    window: tauri::WebviewWindow,
+    agent: tauri::State<'_, Arc<Runtime>>,
+    config: AgentConfig,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    agent.configure(config).await
+}
+#[tauri::command]
+async fn desktop_agent_start(
+    window: tauri::WebviewWindow,
+    agent: tauri::State<'_, Arc<Runtime>>,
+    prompt: String,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    agent.start(prompt).await
+}
+#[tauri::command]
+async fn desktop_agent_resume(
+    window: tauri::WebviewWindow,
+    agent: tauri::State<'_, Arc<Runtime>>,
+    id: String,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    agent.resume(id).await
+}
+#[tauri::command]
+async fn desktop_agent_cancel(
+    window: tauri::WebviewWindow,
+    agent: tauri::State<'_, Arc<Runtime>>,
+    id: String,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    agent.cancel(id).await
+}
 fn check_window(window: &tauri::WebviewWindow) -> Result<(), Failure> {
     if window.label() == "main" {
         Ok(())
@@ -45,7 +90,9 @@ fn close(app: &tauri::AppHandle) {
     }
     let app = app.clone();
     let session = app.state::<Arc<Session>>().inner().clone();
+    let agent = app.state::<Arc<Runtime>>().inner().clone();
     tauri::async_runtime::spawn(async move {
+        agent.shutdown().await;
         let _ = tauri::async_runtime::spawn_blocking(move || session.close()).await;
         app.state::<Shutdown>()
             .finished
@@ -72,10 +119,19 @@ fn main() {
                 // Persistence succeeded even if a renderer has gone away.
                 let _ = handle.emit_to("main", STATE_EVENT, snapshot);
             });
+            app.manage(Arc::new(Runtime::new(session.clone())));
             app.manage(session);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![desktop_open, desktop_dispatch])
+        .invoke_handler(tauri::generate_handler![
+            desktop_open,
+            desktop_dispatch,
+            desktop_agent_status,
+            desktop_agent_configure,
+            desktop_agent_start,
+            desktop_agent_resume,
+            desktop_agent_cancel
+        ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();

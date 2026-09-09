@@ -4,6 +4,8 @@ import { live } from "lit-html/directives/live.js";
 import type { NoteView } from "../../generated/desktop/NoteView.ts";
 import type { Time } from "../../generated/desktop/Time.ts";
 import type { Snapshot } from "./wire.ts";
+import type { AgentClient } from "./agent.ts";
+import { agentPanel } from "./agent-view.ts";
 import { DesktopClient } from "./client.ts";
 import { format, fraction, parse, value } from "./coordinates.ts";
 
@@ -11,7 +13,8 @@ const key = (note: NoteView) => `${note.eventId}/${note.memberId ?? ""}`;
 interface Draft { value: string; base: Snapshot }
 interface Gesture { note: NoteView; base: Snapshot; x: number; pointer: number; element: HTMLElement; moved: boolean; zoom: number; snap: number }
 
-export function mountDesktop(root: HTMLElement, client: DesktopClient) {
+export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient) {
+  const assistant = agent ? agentPanel(agent) : null;
   let selected = "", patternId = "", zoom = 110, snap = 3;
   let titleDraft: Draft | null = null, noteDraft: Draft | null = null;
   let gesture: Gesture | null = null, preview: { key: string; start: Time } | null = null;
@@ -96,7 +99,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient) {
         <span class="desktop-profile">${s.profile}</span>
         <span class="desktop-status" role="status">${status}</span>
       </header>
-      <div class="desktop-notice">Desktop preview · Your starter sketch is saved on this computer. Playback and the assistant are coming next.</div>
+      <div class="desktop-notice">Desktop preview · Your starter sketch is saved on this computer. The assistant supports the same fixture edits as this view.</div>
       <div class="desktop-feedback" role="alert" ?hidden=${!(localError || client.error || s.warning || client.status === "offline" || (client.pending && client.status === "ready"))}>${localError || client.error || s.warning || nothing}
         ${client.error || client.status === "offline" ? html`<button ?disabled=${client.status === "saving" || client.status === "connecting"} @click=${() => client.connect()}>Reconnect</button>` : nothing}
         ${client.pending ? html`<button ?disabled=${client.status !== "ready"} @click=${() => client.retry()}>Retry same edit</button>` : nothing}
@@ -105,6 +108,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient) {
         <aside class="desktop-library"><h2>SONG</h2><p>${s.title}</p><hr /><h2>HISTORY</h2>
           ${s.undoable.length ? repeat(s.undoable.slice(-8).reverse(), (u) => u.operationId, (u) => html`<button ?disabled=${busy()}
             @click=${() => client.edit({ kind: "undo", targetId: u.operationId }, s, `Undo ${u.label}`)}>Undo · ${u.label}</button>`) : html`<small>Your edits will appear here.</small>`}
+          ${assistant?.() ?? nothing}
         </aside>
         <div class="desktop-editors">
           <section class="desktop-arrangement" aria-label="Song arrangement">
@@ -150,6 +154,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient) {
     </div>`, root);
   }
   const stop = client.subscribe(paint);
+  const stopAgent = agent?.subscribe(paint);
   paint();
-  return () => { disposed = true; stop(); root.removeEventListener("keydown", keyboard); };
+  return () => { disposed = true; stop(); stopAgent?.(); root.removeEventListener("keydown", keyboard); };
 }

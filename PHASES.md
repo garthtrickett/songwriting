@@ -14,14 +14,17 @@ Phases 1 and 2 are expanded into implementation detail. Phases 3–7 are detaile
 lit/TypeScript view and Rust SAM/audio desktop app with local profiles and no Neon login.
 It replaces the hosted Mastra rollout as the next delivery direction and details
 only D1's implementation tasks. D1 proves a thin Rust SAM musical slice against
-TypeScript fixtures, durable edits, native audio and independent Mastra recovery.
-D2 completes the Rust musical workspace and migrates existing data; Lit and Mastra
+TypeScript fixtures, durable edits, native audio and independent Rig recovery.
+D2 completes the Rust musical workspace and migrates existing data; Lit and Rig
 are clients of its action/state interface. D1 is in progress: its Rust SAM/SQLite
 core is connected to a Tauri window and Lit view for the restricted fixture cohort.
-Native audio, Mastra and the full packaged desktop gate remain open.
+Native audio, the Rig proof and the full packaged desktop gate remain open.
 See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned.
 The historical phases below retain their existing delivery status;
 the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
+
+The next selected milestone is [RIG_PROOF_PLAN.md](RIG_PROOF_PLAN.md), replacing
+the Node/Mastra desktop sidecar proposal. Live-model evidence is required.
 
 ## Delivery rules
 
@@ -393,7 +396,7 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 **Hosted agent workstream superseded:**
 [The Mastra hosted prototype](MASTRA_AGENT_PLAN.md) records the earlier M1–M5
-design. The selected [desktop port](DESKTOP_PORT_PLAN.md) now runs Mastra as a
+design. The selected [desktop port](DESKTOP_PORT_PLAN.md) now selects a Rig proof as a
 client of the local Rust SAM core; no Neon gate applies to this workstream.
 D1 is in progress. Numbered musical phases and Phase 9 song sync keep their status.
 

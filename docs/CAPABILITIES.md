@@ -9,10 +9,13 @@ carry full committed snapshots; uncertain saves retry the identical request.
 The Rust session worker, core and SQLite adapter own validation and persistence.
 
 The native cohort is the disposable mixed-meter starter, not a general importer.
-Mastra desktop tools and native playback are not wired yet, so desktop UI/agent
-parity is not claimed. The future Mastra adapter must use this same session/core
-path. See [D1 evidence](DESKTOP_D1_VALIDATION.md). The map below describes the
-existing web app, whose broader features remain available in the browser.
+The Rig proof exposes `read_song`, `edit_song` (rename, moveNote, undo) and
+`complete_task`. UI and agent edits share Rust acceptance and musical receipts;
+agent effects also commit their tool result atomically. The assistant panel can
+configure a session-only provider key, send a request, cancel and resume.
+Native audio remains outstanding, and live-model proof evidence must be recorded
+separately. See [Rig proof](../RIG_PROOF_PLAN.md) and [D1 evidence](DESKTOP_D1_VALIDATION.md).
+The map below describes the broader existing browser app.
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;

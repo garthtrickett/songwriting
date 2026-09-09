@@ -5,7 +5,7 @@ shows the starter's arrangement and relative 1–7 note editor. Rename the song,
 drag a note horizontally, enter an exact fractional start, or undo a saved edit.
 Rust owns the song and saves every accepted edit to local SQLite. No Neon sign-in,
 account, model key, browser database or agent process is needed. Native audio,
-Mastra and general project import remain outstanding. The browser app still works.
+the live Rig proof and general project import remain outstanding. The browser app still works.
 
 - `song-core`: exact musical time, a restricted schema-7 model, named actions,
   private proposals, validation/acceptance, undo and detached state representations.
@@ -160,3 +160,30 @@ bounded, normalized integers. This proves the selected cohort, not all schema-7
 behavior or playback expansion limits.
 
 See [D1 evidence](../docs/DESKTOP_D1_VALIDATION.md) for checks and outstanding work.
+
+## Rig assistant proof
+
+The desktop assistant accepts an Anthropic or OpenRouter model ID and your API
+key. Credentials last only for the app session; re-enter them after restarting.
+Requests and inspected song content are sent to that provider. The assistant uses
+the same Rust rename/move/undo actions as the view. Saved edits appear in History.
+Cancel preserves saved edits; interrupted tasks offer Resume after configuration.
+Model calls are limited to 12 per task, with a 60-second timeout per call.
+
+For a reproducible **live-model** test against a new disposable database, set
+`SONGWRITER_AGENT_PROVIDER`, `SONGWRITER_AGENT_MODEL`, and `SONGWRITER_AGENT_KEY`
+in your shell using your normal secret manager. Never commit them or pass the key
+as a command argument. Then, inside `nix develop`:
+
+```bash
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite start --exit-after-edit
+# Exit 73 is intentional: the edit/result committed, but the agent got no reply.
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite inspect
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite resume
+cargo run --manifest-path src-tauri/Cargo.toml -p song-agent --bin song-agent-proof -- .agent/rig-live.sqlite undo
+```
+
+Expect revision 1/title `Crooked Steps` before and after resume, then revision 2
+and the original title after undo. The crash command refuses an existing database.
+This harness uses a separate fixture path; it does not open your desktop profile.
+A fake model test is separate recovery evidence and does not satisfy the live gate.

@@ -98,6 +98,15 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         print("Native window loaded from packaged assets", flush=True)
         assert js("return document.querySelector('[aria-label=\"Snap\"]').value") == "3"
         assert initial["revision"] == 0
+        wait(lambda: js("return !!document.querySelector('[aria-label=\"Song assistant\"]')"), "assistant panel")
+        agent = invoke("desktop_agent_status")
+        assert agent == {"configuredModel": None, "task": None}
+        try:
+            invoke("desktop_agent_start", {"prompt": "Rename without credentials"})
+            raise AssertionError("Missing credentials should reject agent start")
+        except RuntimeError as error:
+            assert "configuration" in str(error)
+        assert invoke("desktop_open")["revision"] == 0
         duplicate = subprocess.run([str(BINARY)], env=env, capture_output=True, timeout=15)
         assert duplicate.returncode == 0, duplicate.stderr.decode()
         assert invoke("desktop_open")["epoch"] == initial["epoch"]

@@ -7,17 +7,20 @@ Status: Phases 1–7 complete; the Phase 8 arrangement workspace is implemented;
 [DESKTOP_PORT_PLAN.md](DESKTOP_PORT_PLAN.md) defines the move to Tauri, the existing
 lit/TypeScript view, and a local Rust SAM core and audio engine. Rust owns musical
 state, actions/proposal acceptance, validation, history, persistence and derived
-state representations. Lit and Mastra use the same Rust action/state interface;
-the agent sidecar is optional for manual operation. Port existing TypeScript
+state representations. Lit and Rig use the same Rust action/state interface;
+provider/model work stays outside the manual editing path. Port existing TypeScript
 musical rules with differential behavior checks. Use a local profile under the
-writer's OS account, SQLite for durable local data, and bundled local Mastra with
+writer's OS account, SQLite for durable local data, and the Rust Rig task runner with
 the writer's own model credentials. Neon sign-in is no longer a prerequisite.
 The plan sequences D1–D7 and details D1's packaged feasibility proof. D1's first
 Rust SAM/SQLite core now has a Tauri window, generated bindings and a Lit
-arrangement/note view. Native audio and Mastra integration remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
+arrangement/note view. Native audio and the Rig proof remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
 Existing musical requirements remain in force.
 For desktop ownership and stack decisions, this plan supersedes the historical
 TypeScript implementation details below while preserving their product semantics.
+
+The next selected milestone is [RIG_PROOF_PLAN.md](RIG_PROOF_PLAN.md), replacing
+the Node/Mastra desktop sidecar proposal. Live-model evidence is required.
 
 ## Built-in Mastra agent — hosted prototype superseded
 
@@ -413,7 +416,7 @@ build does not substitute for type checking.
 
 Desktop target: move this SAM pattern into the Rust core, including musical
 actions, proposal acceptance, canonical model and state derivation. Lit retains
-presentation state and renders Rust representations; Mastra calls the same Rust
+presentation state and renders Rust representations; Rig calls the same Rust
 actions. See [desktop SAM ownership](DESKTOP_PORT_PLAN.md#rust-sam-workspace-module)
 for persistence ordering, async proposals and audio separation. The TypeScript
 wiring below documents the existing browser implementation used during migration.
