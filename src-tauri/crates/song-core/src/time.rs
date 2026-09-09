@@ -49,6 +49,21 @@ impl Time {
             i128::from(self.1) * i128::from(rhs.1),
         )
     }
+    /// Exact numeric value. i64→f64 conversion and division match the
+    /// TypeScript implementation bit for bit on bounded inputs.
+    pub fn value(self) -> f64 {
+        self.0 as f64 / self.1 as f64
+    }
+    /// Floored cycle remainder. The remainder is computed from the reduced
+    /// numerator/denominator pair so every intermediate fits i128 exactly;
+    /// the result matches arbitrary-precision BigInt arithmetic on all inputs.
+    pub fn checked_modulo(self, length: Self) -> Result<Self> {
+        ensure(length > Self::ZERO, "Cycle length must be positive")?;
+        let n = i128::from(self.0) * i128::from(length.1);
+        let d = i128::from(self.1) * i128::from(length.0);
+        let remainder = n - n.div_euclid(d) * d;
+        Self::ratio(remainder, i128::from(self.1) * i128::from(length.1))
+    }
 }
 impl Ord for Time {
     fn cmp(&self, rhs: &Self) -> Ordering {

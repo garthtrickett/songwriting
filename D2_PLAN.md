@@ -1,8 +1,7 @@
 # D2 — Rust musical workspace and migration
 
-Proposed, awaiting explicit activation. D1 remains the active phase; no D2
-implementation starts until it is selected. This plan exists because each phase
-gets detailed implementation tasks before it starts.
+Active as of 2026-09-09 by operator selection. Slices land in order with their
+parity evidence; no slice starts until the previous one is merged.
 
 ## Outcome
 
