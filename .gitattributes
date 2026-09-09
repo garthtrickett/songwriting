@@ -1,0 +1,2 @@
+# Generated reference fixtures are byte-compared on every platform.
+tests/desktop/*.json text eol=lf

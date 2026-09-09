@@ -40,7 +40,7 @@ Commands (Bun run through `npx --yes --package=bun@1.4.2 bun` on this machine):
 | `bun run verify:desktop` | PASS: formatting, Clippy with warnings denied, 10 Rust integration tests and fixture drift check |
 | `bun run test:browser` | PASS: 33 Chromium browser tests |
 | `git diff --check` | PASS |
-| GitHub native matrix and browser verification | Not yet published |
+| GitHub native matrix and browser verification | [Draft PR #12](https://github.com/garthtrickett/songwriting/pull/12); final status recorded on the PR |
 
 Rust checks include 16 TypeScript command-sequence steps and 20 exact-time cases,
 plus wire validation and unsupported/corrupt data rejection. The recovery tests
@@ -49,6 +49,11 @@ reopen/retry/undo, injected failed SQL writes, simultaneous independent connecti
 history corruption, future schema rejection and non-destructive fixture startup.
 The fault exits the process without unwinding Rust destructors; it does not prove
 survival of hardware power loss or every operating system's filesystem behavior.
+
+The initial Windows CI run found Git converting generated JSON fixtures to CRLF,
+which correctly failed the byte-for-byte reference drift check. Reproduced locally
+with `git -c core.autocrlf=true checkout-index`; `.gitattributes` now pins those
+generated files to LF on every platform. Musical comparisons remain unchanged.
 
 ## Outstanding D1 work
 
