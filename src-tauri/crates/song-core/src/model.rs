@@ -12,6 +12,23 @@ macro_rules! data {
     };
 }
 pub type Table<T> = BTreeMap<String, T>;
+
+/// Display label for a relative pitch, mirroring pitchLabel in model.ts.
+pub fn pitch_label(pitch: &Pitch) -> String {
+    let accidental = if pitch.alteration < 0 {
+        "♭".repeat((-pitch.alteration) as usize)
+    } else {
+        "♯".repeat(pitch.alteration as usize)
+    };
+    let octave = if pitch.octave == 0 {
+        String::new()
+    } else if pitch.octave > 0 {
+        format!("↑{}", pitch.octave)
+    } else {
+        format!("↓{}", -pitch.octave)
+    };
+    format!("{accidental}{}{octave}", pitch.degree)
+}
 data!(Pitch {
     degree: i32,
     alteration: i32,

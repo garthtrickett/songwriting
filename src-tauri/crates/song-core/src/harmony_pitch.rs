@@ -98,3 +98,16 @@ pub fn roman_pitch(pitch: &Pitch, minor: bool) -> String {
         }
     )
 }
+
+pub fn relative_pitch(pitch: &Pitch, tonic: &Pitch) -> Result<Pitch> {
+    checked_pitch(tonic)?;
+    shift_pitch(
+        pitch,
+        -i64::from(tonic.degree - 1 + 7 * tonic.octave),
+        -i64::from(semitone(tonic)),
+    )
+}
+
+pub fn pitch_class(n: i32) -> i32 {
+    n.rem_euclid(12)
+}

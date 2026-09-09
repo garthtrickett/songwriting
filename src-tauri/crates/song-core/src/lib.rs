@@ -4,6 +4,7 @@ mod arrangement;
 mod chord_builder;
 mod fretted;
 mod harmony;
+mod harmony_analysis;
 mod harmony_pitch;
 mod model;
 mod note_edit;
@@ -20,6 +21,11 @@ pub use arrangement::{
     Annotation, Placement, annotations, placements, section_length, section_spans,
 };
 pub use harmony::HarmonyAction;
+pub use harmony_analysis::{
+    ChordCandidates, HarmonicContext, HarmonicSpan, Interpretations, SoundingHarmony, SoundingNote,
+    SoundingVoice, chord_candidates, harmonic_context, harmonic_spans, interpretations,
+    sounding_harmony,
+};
 pub use model::*;
 pub use note_edit::{NoteEdit, NoteTarget, WireChange, change_notes, combine_notes, remove_notes};
 pub use rhythm::{RhythmAction, RhythmLane};

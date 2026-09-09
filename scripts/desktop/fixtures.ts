@@ -8,6 +8,7 @@ import type { ChordRecipe } from "../../src/song/chord-builder.ts";
 import { changeNotes, removeNotes, combineNotes } from "../../src/song/note-edit.ts";
 import { annotations } from "../../src/song/arrangement.ts";
 import { alignmentMap, polyrhythmGrid, comparePatterns } from "../../src/song/rhythm-analysis.ts";
+import { harmonicSpans, harmonicContext, interpretations, chordCandidates, soundingHarmony } from "../../src/song/harmony-analysis.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -446,11 +447,16 @@ const analyzed = () => {
     id: "p1", name: "Poly", sectionId: "verse", start: [0, 1], duration: [2, 1],
     lanes: [{ occurrenceId: "lead1", divisions: 2 }, { occurrenceId: "bass1o", divisions: 2 }],
   };
+  input.tables.harmony.h0 = { id: "h0", name: "Global", sectionId: null, start: [0, 1], duration: [1, 1], tonic: { degree: 1, alteration: 0, octave: 0 }, mode: "major", annotation: "home" };
+  input.tables.harmony.h1 = { id: "h1", name: "Verse", sectionId: "verse", start: [0, 1], duration: [4, 1], tonic: { degree: 1, alteration: 0, octave: 0 }, mode: "major", annotation: "I" };
+  input.tables.harmony.h2 = { id: "h2", name: "Later", sectionId: "verse", start: [4, 1], duration: [4, 1], tonic: { degree: 5, alteration: 0, octave: 0 }, mode: "major", annotation: "V" };
   const attempt = (fn: () => unknown) => {
     try { return { ok: true as const, value: fn() }; }
     catch (error) { return { ok: false as const, error: (error as Error).message }; }
   };
   const until = songEnd(input);
+  const chordNotes = input.tables.chords.chord!.notes.map(n => n.pitch);
+  const many = Array.from({ length: 65 }, () => ({ degree: 1, alteration: 0, octave: 0 }));
   return {
     name: "analysis",
     song: input,
@@ -464,6 +470,20 @@ const analyzed = () => {
     gridUnknown: attempt(() => polyrhythmGrid(input, "gone")),
     compare: attempt(() => comparePatterns(input, "riff", "riff2")),
     compareUnknown: attempt(() => comparePatterns(input, "riff", "gone")),
+    harmony: {
+      spans: attempt(() => harmonicSpans(input)),
+      contextEarly: attempt(() => harmonicContext(input, [0, 1])),
+      contextLater: attempt(() => harmonicContext(input, [5, 1])),
+      contextEmpty: attempt(() => harmonicContext(input, [8, 1])),
+      contextNegative: attempt(() => harmonicContext(input, [-1, 1])),
+      interpretChord: attempt(() => interpretations(chordNotes, { degree: 1, alteration: 0, octave: 0 }, "major")),
+      interpretInvalid: attempt(() => interpretations([{ degree: 8, alteration: 0, octave: 0 }], { degree: 1, alteration: 0, octave: 0 }, "major")),
+      interpretMany: attempt(() => interpretations(many, { degree: 1, alteration: 0, octave: 0 }, "major")),
+      candidates: attempt(() => chordCandidates(input, "chord")),
+      candidatesUnknown: attempt(() => chordCandidates(input, "gone")),
+      soundingEarly: attempt(() => soundingHarmony(input, [1, 1])),
+      soundingEmpty: attempt(() => soundingHarmony(input, [8, 1])),
+    },
   };
 };
 const analysis = [analyzed()];
