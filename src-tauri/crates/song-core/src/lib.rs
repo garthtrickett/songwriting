@@ -1,6 +1,7 @@
 //! D1 headless SAM musical slice. No device, UI, database or agent dependencies.
 mod actions;
 mod arrangement;
+mod fretted;
 mod model;
 mod time;
 mod timeline;

@@ -2,7 +2,7 @@
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
-import { emptySong, noteEvent, semitone } from "../../src/song/model.ts";
+import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
 import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
 import { changeNotes } from "../../src/song/note-edit.ts";
 import { validateSong } from "../../src/song/validate.ts";
@@ -162,7 +162,65 @@ const timeline = Object.entries(variants).map(([name, input]) => {
     sounds: sounds(input),
   };
 });
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline })) {
+const broken = (name: string, fn: (s: typeof song) => void) => {
+  const input = structuredClone(song);
+  fn(input);
+  const result = validateSong(input);
+  return { name, song: input, ok: result.ok, error: result.ok ? null : (result as { ok: false; error: string }).error };
+};
+const longText = (n: number) => "x".repeat(n);
+const validateCases = [
+  broken("prompts-overflow", s => { for (let i = 0; i < 33; i++) s.tables.prompts[`p${i}`] = { id: `p${i}`, name: "P", text: "x" }; }),
+  broken("prompt-name", s => { s.tables.prompts.p = { id: "p", name: longText(201), text: "x" }; }),
+  broken("perf-gain", s => { s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1], gain: 2 }]; }),
+  // Deliberately invalid values below: validateSong must reject each one.
+  broken("perf-articulation", s => { s.tables.events.harmony!.performance = [{ memberId: "root", offset: [0, 1], duration: [1, 1], articulation: "wild" } as unknown as Performance]; }),
+  broken("pattern-self", s => { s.tables.patterns.riff!.sourceId = "riff"; }),
+  broken("pattern-missing", s => { s.tables.patterns.riff!.sourceId = "gone"; }),
+  broken("pattern-cycle", s => {
+    s.tables.patterns.riff2 = { ...s.tables.patterns.riff!, id: "riff2", name: "Again", sourceId: "riff" };
+    s.tables.patterns.riff!.sourceId = "riff2";
+  }),
+  broken("section-self", s => { s.tables.sections.verse!.sourceId = "verse"; }),
+  broken("section-cycle", s => {
+    s.tables.sections.verse2 = { id: "verse2", name: "Again", sourceId: "verse", barIds: [] };
+    s.tables.sections.verse!.sourceId = "verse2";
+  }),
+  broken("phrase-overflow", s => { s.tables.phrases.p1 = { id: "p1", name: "P", sectionId: "verse", start: [8, 1], duration: [2, 1] }; }),
+  broken("lyric-text", s => { s.tables.lyrics.l1 = { id: "l1", name: "L", sectionId: "verse", start: [0, 1], duration: [1, 1], text: longText(10001), phraseId: null, partId: null }; }),
+  broken("lyric-phrase", s => {
+    s.tables.phrases.p1 = { id: "p1", name: "P", sectionId: "verse", start: [0, 1], duration: [4, 1] };
+    s.tables.lyrics.l1 = { id: "l1", name: "L", sectionId: "verse", start: [5, 1], duration: [1, 1], text: "la", phraseId: "p1", partId: "guitar" };
+  }),
+  broken("poly-lanes", s => { s.tables.polyrhythms.p1 = { id: "p1", name: "P", sectionId: null, start: [0, 1], duration: [1, 1], lanes: [{ occurrenceId: "lead1", divisions: 4 }] }; }),
+  broken("poly-divisions", s => { s.tables.polyrhythms.p1 = { id: "p1", name: "P", sectionId: "verse", start: [0, 1], duration: [1, 1], lanes: [{ occurrenceId: "lead1", divisions: 4 }, { occurrenceId: "lead1", divisions: 0 }] }; }),
+  broken("poly-scope", s => { s.tables.polyrhythms.p1 = { id: "p1", name: "P", sectionId: null, start: [0, 1], duration: [1, 1], lanes: [{ occurrenceId: "lead1", divisions: 4 }, { occurrenceId: "lead1", divisions: 2 }] }; }),
+  broken("poly-voice", s => {
+    s.tables.occurrences.lead2 = { ...s.tables.occurrences.lead1!, id: "lead2", name: "Second", start: [0, 1], span: [1, 1] };
+    s.tables.polyrhythms.p1 = { id: "p1", name: "P", sectionId: "verse", start: [0, 1], duration: [1, 1], lanes: [{ occurrenceId: "lead1", divisions: 4 }, { occurrenceId: "lead2", divisions: 2 }] };
+  }),
+  broken("harmony-overlap", s => {
+    s.tables.harmony.h1 = { id: "h1", name: "A", sectionId: null, start: [0, 1], duration: [2, 1], tonic: { degree: 1, alteration: 0, octave: 0 }, mode: "major", annotation: "I" };
+    s.tables.harmony.h2 = { id: "h2", name: "B", sectionId: null, start: [1, 1], duration: [2, 1], tonic: { degree: 5, alteration: 0, octave: 0 }, mode: "major", annotation: "V" };
+  }),
+  broken("harmony-exceeds", s => {
+    s.tables.harmony.h1 = { id: "h1", name: "A", sectionId: "verse", start: [8, 1], duration: [2, 1], tonic: { degree: 1, alteration: 0, octave: 0 }, mode: "major", annotation: "I" };
+  }),
+  broken("fretted-part", s => { s.tables.fretted.f1 = { id: "f1", name: "F", partId: "nope", tonic: 40, tuning: [64, 59, 55, 50, 45, 40], capo: 0, maxFret: 12, handSpan: 4 }; }),
+  broken("fretted-tuning", s => { s.tables.fretted.f1 = { id: "f1", name: "F", partId: "guitar", tonic: 40, tuning: [], capo: 0, maxFret: 12, handSpan: 4 }; }),
+  broken("fingering-shape", s => {
+    s.tables.fretted.f1 = { id: "f1", name: "F", partId: "guitar", tonic: 40, tuning: [64, 59, 55, 50, 45, 40], capo: 0, maxFret: 12, handSpan: 4 };
+    s.tables.fingerings.g1 = { id: "g1", name: "G", arrangementId: "f1", occurrenceId: "???", eventId: "note", memberId: null, string: 1, fret: 0, technique: "pluck", fromId: null };
+  }),
+  broken("fingering-dup", s => {
+    s.tables.fretted.f1 = { id: "f1", name: "F", partId: "guitar", tonic: 40, tuning: [64, 59, 55, 50, 45, 40], capo: 0, maxFret: 12, handSpan: 4 };
+    const g: Fingering = { id: "g1", name: "G", arrangementId: "f1", occurrenceId: "lead1", eventId: "note", memberId: null, string: 1, fret: 0, technique: "pluck", fromId: null };
+    s.tables.fingerings.g1 = g;
+    s.tables.fingerings.g2 = { ...g, id: "g2", name: "G2" };
+  }),
+  broken("marker-negative", s => { s.tables.markers.m1 = { id: "m1", name: "M", at: [-1, 1] }; }),
+];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
