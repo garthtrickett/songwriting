@@ -1,0 +1,5354 @@
+[
+  {
+    "name": "baseline",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": [
+      {
+        "id": "lead1:verse1:note::1,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:1,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:1,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:9,2",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:9,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:8,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:8,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  },
+  {
+    "name": "cut-tails",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "root",
+                "offset": [
+                  1,
+                  3
+                ],
+                "duration": [
+                  2,
+                  1
+                ]
+              },
+              {
+                "memberId": "fifth",
+                "offset": [
+                  1,
+                  1
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "cut"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": [
+      {
+        "id": "lead1:verse1:note::1,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:4,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          4,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:2,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:29,6",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          29,
+          6
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:11,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          11,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:25,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          25,
+          3
+        ],
+        "duration": [
+          1,
+          6
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  },
+  {
+    "name": "repeated-section",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1",
+        "verse2"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "root",
+                "offset": [
+                  1,
+                  3
+                ],
+                "duration": [
+                  2,
+                  1
+                ]
+              },
+              {
+                "memberId": "fifth",
+                "offset": [
+                  1,
+                  1
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          },
+          "verse2": {
+            "id": "verse2",
+            "name": "Again",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      },
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse2",
+        "index": 2,
+        "start": [
+          17,
+          2
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse2",
+        "index": 3,
+        "start": [
+          12,
+          1
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          17,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          19,
+          2
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          21,
+          2
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          12,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          15,
+          1
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        1
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "id": "lead1:verse2",
+        "segments": [
+          {
+            "start": [
+              17,
+              2
+            ],
+            "end": [
+              17,
+              1
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      },
+      {
+        "id": "lead1:verse2",
+        "starts": [
+          [
+            17,
+            2
+          ],
+          [
+            12,
+            1
+          ],
+          [
+            31,
+            2
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": [
+      {
+        "id": "lead1:verse1:note::1,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:4,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          4,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:2,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:29,6",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          29,
+          6
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:11,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          11,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:25,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          25,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:note::53,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          17,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          53,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:third:19,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          17,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          19,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:root:59,6",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          17,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          59,
+          6
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:fifth:21,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          17,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          21,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:note::37,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          12,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          37,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:third:13,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          12,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          13,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:root:40,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          12,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          40,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:fifth:14,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          12,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          14,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:note::95,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          31,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          95,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:third:33,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          31,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          33,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse2:harmony:root:101,6",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse2",
+        "cycleOrigin": [
+          31,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          101,
+          6
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  },
+  {
+    "name": "muted",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": true
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "root",
+                "offset": [
+                  1,
+                  3
+                ],
+                "duration": [
+                  2,
+                  1
+                ]
+              },
+              {
+                "memberId": "fifth",
+                "offset": [
+                  1,
+                  1
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": []
+  },
+  {
+    "name": "member-offsets",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": [
+              {
+                "memberId": "root",
+                "offset": [
+                  1,
+                  3
+                ],
+                "duration": [
+                  2,
+                  1
+                ]
+              },
+              {
+                "memberId": "fifth",
+                "offset": [
+                  1,
+                  1
+                ],
+                "duration": [
+                  3,
+                  1
+                ]
+              }
+            ]
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": [
+      {
+        "id": "lead1:verse1:note::1,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:4,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          4,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:2,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          2,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:29,6",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          29,
+          6
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:11,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          11,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:25,3",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          25,
+          3
+        ],
+        "duration": [
+          2,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  },
+  {
+    "name": "two-voices",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          },
+          "lead2": {
+            "id": "lead2",
+            "name": "Second",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              7,
+              2
+            ],
+            "span": [
+              5,
+              1
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignment": [
+        7,
+        2
+      ],
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "id": "lead2:verse1",
+        "segments": [
+          {
+            "start": [
+              7,
+              2
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      },
+      {
+        "id": "lead2:verse1",
+        "starts": [
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [],
+    "sounds": [
+      {
+        "id": "lead1:verse1:note::1,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:1,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:1,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:note::23,6",
+        "memberId": null,
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          23,
+          6
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:9,2",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:9,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:root:9,2",
+        "memberId": "root",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:fifth:9,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:note::22,3",
+        "memberId": null,
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "note",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          22,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:8,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:8,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:root:8,1",
+        "memberId": "root",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead2:verse1:harmony:fifth:8,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead2",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  },
+  {
+    "name": "with-rest",
+    "input": {
+      "schemaVersion": 7,
+      "id": "desktop-fixture",
+      "title": "Mixed-meter sketch",
+      "mode": "major",
+      "degreeReference": "major",
+      "writing": {
+        "instructions": "",
+        "preferences": ""
+      },
+      "tempo": {
+        "bpm": 112,
+        "beatUnit": [
+          1,
+          1
+        ]
+      },
+      "arrangementOrder": [
+        "verse1"
+      ],
+      "tables": {
+        "prompts": {},
+        "assets": {},
+        "takes": {},
+        "fretted": {},
+        "fingerings": {},
+        "harmony": {},
+        "parts": {
+          "guitar": {
+            "id": "guitar",
+            "name": "Guitar",
+            "instrument": "guitar",
+            "volume": 0.8,
+            "muted": false
+          }
+        },
+        "voices": {
+          "lead": {
+            "id": "lead",
+            "name": "Lead",
+            "partId": "guitar"
+          }
+        },
+        "patterns": {
+          "riff": {
+            "id": "riff",
+            "name": "Riff",
+            "length": [
+              7,
+              2
+            ],
+            "groups": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "sourceId": null
+          }
+        },
+        "chords": {
+          "chord": {
+            "id": "chord",
+            "name": "Open chord",
+            "labelTonic": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "label": "I",
+            "notes": [
+              {
+                "id": "root",
+                "pitch": {
+                  "degree": 1,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "third",
+                "pitch": {
+                  "degree": 3,
+                  "alteration": 0,
+                  "octave": 0
+                }
+              },
+              {
+                "id": "fifth",
+                "pitch": {
+                  "degree": 5,
+                  "alteration": 0,
+                  "octave": 1
+                }
+              }
+            ]
+          }
+        },
+        "events": {
+          "note": {
+            "id": "note",
+            "name": "Note",
+            "originId": "note",
+            "patternId": "riff",
+            "kind": "note",
+            "start": [
+              1,
+              3
+            ],
+            "duration": [
+              2,
+              3
+            ],
+            "pitch": {
+              "degree": 7,
+              "alteration": -1,
+              "octave": 1
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "harmony": {
+            "id": "harmony",
+            "name": "Note",
+            "originId": "harmony",
+            "patternId": "riff",
+            "kind": "chord",
+            "start": [
+              1,
+              1
+            ],
+            "duration": [
+              3,
+              1
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": "chord",
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          },
+          "rest1": {
+            "id": "rest1",
+            "name": "Note",
+            "originId": "rest1",
+            "patternId": "riff",
+            "kind": "rest",
+            "start": [
+              0,
+              1
+            ],
+            "duration": [
+              1,
+              2
+            ],
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            },
+            "chordId": null,
+            "drum": "kick",
+            "accent": 0.7,
+            "articulation": "normal",
+            "performance": []
+          }
+        },
+        "bars": {
+          "seven": {
+            "id": "seven",
+            "name": "7/8",
+            "sectionId": "verse",
+            "numerator": 7,
+            "denominator": 8,
+            "groups": [
+              2,
+              2,
+              3
+            ],
+            "actual": null
+          },
+          "five": {
+            "id": "five",
+            "name": "5/4",
+            "sectionId": "verse",
+            "numerator": 5,
+            "denominator": 4,
+            "groups": [
+              3,
+              2
+            ],
+            "actual": null
+          }
+        },
+        "sections": {
+          "verse": {
+            "id": "verse",
+            "name": "Verse",
+            "sourceId": null,
+            "barIds": [
+              "seven",
+              "five"
+            ]
+          }
+        },
+        "arrangement": {
+          "verse1": {
+            "id": "verse1",
+            "name": "Verse",
+            "sectionId": "verse"
+          }
+        },
+        "occurrences": {
+          "lead1": {
+            "id": "lead1",
+            "name": "Lead",
+            "sectionId": "verse",
+            "patternId": "riff",
+            "voiceId": "lead",
+            "start": [
+              0,
+              1
+            ],
+            "span": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ],
+            "boundary": "continue",
+            "tails": "ring"
+          }
+        },
+        "markers": {},
+        "phrases": {},
+        "lyrics": {},
+        "polyrhythms": {}
+      }
+    },
+    "bars": [
+      {
+        "id": "seven",
+        "sectionOccurrenceId": "verse1",
+        "index": 0,
+        "start": [
+          0,
+          1
+        ],
+        "length": [
+          7,
+          2
+        ],
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "five",
+        "sectionOccurrenceId": "verse1",
+        "index": 1,
+        "start": [
+          7,
+          2
+        ],
+        "length": [
+          5,
+          1
+        ],
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ]
+      }
+    ],
+    "clicks": [
+      {
+        "at": [
+          0,
+          1
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          1,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          2,
+          1
+        ],
+        "strong": false
+      },
+      {
+        "at": [
+          7,
+          2
+        ],
+        "strong": true
+      },
+      {
+        "at": [
+          13,
+          2
+        ],
+        "strong": false
+      }
+    ],
+    "song": {
+      "songEnd": [
+        17,
+        2
+      ],
+      "secondsPerQuarter": 0.5357142857142857,
+      "alignmentError": "Unknown occurrence lead2",
+      "singleAlignmentError": "Select at least two occurrences",
+      "unknownAlignmentError": "Unknown occurrence missing"
+    },
+    "segments": [
+      {
+        "id": "lead1:verse1",
+        "segments": [
+          {
+            "start": [
+              0,
+              1
+            ],
+            "end": [
+              17,
+              2
+            ],
+            "phase": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "cycleStarts": [
+      {
+        "id": "lead1:verse1",
+        "starts": [
+          [
+            0,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            1
+          ]
+        ]
+      }
+    ],
+    "restSpans": [
+      {
+        "eventId": "rest1",
+        "voiceId": "lead",
+        "start": [
+          0,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ]
+      },
+      {
+        "eventId": "rest1",
+        "voiceId": "lead",
+        "start": [
+          7,
+          2
+        ],
+        "duration": [
+          1,
+          2
+        ]
+      },
+      {
+        "eventId": "rest1",
+        "voiceId": "lead",
+        "start": [
+          7,
+          1
+        ],
+        "duration": [
+          1,
+          2
+        ]
+      }
+    ],
+    "sounds": [
+      {
+        "id": "lead1:verse1:harmony:root:1,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:1,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:1,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          0,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:9,2",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:9,2",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:9,2",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          2
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          9,
+          2
+        ],
+        "duration": [
+          5,
+          2
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:root:8,1",
+        "memberId": "root",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:third:8,1",
+        "memberId": "third",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 3,
+          "alteration": 0,
+          "octave": 0
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      },
+      {
+        "id": "lead1:verse1:harmony:fifth:8,1",
+        "memberId": "fifth",
+        "occurrenceId": "lead1",
+        "appearanceId": "verse1",
+        "cycleOrigin": [
+          7,
+          1
+        ],
+        "eventId": "harmony",
+        "voiceId": "lead",
+        "partId": "guitar",
+        "start": [
+          8,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 5,
+          "alteration": 0,
+          "octave": 1
+        },
+        "drum": "kick",
+        "instrument": "guitar",
+        "gain": 0.5599999999999999
+      }
+    ]
+  }
+]

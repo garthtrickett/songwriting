@@ -292,6 +292,8 @@ fn move_note(song: &mut Song, event_id: &str, member_id: Option<&str>, start: Ti
             member_id: member_id.into(),
             offset: Time::ZERO,
             duration: e.duration,
+            gain: None,
+            articulation: None,
         });
         e.performance.len() - 1
     };
@@ -304,6 +306,8 @@ fn move_note(song: &mut Song, event_id: &str, member_id: Option<&str>, start: Ti
                     member_id: n.id.clone(),
                     offset: Time::ZERO,
                     duration: e.duration,
+                    gain: None,
+                    articulation: None,
                 });
             }
         }

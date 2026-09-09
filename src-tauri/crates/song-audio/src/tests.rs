@@ -35,6 +35,8 @@ fn exact_mixed_meter_clicks_and_relative_chord_members() {
             member_id: "root".into(),
             offset: t(1, 3),
             duration: t(2, 1),
+            gain: None,
+            articulation: None,
         });
     let schedule = Schedule::compile(&song).unwrap();
     assert_eq!(schedule.frame(t(7, 2), 48000), 90000);

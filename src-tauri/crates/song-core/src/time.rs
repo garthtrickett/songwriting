@@ -54,6 +54,10 @@ impl Time {
     pub fn value(self) -> f64 {
         self.0 as f64 / self.1 as f64
     }
+    /// Raw numerator/denominator pair for display and key formatting.
+    pub fn pair(self) -> (i64, i64) {
+        (self.0, self.1)
+    }
     /// Floored cycle remainder. The remainder is computed from the reduced
     /// numerator/denominator pair so every intermediate fits i128 exactly;
     /// the result matches arbitrary-precision BigInt arithmetic on all inputs.

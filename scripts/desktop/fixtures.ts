@@ -1,6 +1,7 @@
 // The existing TypeScript implementation is the migration reference, not a
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
-import { sounds } from "../../src/song/timeline.ts";
+import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
+import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone } from "../../src/song/model.ts";
 import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
 import { changeNotes } from "../../src/song/note-edit.ts";
@@ -100,21 +101,68 @@ for (const [a, b] of modulos) {
   catch (error) { times.push({ a, b, operation: "modulo", error: (error as Error).message }); }
 }
 for (const [a] of arithmetic) times.push({ a, b: a, operation: "value", result: value(time(...a)) });
-const audio = ["baseline", "member-offsets", "cut-tails", "repeated-section", "muted"].map(name => {
-  const input = structuredClone(song);
-  if (name !== "baseline") input.tables.events.harmony!.performance = [
-    { memberId: "root", offset: time(1, 3), duration: time(2, 1) },
-    { memberId: "fifth", offset: time(1, 1), duration: time(3, 1) },
-  ];
-  if (name === "cut-tails") input.tables.occurrences.lead1!.tails = "cut";
-  if (name === "muted") input.tables.parts.guitar!.muted = true;
-  if (name === "repeated-section") {
-    input.tables.arrangement.verse2 = { id: "verse2", name: "Again", sectionId: "verse" };
-    input.arrangementOrder.push("verse2");
+const audioNames = ["baseline", "member-offsets", "cut-tails", "repeated-section", "muted"];
+const makeVariants = (): Record<string, typeof song> => {
+  const variants: Record<string, typeof song> = { baseline: structuredClone(song) };
+  const cut = structuredClone(song);
+  cut.tables.occurrences.lead1!.tails = "cut";
+  variants["cut-tails"] = cut;
+  const repeated = structuredClone(song);
+  repeated.tables.arrangement.verse2 = { id: "verse2", name: "Again", sectionId: "verse" };
+  repeated.arrangementOrder.push("verse2");
+  variants["repeated-section"] = repeated;
+  const muted = structuredClone(song);
+  muted.tables.parts.guitar!.muted = true;
+  variants["muted"] = muted;
+  // The audio reference gives every non-baseline variant member offsets.
+  for (const name of ["member-offsets", "cut-tails", "repeated-section", "muted"]) {
+    const input = name === "member-offsets" ? structuredClone(song) : variants[name]!;
+    input.tables.events.harmony!.performance = [
+      { memberId: "root", offset: time(1, 3), duration: time(2, 1) },
+      { memberId: "fifth", offset: time(1, 1), duration: time(3, 1) },
+    ];
+    variants[name] = input;
   }
+  const two = structuredClone(song);
+  two.tables.occurrences.lead2 = { ...two.tables.occurrences.lead1!, id: "lead2", name: "Second", start: [7, 2], span: [5, 1] };
+  variants["two-voices"] = two;
+  const rest = structuredClone(song);
+  rest.tables.events.rest1 = { ...noteEvent("rest1", "riff"), kind: "rest", start: [0, 1], duration: [1, 2] };
+  variants["with-rest"] = rest;
+  return variants;
+};
+const variants = makeVariants();
+const audio = audioNames.map(name => {
+  const input = variants[name]!;
   return { name, song: input, notes: sounds(input).map(n => ({ start:n.start, duration:n.duration, frequency:440 * 2 ** ((60 + semitone(n.pitch!) - 69) / 12), gain:n.gain * 0.1 })) };
 });
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio })) {
+const timeline = Object.entries(variants).map(([name, input]) => {
+  const ends: Record<string, unknown> = {};
+  try {
+    const until = songEnd(input);
+    ends.songEnd = until;
+    ends.secondsPerQuarter = secondsPerQuarter(input);
+    try { ends.alignment = alignment(input, ["lead1", "lead2"], [0, 1], until); }
+    catch (error) { ends.alignmentError = (error as Error).message; }
+  } catch (error) { ends.error = (error as Error).message; }
+  try { ends.singleAlignmentError = alignment(input, ["lead1"], [0, 1], [100, 1]); }
+  catch (error) { ends.singleAlignmentError = (error as Error).message; }
+  try { ends.unknownAlignmentError = alignment(input, ["lead1", "missing"], [0, 1], [100, 1]); }
+  catch (error) { ends.unknownAlignmentError = (error as Error).message; }
+  const placed = placements(input);
+  return {
+    name,
+    input,
+    bars: bars(input),
+    clicks: clicks(input),
+    song: ends,
+    segments: placed.map(o => ({ id: `${o.id}:${o.appearanceId ?? "global"}`, segments: segments(input, o) })),
+    cycleStarts: placed.map(o => ({ id: `${o.id}:${o.appearanceId ?? "global"}`, starts: cycleStarts(input, o) })),
+    restSpans: restSpans(input),
+    sounds: sounds(input),
+  };
+});
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
