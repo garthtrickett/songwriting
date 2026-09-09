@@ -3,5 +3,6 @@ import type { HarmonyAction } from "./HarmonyAction.ts";
 import type { RhythmAction } from "./RhythmAction.ts";
 import type { StructureAction } from "./StructureAction.ts";
 import type { Time } from "./Time.ts";
+import type { WireChange } from "./WireChange.ts";
 
-export type Action = { "kind": "rename", title: string, } | { "kind": "moveNote", eventId: string, memberId: string | null, start: Time, } | { "kind": "undo", targetId: string, } | { "kind": "structure", action: StructureAction, } | { "kind": "rhythm", action: RhythmAction, } | { "kind": "harmony", action: HarmonyAction, };
+export type Action = { "kind": "rename", title: string, } | { "kind": "moveNote", eventId: string, memberId: string | null, start: Time, } | { "kind": "undo", targetId: string, } | { "kind": "structure", action: StructureAction, } | { "kind": "rhythm", action: RhythmAction, } | { "kind": "harmony", action: HarmonyAction, } | { "kind": "edit", changes: Array<WireChange>, };
