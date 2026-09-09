@@ -6,6 +6,7 @@ mod fretted;
 mod harmony;
 mod harmony_pitch;
 mod model;
+mod note_edit;
 mod rhythm;
 mod structure;
 mod time;
@@ -17,6 +18,7 @@ pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State,
 pub use arrangement::{Placement, placements, section_length, section_spans};
 pub use harmony::HarmonyAction;
 pub use model::*;
+pub use note_edit::{NoteEdit, NoteTarget, WireChange, change_notes, combine_notes, remove_notes};
 pub use rhythm::{RhythmAction, RhythmLane};
 pub use structure::StructureAction;
 pub use time::{MAX_SAFE_INTEGER, Time};

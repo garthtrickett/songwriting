@@ -33,6 +33,9 @@ pub enum Action {
     Harmony {
         action: Box<HarmonyAction>,
     },
+    Edit {
+        changes: Vec<crate::WireChange>,
+    },
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -408,6 +411,48 @@ impl Mutation {
     }
 }
 
+const META_FIELDS: [&str; 5] = ["writing", "title", "mode", "tempo", "arrangementOrder"];
+
+/// One generic table write mirroring the reference write path. Well-typed
+/// values behave identically; malformed wire values fail here with serde
+/// messages instead of later validation messages.
+fn apply_change(song: &mut Song, change: &crate::WireChange) -> Result<()> {
+    if change.table == "meta" {
+        ensure(
+            META_FIELDS.contains(&change.id.as_str()),
+            &format!("Cannot edit metadata {}", change.id),
+        )?;
+        match change.id.as_str() {
+            "title" => {
+                song.title = serde_json::from_value(change.value.clone())?;
+            }
+            "mode" => {
+                song.mode = serde_json::from_value(change.value.clone())?;
+            }
+            "writing" => {
+                song.writing = serde_json::from_value(change.value.clone())?;
+            }
+            "tempo" => {
+                song.tempo = serde_json::from_value(change.value.clone())?;
+            }
+            "arrangementOrder" => {
+                song.arrangement_order = serde_json::from_value(change.value.clone())?;
+            }
+            _ => unreachable!(),
+        }
+        return Ok(());
+    }
+    ensure(
+        KNOWN_TABLES.contains(&change.table.as_str()),
+        "Invalid entity path",
+    )?;
+    ensure(
+        !["__proto__", "constructor", "prototype"].contains(&change.id.as_str()),
+        "Invalid entity path",
+    )?;
+    write_table_slot(song, &change.table, &change.id, &change.value)
+}
+
 fn propose(current: &Envelope, action: &Action) -> Result<Proposal> {
     let mut song = current.song.clone();
     match action {
@@ -428,6 +473,11 @@ fn propose(current: &Envelope, action: &Action) -> Result<Proposal> {
         Action::Structure { action } => crate::structure::structure(&mut song, action)?,
         Action::Rhythm { action } => crate::rhythm::rhythm(&mut song, action)?,
         Action::Harmony { action } => crate::harmony::harmony(&mut song, action)?,
+        Action::Edit { changes } => {
+            for change in changes {
+                apply_change(&mut song, change)?;
+            }
+        }
     }
     Ok(Proposal { song })
 }

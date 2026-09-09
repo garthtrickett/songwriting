@@ -5,11 +5,11 @@ import type { StructureAction } from "../../src/song/structure.ts";
 import type { RhythmAction } from "../../src/song/rhythm.ts";
 import type { HarmonyAction } from "../../src/song/harmony.ts";
 import type { ChordRecipe } from "../../src/song/chord-builder.ts";
+import { changeNotes, removeNotes, combineNotes } from "../../src/song/note-edit.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
-import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
-import { changeNotes } from "../../src/song/note-edit.ts";
+import { applyCommand, difference, type Envelope, type Mutation, type Change } from "../../src/song/commands.ts";
 import { validateSong } from "../../src/song/validate.ts";
 import { time, add, sub, mul, cmp, modulo, value, type Time } from "../../src/song/time.ts";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -373,7 +373,64 @@ const harmonies = [
     s.tables.events.e2 = { ...noteEvent("e2", "riff2"), start: [0, 1] };
   }, { type: "expression", eventIds: ["note", "e2"], from: 0, to: 1, articulation: "normal", gate: [1, 1] }),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies })) {
+type EditHelper = "change" | "remove" | "combine" | "edit";
+const edited = (
+  name: string,
+  setup: (s: typeof song) => void,
+  helper: EditHelper,
+  args: unknown,
+) => {
+  const input = structuredClone(song);
+  setup(input);
+  const run = (): Change[] => {
+    if (helper === "change") return changeNotes(input, args as Parameters<typeof changeNotes>[1]);
+    if (helper === "remove") return removeNotes(input, args as Parameters<typeof removeNotes>[1]);
+    if (helper === "combine") {
+      const c = args as { targets: Parameters<typeof combineNotes>[1]; chordId: string; eventId: string };
+      return combineNotes(input, c.targets, c.chordId, c.eventId);
+    }
+    return args as Change[];
+  };
+  try {
+    const changes = run();
+    const mutation = { songId: input.id, expectedRevision: 0, operationId: "op", label: "op", command: { kind: "edit", changes } as const };
+    const envelope = applyCommand({ id: input.id, revision: 0, song: input, updatedAt: 0, history: [] }, mutation, 100);
+    return { name, song: input, helper, args, ok: true as const, changes, songAfter: envelope.song };
+  } catch (error) {
+    return { name, song: input, helper, args, ok: false as const, error: (error as Error).message };
+  }
+};
+const edits = [
+  edited("change-note", () => {}, "change", [{ eventId: "note", memberId: null, pitch: { degree: 2, alteration: 0, octave: 0 }, start: [1, 2], duration: [1, 1] }]),
+  edited("change-member", () => {}, "change", [{ eventId: "harmony", memberId: "root", pitch: { degree: 2, alteration: 0, octave: 0 } }]),
+  edited("change-anchor", () => {}, "change", [{ eventId: "harmony", memberId: "root", start: [1, 4] }]),
+  edited("change-missing", () => {}, "change", [{ eventId: "gone", memberId: null }]),
+  edited("change-chord-note", () => {}, "change", [{ eventId: "harmony", memberId: null }]),
+  edited("remove-note", () => {}, "remove", [{ eventId: "note", memberId: null }]),
+  edited("remove-member", () => {}, "remove", [{ eventId: "harmony", memberId: "third" }]),
+  edited("remove-last", () => {}, "remove", [
+    { eventId: "harmony", memberId: "root" },
+    { eventId: "harmony", memberId: "third" },
+    { eventId: "harmony", memberId: "fifth" },
+  ]),
+  edited("combine-ok", s => {
+    s.tables.events.note2 = { ...noteEvent("note2", "riff"), start: [2, 1], pitch: { degree: 3, alteration: 0, octave: 0 } };
+  }, "combine", { targets: [{ eventId: "note", memberId: null }, { eventId: "note2", memberId: null }], chordId: "combined", eventId: "chord2" }),
+  edited("combine-member", () => {}, "combine", { targets: [{ eventId: "harmony", memberId: "root" }], chordId: "combined", eventId: "chord2" }),
+  edited("combine-pattern", s => {
+    s.tables.patterns.riff2 = { ...s.tables.patterns.riff!, id: "riff2", name: "Again" };
+    s.tables.events.e2 = { ...noteEvent("e2", "riff2"), start: [0, 1] };
+  }, "combine", { targets: [{ eventId: "note", memberId: null }, { eventId: "e2", memberId: null }], chordId: "combined", eventId: "chord2" }),
+  edited("combine-expression", s => {
+    s.tables.events.note2 = { ...noteEvent("note2", "riff"), start: [2, 1], accent: 0.9 };
+  }, "combine", { targets: [{ eventId: "note", memberId: null }, { eventId: "note2", memberId: null }], chordId: "combined", eventId: "chord2" }),
+  edited("meta-title", () => {}, "edit", [{ table: "meta", id: "title", value: "Retitled" }]),
+  edited("meta-bad", () => {}, "edit", [{ table: "meta", id: "owner", value: "x" }]),
+  edited("table-unknown", () => {}, "edit", [{ table: "nope", id: "x", value: {} }]),
+  edited("table-proto", () => {}, "edit", [{ table: "events", id: "__proto__", value: null }]),
+  edited("delete-event", () => {}, "edit", [{ table: "events", id: "note", value: null }]),
+];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
