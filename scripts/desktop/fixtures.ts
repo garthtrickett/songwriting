@@ -1,5 +1,6 @@
 // The existing TypeScript implementation is the migration reference, not a
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
+import { historyStacks } from "../../src/song/history.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -58,9 +59,11 @@ const requests: Request[] = [
 ];
 
 let current: Envelope = { id: song.id, revision: 0, song: structuredClone(song), updatedAt: 0, history: [] };
+const history: { step: number; receipts: { operationId: string; undoOf: string | null; deltaCount: number; beforeDeleted: boolean; afterDeleted: boolean }[]; undo: string[]; redo: string[] }[] = [];
 const cases = requests.map((r, index) => {
   const a = r.action;
   const before = structuredClone(current.song);
+  let outcome;
   try {
     // Match the browser's receipt-first retry handling. An existing operation
     // must be resolved before translating a note edit against changed state.
@@ -75,10 +78,16 @@ const cases = requests.map((r, index) => {
       const { action: _, ...m } = r;
       current = applyCommand(current, { ...m, command }, index);
     }
-    return { request: r, ok: true, changes: difference(before, current.song), revision: current.revision };
+    outcome = { request: r, ok: true as const, changes: difference(before, current.song), revision: current.revision };
   } catch (error) {
-    return { request: r, ok: false, error: (error as Error).message, changes: difference(before, current.song), revision: current.revision };
+    outcome = { request: r, ok: false as const, error: (error as Error).message, changes: difference(before, current.song), revision: current.revision };
   }
+  history.push({
+    step: index,
+    receipts: current.history.map(h => ({ operationId: h.operationId, undoOf: h.undoOf ?? null, deltaCount: h.deltas.length, beforeDeleted: h.beforeDeleted, afterDeleted: h.afterDeleted })),
+    ...historyStacks(current.history),
+  });
+  return outcome;
 });
 
 const arithmetic = [
@@ -220,7 +229,7 @@ const validateCases = [
   }),
   broken("marker-negative", s => { s.tables.markers.m1 = { id: "m1", name: "M", at: [-1, 1] }; }),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases })) {
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {

@@ -1,0 +1,667 @@
+[
+  {
+    "step": 0,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "rename"
+    ],
+    "redo": []
+  },
+  {
+    "step": 1,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "rename",
+      "note-third"
+    ],
+    "redo": []
+  },
+  {
+    "step": 2,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "rename",
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": []
+  },
+  {
+    "step": 3,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 4,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 5,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 6,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 7,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 8,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 9,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 10,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier"
+    ],
+    "redo": [
+      "undo-title"
+    ]
+  },
+  {
+    "step": 11,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-again",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier",
+      "note-again"
+    ],
+    "redo": []
+  },
+  {
+    "step": 12,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-again",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "root-earlier",
+      "note-again"
+    ],
+    "redo": []
+  },
+  {
+    "step": 13,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-again",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-root",
+        "undoOf": "root-earlier",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "note-again"
+    ],
+    "redo": [
+      "undo-root"
+    ]
+  },
+  {
+    "step": 14,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-again",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-root",
+        "undoOf": "root-earlier",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "redo-root",
+        "undoOf": "undo-root",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "note-again",
+      "redo-root"
+    ],
+    "redo": []
+  },
+  {
+    "step": 15,
+    "receipts": [
+      {
+        "operationId": "rename",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-third",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "root-earlier",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-title",
+        "undoOf": "rename",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "note-again",
+        "undoOf": null,
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "undo-root",
+        "undoOf": "root-earlier",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "redo-root",
+        "undoOf": "undo-root",
+        "deltaCount": 1,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      },
+      {
+        "operationId": "no-change",
+        "undoOf": null,
+        "deltaCount": 0,
+        "beforeDeleted": false,
+        "afterDeleted": false
+      }
+    ],
+    "undo": [
+      "note-third",
+      "note-again",
+      "redo-root"
+    ],
+    "redo": []
+  }
+]
