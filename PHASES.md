@@ -8,6 +8,21 @@ delivery; it does not replace either reference.
 
 Phases 1 and 2 are expanded into implementation detail. Phases 3–7 are detailed in PLAN.md; The selected Phase 8 workspace is detailed in UI_REDESIGN_PLAN.md; broader Phases 8–9 remain high-level. Each detailed phase replaces its high-level entry.
 
+## Selected next workstream — desktop port
+
+[DESKTOP_PORT_PLAN.md](DESKTOP_PORT_PLAN.md) sequences D1–D7 for the Tauri,
+lit/TypeScript view and Rust SAM/audio desktop app with local profiles and no Neon login.
+It replaces the hosted Mastra rollout as the next delivery direction and details
+only D1's implementation tasks. D1 proves a thin Rust SAM musical slice against
+TypeScript fixtures, durable edits, native audio and independent Mastra recovery.
+D2 completes the Rust musical workspace and migrates existing data; Lit and Mastra
+are clients of its action/state interface. D1 is in progress: its Rust SAM/SQLite
+core is connected to a Tauri window and Lit view for the restricted fixture cohort.
+Native audio, Mastra and the full packaged desktop gate remain open.
+See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned.
+The historical phases below retain their existing delivery status;
+the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
+
 ## Delivery rules
 
 - Deliver the first useful math-rock composition in Phase 1, including actual
@@ -376,11 +391,11 @@ Detailed specification: [PLAN.md — Phase 5](PLAN.md#phase-5--playable-guitar-a
 
 ## Phase 8 — Reliable everyday use on desktop and phone
 
-**Additional proposed agent workstream:**
-[Built-in Mastra assistant](MASTRA_AGENT_PLAN.md), with implementation slices
-M1–M5 and a recorded revision loop. Planning only; no implementation is claimed.
-This changes the proposed agent hosting approach, not the scope or completion
-status of the numbered musical phases or Phase 9 song sync.
+**Hosted agent workstream superseded:**
+[The Mastra hosted prototype](MASTRA_AGENT_PLAN.md) records the earlier M1–M5
+design. The selected [desktop port](DESKTOP_PORT_PLAN.md) now runs Mastra as a
+client of the local Rust SAM core; no Neon gate applies to this workstream.
+D1 is in progress. Numbered musical phases and Phase 9 song sync keep their status.
 
 **Selected workstream:** the arrangement workspace and integrated 1–7 note editor
 are detailed in [UI_REDESIGN_PLAN.md](UI_REDESIGN_PLAN.md). Implementation and local validation are complete; [evidence](docs/UI_REDESIGN_VALIDATION.md). This selection does

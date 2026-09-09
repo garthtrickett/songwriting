@@ -11,17 +11,28 @@
     "build": "vite build",
     "verify": "bun run check && bun run test && bun run build",
     "test:browser": "playwright test",
-    "agent": "bun scripts/agent.ts"
+    "fixtures:desktop": "bun scripts/desktop/fixtures.ts",
+    "test:desktop": "bun scripts/desktop/fixtures.ts --check && bun scripts/desktop/check-bindings.ts && cargo test --manifest-path src-tauri/Cargo.toml --locked --workspace",
+    "verify:desktop": "bun run build:desktop && cargo fmt --all --manifest-path src-tauri/Cargo.toml --check && cargo clippy --manifest-path src-tauri/Cargo.toml --locked --workspace --all-targets -- -D warnings && bun run test:desktop",
+    "desktop:fixture": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-workspace --",
+    "agent": "bun scripts/agent.ts",
+    "dev:desktop": "vite --config vite.desktop.config.ts",
+    "build:desktop": "vite build --config vite.desktop.config.ts",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build --no-bundle",
+    "bindings:desktop": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-session --example bindings -- src/generated/desktop"
   },
   "dependencies": {
+    "@tauri-apps/api": "2.11.1",
     "lit-html": "^3.3.3"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.14.0",
+    "@playwright/test": "1.63.0",
+    "@tauri-apps/cli": "2.11.4",
     "@types/bun": "^1.4.1",
     "fake-indexeddb": "^6.2.5",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
-    "@playwright/test": "1.63.0"
+    "vite": "^8.2.2"
   }
 }

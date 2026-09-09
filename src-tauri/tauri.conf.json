@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Songwriter",
+  "version": "0.1.0",
+  "identifier": "com.songwriter.desktop.d1",
+  "build": {
+    "beforeDevCommand": "bun run dev:desktop",
+    "beforeBuildCommand": "bun run build:desktop",
+    "devUrl": "http://127.0.0.1:5190",
+    "frontendDist": "../dist-desktop"
+  },
+  "app": {
+    "windows": [{ "label": "main", "title": "Songwriter", "width": 1280, "height": 840, "minWidth": 820, "minHeight": 620 }],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost; img-src 'self' data:; object-src 'none'; base-uri 'none'",
+      "devCsp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost http://127.0.0.1:5190 ws://127.0.0.1:5190; img-src 'self' data:; object-src 'none'; base-uri 'none'"
+    }
+  },
+  "bundle": { "active": false }
+}
