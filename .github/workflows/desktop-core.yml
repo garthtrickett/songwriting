@@ -16,6 +16,28 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libasound2-dev libwebkit2gtk-4.1-dev libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev
       - run: bun install --frozen-lockfile
       - run: rustup show active-toolchain
+      - uses: actions/cache@v4
+        id: decoder
+        with:
+          path: .agent/ffmpeg-proof
+          key: ffmpeg-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/desktop/ffmpeg.json', 'scripts/desktop/build-ffmpeg.py') }}
+      - if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: make mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-python
+      - if: runner.os == 'Windows' && steps.decoder.outputs.cache-hit != 'true'
+        shell: msys2 {0}
+        run: python scripts/desktop/build-ffmpeg.py
+      - if: runner.os != 'Windows' && steps.decoder.outputs.cache-hit != 'true'
+        run: python3 scripts/desktop/build-ffmpeg.py
+      - if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          echo "SONGWRITER_FFMPEG=$(cygpath -w "$PWD/.agent/ffmpeg-proof/ffmpeg.exe")" >> "$GITHUB_ENV"
+          cygpath -w /ucrt64/bin >> "$GITHUB_PATH"
+      - if: runner.os != 'Windows'
+        run: echo "SONGWRITER_FFMPEG=$PWD/.agent/ffmpeg-proof/ffmpeg" >> "$GITHUB_ENV"
       - run: bun run verify:desktop
   native-window:
     runs-on: ubuntu-24.04
@@ -28,6 +50,8 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run desktop:build --debug
       - run: xvfb-run -a dbus-run-session -- python3 scripts/desktop/audio-smoke.py src-tauri/target/debug/songwriter-desktop .agent/native-smoke
+      - run: cargo build --manifest-path src-tauri/Cargo.toml --locked -p song-media
+      - run: python3 scripts/desktop/media-smoke.py src-tauri/target/debug/song-media .agent/native-smoke/media
       - uses: actions/upload-artifact@v4
         if: always()
         with:

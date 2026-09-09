@@ -55,7 +55,7 @@ password is an optional product decision; the planned default uses the OS login.
 | Musical semantics | Port the song model, exact time, validation, commands, history and analysis to Rust. Preserve behavior using differential fixtures against the existing TypeScript implementation. |
 | Headless workspace | A Rust SAM module owns actions, proposal acceptance, canonical model, derived state representations and next-action decisions. UI and agent use the same interface through thin adapters. |
 | Durable local data | Rust-owned SQLite transactions using a dedicated database worker, initially rusqlite. Store versioned song envelopes as JSON plus indexed identity/revision fields, operation receipts and task ledger. No generic SQL exposed to the UI or agent. |
-| Native audio | Rust engine with CPAL device I/O; native synthesis/mixing, sample scheduling, decoding, capture and waveform work. Codec stack is selected by the D1 compatibility spike. |
+| Native audio | Rust engine with CPAL device I/O; native synthesis/mixing, sample scheduling, decoding, capture and waveform work. D1 selects a minimal FFmpeg decoder process; native WAV recovery is independent of it. |
 | Agent | Selected D1 candidate: Rig provider/tool contracts with a Rust-owned bounded task runner. Journal checkpoints and atomic musical results in workspace.sqlite. Prove recovery before adoption; see RIG_PROOF_PLAN.md. |
 | Secrets | Rust credential module using OS credential storage, evaluated via keyring. If unavailable, offer session-only credentials; never silently save plaintext keys. |
 | Packaging | Tauri installers with compiled Rust, bundled frontend assets and required native dependencies for each supported target. No user-installed Node/Bun/Rust requirement. |
@@ -312,7 +312,7 @@ snapshots, resnapshot on reconnect, retain drafts on conflicts and retry uncerta
 saves with their original operation ID. Show rename, horizontal note/member moves
 and undo; keep the fixture limitation visible. Test the actual packaged Linux
 window, including a real pointer drag, restart and undo, and compile/check the
-host on Windows and macOS. The current third slice is [the Rig proof](RIG_PROOF_PLAN.md). The next selected D1 slice is [the native audio proof](NATIVE_AUDIO_PROOF_PLAN.md).
+host on Windows and macOS. The current third slice is [the Rig proof](RIG_PROOF_PLAN.md). The native audio proof is implemented. The selected next slice is [the media compatibility/capture proof](MEDIA_PROOF_PLAN.md).
 
 **Purpose:** prove one thin path through the intended production architecture,
 using disposable fixtures and a local profile. Keep the old web implementation

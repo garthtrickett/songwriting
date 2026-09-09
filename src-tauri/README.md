@@ -213,3 +213,13 @@ xvfb-run -a dbus-run-session -- python3 scripts/desktop/audio-smoke.py src-tauri
 The harness creates and destroys its own PulseAudio null sink and temporary local
 profile; it does not change system sound settings. See NATIVE_AUDIO_PROOF_PLAN.md
 and docs/NATIVE_AUDIO_PROOF_VALIDATION.md for scope and outstanding device evidence.
+# Media feasibility commands
+
+The D1 media harness is separate from the desktop window. It preserves imported
+recordings and proves short CPAL capture/recovery through a Rust API and CLI.
+See [commands and evidence](../docs/MEDIA_PROOF_VALIDATION.md) and
+[the pinned FFmpeg decoder recipe](../docs/FFMPEG.md). `nix develop` provides the
+decoder on ARM/x86 Linux and Apple Silicon. Outside Nix, run
+`bun run build:decoder` and set `SONGWRITER_FFMPEG` to its resulting executable
+before the compressed-format tests. No FFmpeg install is needed for WAV capture
+recovery. Desktop recording controls and take placement remain D4 work.

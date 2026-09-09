@@ -20,13 +20,15 @@
           lib = pkgs.lib;
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           bun = import ./nix/bun.nix { inherit pkgs; };
+          ffmpeg = import ./nix/ffmpeg.nix { inherit pkgs; };
           nativeLibraries = with pkgs; [ openssl ] ++ lib.optionals stdenv.hostPlatform.isLinux [
             alsa-lib gtk3 webkitgtk_4_1 libsoup_3 libayatana-appindicator xdotool librsvg
             glib-networking gsettings-desktop-schemas stdenv.cc.cc.lib
           ];
         in {
           default = pkgs.mkShell {
-            packages = [ rust bun pkgs.pkg-config pkgs.git ];
+            packages = [ rust bun pkgs.pkg-config pkgs.git ffmpeg ];
+            SONGWRITER_FFMPEG = "${ffmpeg}/bin/ffmpeg";
             buildInputs = nativeLibraries;
             shellHook = lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
               # Bun loads the npm Tauri CLI's native addon; it needs these shared

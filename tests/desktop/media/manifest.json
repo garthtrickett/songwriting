@@ -1,0 +1,164 @@
+[
+  {
+    "file": "chromium-recorder.webm",
+    "origin": "Existing Recorder \u2192 capture_export, fake getUserMedia microphone",
+    "browser": "chromium",
+    "version": "153.0.8010.12",
+    "mime": "audio/webm;codecs=opus",
+    "decoded": {
+      "frames": 55565,
+      "sampleRate": 44100,
+      "channels": 1,
+      "duration": 1.2599773242630385
+    },
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+    "bytes": 12533,
+    "sha256": "c4ead4063bfe85dabaeb5047ba0d6d95b289e2be39a328b6a3118929f23f9950",
+    "expected": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 60480,
+      "peak": 1.0186572,
+      "rms": 0.08285304888130422
+    },
+    "referenceDecoder": "Minimal FFmpeg 9.0.1; regular AAC duration independently matches the 1.2-second encoded source/container",
+    "comparisonFfmpeg6": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 60480,
+      "peak": 1.0186573,
+      "rms": 0.08285304864608453
+    }
+  },
+  {
+    "file": "firefox-recorder.webm",
+    "origin": "Existing Recorder \u2192 capture_export, fake getUserMedia microphone",
+    "browser": "firefox",
+    "version": "155.0",
+    "mime": "audio/webm;codecs=opus",
+    "decoded": {
+      "frames": 54398,
+      "sampleRate": 44100,
+      "channels": 1,
+      "duration": 1.2335147392290249
+    },
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0",
+    "bytes": 21071,
+    "sha256": "bbc297a808fbf15d0f81a0296e3debf523f4edc9d576a7cc68abffe51efa1fee",
+    "expected": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 59208,
+      "peak": 0.102399886,
+      "rms": 0.07031541133550014
+    },
+    "referenceDecoder": "Minimal FFmpeg 9.0.1; regular AAC duration independently matches the 1.2-second encoded source/container",
+    "comparisonFfmpeg6": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 59208,
+      "peak": 0.10239988,
+      "rms": 0.07031541211498865
+    }
+  },
+  {
+    "file": "firefox-opus.ogg",
+    "origin": "MediaRecorder explicit fallback format request with 200 ms chunks, fake microphone",
+    "browser": "firefox",
+    "version": "155.0",
+    "mime": "audio/ogg;codecs=opus",
+    "bytes": 20288,
+    "sha256": "811376af27817d4b1113151e31e6a68e4ba67a23b03b5f6b2e94f44f8bc4e0ed",
+    "expected": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 57400,
+      "peak": 0.10203031,
+      "rms": 0.0707149284437123
+    },
+    "referenceDecoder": "Minimal FFmpeg 9.0.1; regular AAC duration independently matches the 1.2-second encoded source/container",
+    "comparisonFfmpeg6": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 57400,
+      "peak": 0.1020303,
+      "rms": 0.07071492957348902
+    }
+  },
+  {
+    "file": "generated-aac.m4a",
+    "origin": "Supplemental generated 440 Hz tone; not a browser recording",
+    "encoder": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+    "commandArguments": [
+      "-v",
+      "error",
+      "-f",
+      "lavfi",
+      "-i",
+      "sine=frequency=440:sample_rate=48000:duration=1.2",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "96000",
+      "-y",
+      "tests/desktop/media/generated-aac.m4a"
+    ],
+    "mime": "audio/mp4",
+    "bytes": 15876,
+    "sha256": "85b71dbc54443c73756af4f69ad0aa307ef556370da58d71f5e254ca05620fc7",
+    "expected": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 57600,
+      "peak": 0.15284681,
+      "rms": 0.08846735693645455
+    },
+    "referenceDecoder": "Minimal FFmpeg 9.0.1; regular AAC duration independently matches the 1.2-second encoded source/container",
+    "comparisonFfmpeg6": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 58368,
+      "peak": 0.15284683,
+      "rms": 0.08788341314438636
+    }
+  },
+  {
+    "file": "generated-fragmented-aac.mp4",
+    "origin": "Supplemental generated 440 Hz tone; not a browser recording",
+    "encoder": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+    "commandArguments": [
+      "-v",
+      "error",
+      "-f",
+      "lavfi",
+      "-i",
+      "sine=frequency=440:sample_rate=48000:duration=1.2",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "96000",
+      "-movflags",
+      "frag_keyframe+empty_moov",
+      "-y",
+      "tests/desktop/media/generated-fragmented-aac.mp4"
+    ],
+    "mime": "audio/mp4",
+    "bytes": 16217,
+    "sha256": "ee75dad01c34f958461f43abce1b2950a5affe50d893f24756aa47bf9c413518",
+    "expected": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 59392,
+      "peak": 0.15284681,
+      "rms": 0.08712263471265085
+    },
+    "referenceDecoder": "Minimal FFmpeg 9.0.1; regular AAC duration independently matches the 1.2-second encoded source/container",
+    "comparisonFfmpeg6": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "frames": 59392,
+      "peak": 0.15284683,
+      "rms": 0.0871226346729415
+    }
+  }
+]

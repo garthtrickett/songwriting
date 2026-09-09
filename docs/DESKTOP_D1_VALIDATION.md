@@ -3,6 +3,12 @@
 Status: core and Tauri/Lit connection implemented; D1 remains in progress. This
 is a restricted desktop preview, not a completed native agent/audio integration.
 
+The next delivered feasibility slice is the standalone
+[native media compatibility/capture proof](MEDIA_PROOF_VALIDATION.md). It selects
+FFmpeg after real browser-format comparison and tests recoverable CPAL input;
+it does not add media controls to the restricted desktop window or close physical
+device, Safari, live-model or release-packaging gates.
+
 ## Delivered
 
 - Rust 1.97.1 workspace with `song-core` independent of Tauri, storage and devices.

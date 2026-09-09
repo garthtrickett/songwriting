@@ -150,3 +150,16 @@ call before issuing it; interrupted playback attempts are never automatically
 replayed. A restart opens stopped. Model tools receive saved results and can inspect
 current status; counters do not establish physical audibility. A cancelled pending
 play fences only its own generation, preserving a newer manual transport command.
+
+## D1 standalone media feasibility harness
+
+`song-media` exposes input discovery, bounded capture, capture inspection/recovery,
+original import/export and decoding through a Rust API and proof CLI. It uses a
+separate disposable media profile; it cannot attach takes or alter a song.
+No desktop UI action or Rig tool has been added in this feasibility slice.
+Tauri/Rig parity and full media CRUD remain explicit D4 integration requirements;
+the existing browser media capabilities above retain their current status.
+
+Capture IDs are stable caller-owned IDs. Reuse rejects instead of restarting a
+microphone. Restart marks pending captures interrupted; recovery is explicit and
+idempotent. The profile's OS lock prevents recovery while another host owns it.

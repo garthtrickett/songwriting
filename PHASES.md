@@ -23,7 +23,8 @@ See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned.
 The historical phases below retain their existing delivery status;
 the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
 
-The selected milestone is [NATIVE_AUDIO_PROOF_PLAN.md](NATIVE_AUDIO_PROOF_PLAN.md).
+The selected milestone is [MEDIA_PROOF_PLAN.md](MEDIA_PROOF_PLAN.md).
+The native audio proof is implemented; its physical-output gates remain open.
 The Rig proof is implemented separately; its live-model evidence remains pending.
 
 ## Delivery rules

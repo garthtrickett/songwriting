@@ -15,6 +15,7 @@ the writer's own model credentials. Neon sign-in is no longer a prerequisite.
 The plan sequences D1–D7 and details D1's packaged feasibility proof. D1's first
 Rust SAM/SQLite core now has a Tauri window, generated bindings and a Lit
 arrangement/note view. Native audition and Rig are implemented; physical-output and live-model evidence remain pending. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
+The selected next slice is [native media compatibility and capture](MEDIA_PROOF_PLAN.md), using a pinned minimal FFmpeg decoder after testing real browser exports.
 Existing musical requirements remain in force.
 For desktop ownership and stack decisions, this plan supersedes the historical
 TypeScript implementation details below while preserving their product semantics.
