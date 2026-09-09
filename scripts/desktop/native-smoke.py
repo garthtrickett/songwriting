@@ -45,7 +45,7 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
     driver_log = (ARTIFACTS / "driver.log").open("w")
-    driver = subprocess.Popen(["WebKitWebDriver", f"--port={port}", "--host=127.0.0.1"], env=env, stdout=driver_log, stderr=subprocess.STDOUT)
+    driver = subprocess.Popen(["WebKitWebDriver", f"--port={port}", "--host=127.0.0.1"], env=env, stdout=driver_log, stderr=subprocess.STDOUT, start_new_session=True)
     session = None
 
     def request(method, path, body=None):
@@ -201,10 +201,29 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
                 request("DELETE", f"/session/{session}")
             except Exception:
                 pass
-        driver.terminate()
+        # WebKit session deletion only detaches automation. Stop the isolated
+        # driver/app/helper group before removing its profile: surviving WebKit
+        # processes can recreate files while TemporaryDirectory is deleting them.
+        # Keep the parent unreaped until cleanup finishes so its group ID cannot
+        # be reused by an unrelated process.
+        def group_stopped():
+            for stat in Path("/proc").glob("[0-9]*/stat"):
+                try:
+                    fields = stat.read_text().rsplit(")", 1)[1].split()
+                    if int(fields[2]) == driver.pid and fields[0] != "Z":
+                        return False
+                except (FileNotFoundError, ProcessLookupError):
+                    pass
+            return True
+
         try:
-            driver.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            driver.kill()
-            driver.wait()
+            os.killpg(driver.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            wait(group_stopped, "native test process group stopped", timeout=10)
+        except AssertionError:
+            os.killpg(driver.pid, signal.SIGKILL)
+            wait(group_stopped, "native test process group killed", timeout=10)
+        driver.wait(timeout=10)
         driver_log.close()

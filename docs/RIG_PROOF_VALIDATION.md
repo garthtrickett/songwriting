@@ -72,3 +72,17 @@ an explicitly nonblocking accepted socket showed the same immediate error despit
 setting a read timeout. The fixture now explicitly sets blocking mode before its
 bounded reads; the focused Rig protocol test passes. No assertion or production
 provider behavior changed. Final cross-platform results are recorded on PR #14.
+
+A subsequent native CI run passed every application assertion but failed while
+removing the temporary profile (`Directory not empty`). WebKit session deletion
+only detaches automation, and terminating the driver alone left profile writers
+alive. Reproduced with an owned driver/child process pair. The harness now creates
+an isolated process group, terminates and waits for that group (with bounded kill
+fallback) before removing the profile. The driver remains unreaped until then so
+its group identity cannot be reused. No app assertion is skipped or retried.
+
+With the correction, local `bun run desktop:build --debug` and
+`xvfb-run -a dbus-run-session -- python3 scripts/desktop/native-smoke.py src-tauri/target/debug/songwriter-desktop .agent/rig-native-final`
+both pass, including cleanup. The full local `bun run verify:desktop` also passes:
+22 Rust tests, generated bindings, fixtures and Clippy. All 33 Chromium browser
+regressions pass. Final current-head CI results are linked on PR #14.
