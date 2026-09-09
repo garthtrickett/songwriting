@@ -19,7 +19,8 @@ D2 completes the Rust musical workspace and migrates existing data; Lit and Rig
 are clients of its action/state interface. D1 is in progress: its Rust SAM/SQLite
 core is connected to a Tauri window and Lit view for the restricted fixture cohort.
 Native audition and Rig are implemented; physical-output and live-model evidence, media feasibility and the full packaged desktop gate remain open.
-See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned.
+See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned; D2's
+detailed tasks are proposed in [D2_PLAN.md](D2_PLAN.md) and await activation.
 The historical phases below retain their existing delivery status;
 the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
 

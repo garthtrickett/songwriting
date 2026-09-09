@@ -294,7 +294,8 @@ Sequence D1 → D2 → D3 → D4 → D5 → D6 → D7. The D1 agent proof happen
 packaging is not discovered to be infeasible after the audio rewrite. D3/D4 design
 must include their agent controls, even though the full user workflow closes in D5.
 Each phase gets detailed implementation tasks before it starts; no phase is done
-because its UI renders or its build compiles.
+because its UI renders or its build compiles. D2's tasks are proposed in
+[D2_PLAN.md](D2_PLAN.md) and await explicit activation; D1 remains active.
 
 ### D1 — Detailed foundation and feasibility gate
 
