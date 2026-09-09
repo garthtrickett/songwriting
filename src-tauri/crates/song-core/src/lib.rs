@@ -1,16 +1,21 @@
 //! D1 headless SAM musical slice. No device, UI, database or agent dependencies.
 mod actions;
 mod arrangement;
+mod chord_builder;
 mod fretted;
+mod harmony;
+mod harmony_pitch;
 mod model;
 mod rhythm;
 mod structure;
 mod time;
 mod timeline;
 mod validate;
+mod voice_leading;
 
 pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State, history_stacks};
 pub use arrangement::{Placement, placements, section_length, section_spans};
+pub use harmony::HarmonyAction;
 pub use model::*;
 pub use rhythm::{RhythmAction, RhythmLane};
 pub use structure::StructureAction;
