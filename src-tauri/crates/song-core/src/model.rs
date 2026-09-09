@@ -66,6 +66,44 @@ data!(HarmonicRegion {
     id: String, name: String, section_id: Option<String>,
     start: Time, duration: Time, tonic: Pitch, mode: String, annotation: String
 });
+data!(Marker {
+    id: String,
+    name: String,
+    at: Time
+});
+data!(Phrase {
+    id: String,
+    name: String,
+    section_id: String,
+    start: Time,
+    duration: Time
+});
+data!(Lyric {
+    id: String, name: String, section_id: String, start: Time, duration: Time,
+    text: String, phrase_id: Option<String>, part_id: Option<String>
+});
+data!(PolyrhythmLane {
+    occurrence_id: String,
+    divisions: i32
+});
+data!(Polyrhythm {
+    id: String, name: String, section_id: Option<String>,
+    start: Time, duration: Time, lanes: Vec<PolyrhythmLane>
+});
+data!(Fretted {
+    id: String, name: String, part_id: String, tonic: i32, tuning: Vec<i32>,
+    capo: i32, max_fret: i32, hand_span: i32
+});
+data!(Fingering {
+    id: String, name: String, arrangement_id: String, occurrence_id: String,
+    event_id: String, member_id: Option<String>, string: i32, fret: i32,
+    technique: String, from_id: Option<String>
+});
+data!(Prompt {
+    id: String,
+    name: String,
+    text: String
+});
 data!(Tempo {
     bpm: f64,
     beat_unit: Time
@@ -74,11 +112,11 @@ data!(Tables {
     patterns: Table<Pattern>, events: Table<MusicalEvent>, chords: Table<Chord>,
     bars: Table<Bar>, sections: Table<Section>, arrangement: Table<Arrangement>,
     parts: Table<Part>, voices: Table<Voice>, occurrences: Table<Occurrence>,
-    prompts: Table<serde_json::Value>, assets: Table<serde_json::Value>,
-    takes: Table<serde_json::Value>, fretted: Table<serde_json::Value>,
-    fingerings: Table<serde_json::Value>, harmony: Table<HarmonicRegion>,
-    markers: Table<serde_json::Value>, phrases: Table<serde_json::Value>,
-    lyrics: Table<serde_json::Value>, polyrhythms: Table<serde_json::Value>
+    prompts: Table<Prompt>, assets: Table<serde_json::Value>,
+    takes: Table<serde_json::Value>, fretted: Table<Fretted>,
+    fingerings: Table<Fingering>, harmony: Table<HarmonicRegion>,
+    markers: Table<Marker>, phrases: Table<Phrase>,
+    lyrics: Table<Lyric>, polyrhythms: Table<Polyrhythm>
 });
 data!(Song {
     schema_version: u32, id: String, title: String, mode: String,

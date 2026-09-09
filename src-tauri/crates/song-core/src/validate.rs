@@ -1,4 +1,5 @@
-use crate::{Error, Pitch, Result, Song, Time, ensure};
+use crate::fretted::validate_fretted;
+use crate::{Error, Pitch, Result, Song, Time, ensure, lookup, section_length};
 use std::collections::BTreeSet;
 
 pub(crate) fn identity(id: &str) -> bool {
@@ -63,22 +64,16 @@ impl Song {
             "Invalid writing instructions/preferences",
         )?;
         let t = &self.tables;
-        for (name, table) in [
-            ("prompts", &t.prompts),
-            ("assets", &t.assets),
-            ("takes", &t.takes),
-            ("fretted", &t.fretted),
-            ("fingerings", &t.fingerings),
-            ("markers", &t.markers),
-            ("phrases", &t.phrases),
-            ("lyrics", &t.lyrics),
-            ("polyrhythms", &t.polyrhythms),
-        ] {
-            unsupported(table.is_empty(), name)?;
+        ensure(t.prompts.len() <= 32, "At most 32 reusable prompts")?;
+        for p in t.prompts.values() {
+            ensure(
+                text(&p.name, 200) && text(&p.text, 8000),
+                "Invalid reusable prompt",
+            )?;
         }
-        // Harmonic regions are typed for timeline use; content validation
-        // arrives with the remaining table coverage.
-        unsupported(t.harmony.is_empty(), "harmony")?;
+        // The remaining binary-coupled tables stay outside the cohort.
+        unsupported(t.assets.is_empty(), "assets")?;
+        unsupported(t.takes.is_empty(), "takes")?;
         let mut count = 0;
         macro_rules! table {
             ($table:ident) => {
@@ -100,6 +95,14 @@ impl Song {
         table!(parts);
         table!(voices);
         table!(occurrences);
+        table!(prompts);
+        table!(harmony);
+        table!(markers);
+        table!(phrases);
+        table!(lyrics);
+        table!(polyrhythms);
+        table!(fretted);
+        table!(fingerings);
         ensure(count <= 20000, "Song exceeds 20,000 entities")?;
         for p in t.parts.values() {
             ensure(
@@ -127,7 +130,13 @@ impl Song {
                 "Pattern groups must sum to cycle length",
             )?;
             ensure(p.length <= Time::new(10000, 1)?, "Pattern too long")?;
-            unsupported(p.source_id.is_none(), "pattern lineage")?;
+            if let Some(id) = &p.source_id {
+                ensure(
+                    t.patterns.contains_key(id),
+                    &format!("Broken patterns reference: {id}"),
+                )?;
+                ensure(id != &p.id, "Pattern cannot vary itself")?;
+            }
         }
         for c in t.chords.values() {
             pitch(&c.label_tonic)?;
@@ -197,6 +206,16 @@ impl Song {
                         && chord.is_some_and(|c| c.notes.iter().any(|n| n.id == perf.member_id)),
                     "Broken/duplicate chord member reference",
                 )?;
+                if let Some(gain) = perf.gain {
+                    ensure((0.0..=1.0).contains(&gain), "Member gain must be 0–1")?;
+                }
+                if let Some(articulation) = &perf.articulation {
+                    ensure(
+                        ["inherit", "normal", "staccato", "sustain", "muted", "ghost"]
+                            .contains(&articulation.as_str()),
+                        "Invalid member articulation",
+                    )?;
+                }
                 nonnegative(perf.offset)?;
                 positive(perf.duration)?;
             }
@@ -228,7 +247,13 @@ impl Song {
         }
         let mut assigned = BTreeSet::new();
         for s in t.sections.values() {
-            unsupported(s.source_id.is_none(), "section lineage")?;
+            if let Some(id) = &s.source_id {
+                ensure(
+                    t.sections.contains_key(id),
+                    &format!("Broken sections reference: {id}"),
+                )?;
+                ensure(id != &s.id, "Section cannot vary itself")?;
+            }
             for id in &s.bar_ids {
                 ensure(
                     t.bars.get(id).is_some_and(|b| b.section_id == s.id) && assigned.insert(id),
@@ -272,18 +297,11 @@ impl Song {
             positive(o.span)?;
             nonnegative(o.phase)?;
             if let Some(id) = &o.section_id {
-                let sec = t
-                    .sections
-                    .get(id)
-                    .ok_or_else(|| Error::new("invalid", "Broken sections reference"))?;
-                let mut length = Time::ZERO;
-                for id in &sec.bar_ids {
-                    let bar = &t.bars[id];
-                    length = length.checked_add(bar.actual.unwrap_or(Time::new(
-                        i64::from(bar.numerator) * 4,
-                        i64::from(bar.denominator),
-                    )?))?;
-                }
+                ensure(
+                    t.sections.contains_key(id),
+                    &format!("Broken sections reference: {id}"),
+                )?;
+                let length = section_length(self, id)?;
                 ensure(
                     o.start.checked_add(o.span)? <= length,
                     &format!(
@@ -299,6 +317,139 @@ impl Song {
                 "Invalid boundary choice",
             )?;
         }
+        for (table, section_id, start, duration, id) in t
+            .phrases
+            .values()
+            .map(|e| ("phrases", &e.section_id, e.start, e.duration, &e.id))
+            .chain(
+                t.lyrics
+                    .values()
+                    .map(|e| ("lyrics", &e.section_id, e.start, e.duration, &e.id)),
+            )
+        {
+            ensure(
+                t.sections.contains_key(section_id),
+                &format!("Broken sections reference: {section_id}"),
+            )?;
+            nonnegative(start)?;
+            positive(duration)?;
+            ensure(
+                start.checked_add(duration)? <= section_length(self, section_id)?,
+                &format!("{table}/{id} exceeds its section"),
+            )?;
+        }
+        for l in t.lyrics.values() {
+            ensure(text(&l.text, 10000), "Invalid lyric text")?;
+            if let Some(id) = &l.part_id {
+                ensure(
+                    t.parts.contains_key(id),
+                    &format!("Broken parts reference: {id}"),
+                )?;
+            }
+            if let Some(id) = &l.phrase_id {
+                let phrase = t.phrases.get(id).ok_or_else(|| {
+                    Error::new("invalid", format!("Broken phrases reference: {id}"))
+                })?;
+                ensure(
+                    l.section_id == phrase.section_id
+                        && l.start >= phrase.start
+                        && l.start.checked_add(l.duration)?
+                            <= phrase.start.checked_add(phrase.duration)?,
+                    "Linked phrase must contain its lyric span",
+                )?;
+            }
+        }
+        for section in t.sections.values() {
+            let mut seen = BTreeSet::from([section.id.clone()]);
+            let mut parent = section.source_id.clone();
+            while let Some(id) = parent {
+                ensure(!seen.contains(&id), "Cyclic sections lineage")?;
+                seen.insert(id.clone());
+                parent = lookup(&t.sections, "section", &id)?.source_id.clone();
+            }
+        }
+        for pattern in t.patterns.values() {
+            let mut seen = BTreeSet::from([pattern.id.clone()]);
+            let mut parent = pattern.source_id.clone();
+            while let Some(id) = parent {
+                ensure(!seen.contains(&id), "Cyclic patterns lineage")?;
+                seen.insert(id.clone());
+                parent = lookup(&t.patterns, "pattern", &id)?.source_id.clone();
+            }
+        }
+        for p in t.polyrhythms.values() {
+            nonnegative(p.start)?;
+            positive(p.duration)?;
+            if let Some(id) = &p.section_id {
+                ensure(
+                    t.sections.contains_key(id),
+                    &format!("Broken sections reference: {id}"),
+                )?;
+                ensure(
+                    p.start.checked_add(p.duration)? <= section_length(self, id)?,
+                    "Polyrhythm exceeds its section",
+                )?;
+            }
+            ensure(
+                (2..=8).contains(&p.lanes.len()),
+                "Polyrhythm needs 2–8 lanes",
+            )?;
+            let mut voices = BTreeSet::new();
+            for lane in &p.lanes {
+                let occurrence = t.occurrences.get(&lane.occurrence_id).ok_or_else(|| {
+                    Error::new(
+                        "invalid",
+                        format!("Broken occurrences reference: {}", lane.occurrence_id),
+                    )
+                })?;
+                ensure((1..=64).contains(&lane.divisions), "Divisions must be 1–64")?;
+                ensure(
+                    occurrence.section_id == p.section_id,
+                    "Polyrhythm and placements must share scope",
+                )?;
+                ensure(
+                    voices.insert(&occurrence.voice_id),
+                    "Polyrhythm lanes need distinct voices",
+                )?;
+            }
+        }
+        let mut regions: Vec<_> = t.harmony.values().collect();
+        for h in &regions {
+            nonnegative(h.start)?;
+            positive(h.duration)?;
+            pitch(&h.tonic)?;
+            ensure(
+                text(&h.mode, 10000) && text(&h.annotation, 10000),
+                "Invalid harmonic context text",
+            )?;
+            if let Some(id) = &h.section_id {
+                ensure(
+                    t.sections.contains_key(id),
+                    &format!("Broken sections reference: {id}"),
+                )?;
+                ensure(
+                    h.start.checked_add(h.duration)? <= section_length(self, id)?,
+                    "Harmonic region exceeds section",
+                )?;
+            }
+        }
+        regions.sort_by(|a, b| {
+            // Matches JSON.stringify(sectionId) ordering: quoted scopes first.
+            (a.section_id.is_none(), a.start).cmp(&(b.section_id.is_none(), b.start))
+        });
+        for pair in regions.windows(2) {
+            let (a, b) = (&pair[0], &pair[1]);
+            if a.section_id == b.section_id {
+                ensure(
+                    a.start.checked_add(a.duration)? <= b.start,
+                    "Harmonic regions in the same scope cannot overlap",
+                )?;
+            }
+        }
+        for m in t.markers.values() {
+            nonnegative(m.at)?;
+        }
+        validate_fretted(self)?;
         Ok(())
     }
 }
