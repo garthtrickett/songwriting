@@ -35,6 +35,7 @@ export function agentPanel(client: AgentClient) {
       ${client.error ? html`<p role="alert">${client.error}</p>` : nothing}
       ${task ? html`<div class="desktop-agent-task" data-agent-status=${task.status}>
         <strong>${task.status} · ${task.rounds}/12 model requests</strong>
+        <small>${task.model}</small>
         <p>${task.prompt}</p><p role="status">${task.message}</p>
         ${task.status === "interrupted" ? html`<button ?disabled=${client.busy || client.state.configuredModel !== task.model} @click=${() => client.resume(task.id)}>Resume agent</button>` : nothing}
         ${pending ? html`<button ?disabled=${client.busy} @click=${() => client.cancel(task.id)}>Cancel agent</button>` : nothing}
