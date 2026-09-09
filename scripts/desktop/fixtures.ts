@@ -1,6 +1,7 @@
 // The existing TypeScript implementation is the migration reference, not a
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
-import { emptySong, noteEvent } from "../../src/song/model.ts";
+import { sounds } from "../../src/song/timeline.ts";
+import { emptySong, noteEvent, semitone } from "../../src/song/model.ts";
 import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
 import { changeNotes } from "../../src/song/note-edit.ts";
 import { validateSong } from "../../src/song/validate.ts";
@@ -88,11 +89,25 @@ const times = arithmetic.flatMap(([a, b]) => Object.entries({ add, sub, mul, cmp
   try { return { a, b, operation, result: fn(time(...a), time(...b)) }; }
   catch (error) { return { a, b, operation, error: (error as Error).message }; }
 }));
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times })) {
+const audio = ["baseline", "member-offsets", "cut-tails", "repeated-section", "muted"].map(name => {
+  const input = structuredClone(song);
+  if (name !== "baseline") input.tables.events.harmony!.performance = [
+    { memberId: "root", offset: time(1, 3), duration: time(2, 1) },
+    { memberId: "fifth", offset: time(1, 1), duration: time(3, 1) },
+  ];
+  if (name === "cut-tails") input.tables.occurrences.lead1!.tails = "cut";
+  if (name === "muted") input.tables.parts.guitar!.muted = true;
+  if (name === "repeated-section") {
+    input.tables.arrangement.verse2 = { id: "verse2", name: "Again", sectionId: "verse" };
+    input.arrangementOrder.push("verse2");
+  }
+  return { name, song: input, notes: sounds(input).map(n => ({ start:n.start, duration:n.duration, frequency:440 * 2 ** ((60 + semitone(n.pitch!) - 69) / 12), gain:n.gain * 0.1 })) };
+});
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
     if (readFileSync(path, "utf8") !== content) throw new Error(`Stale Rust migration reference: ${name}`);
   } else writeFileSync(path, content);
 }
-console.log(`Verified TypeScript reference: ${cases.length} command steps and ${times.length} exact-time cases.`);
+console.log(`Verified TypeScript reference: ${cases.length} command steps ${times.length} exact-time cases and ${audio.length} audio cases.`);

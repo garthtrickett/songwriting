@@ -20,10 +20,14 @@ async fn save(session: &Session, task: &Task) -> Result<Task, Failure> {
 }
 /// All network work is outside SAM/SQLite. Dropping this future cancels the
 /// request, while already accepted workspace operations still finish durably.
-pub async fn run(
+pub async fn run(session: Arc<Session>, model: Arc<dyn Model>, task: Task) -> Result<(), Failure> {
+    run_with_audio(session, model, task, None).await
+}
+pub async fn run_with_audio(
     session: Arc<Session>,
     model: Arc<dyn Model>,
     mut task: Task,
+    audio: Option<Arc<song_audio::Engine>>,
 ) -> Result<(), Failure> {
     if task.model != model.identity() {
         return Err(Failure::new(
@@ -37,6 +41,19 @@ pub async fn run(
         }
         for index in 0..task.checkpoint.calls.len() {
             if task.checkpoint.calls[index].result.is_none() {
+                if crate::audio::is_tool(&task.checkpoint.calls[index].name) {
+                    let call = task.checkpoint.calls[index].clone();
+                    // At-most-once ephemeral effect: a crash here must not cause
+                    // recovered tasks to start speakers unexpectedly.
+                    task.checkpoint.calls[index].result = Some(
+                        serde_json::json!({"interrupted": true, "message": "Audio attempt was interrupted; inspect current transport. Do not automatically replay it."}),
+                    );
+                    task = save(&session, &task).await?;
+                    let result = crate::audio::execute(&session, audio.as_deref(), &call).await;
+                    task.checkpoint.calls[index].result = Some(result);
+                    task = save(&session, &task).await?;
+                    continue;
+                }
                 task = session
                     .agent(AgentWork::Tool {
                         id: task.id.clone(),

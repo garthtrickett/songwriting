@@ -14,13 +14,13 @@ writer's OS account, SQLite for durable local data, and the Rust Rig task runner
 the writer's own model credentials. Neon sign-in is no longer a prerequisite.
 The plan sequences D1–D7 and details D1's packaged feasibility proof. D1's first
 Rust SAM/SQLite core now has a Tauri window, generated bindings and a Lit
-arrangement/note view. Native audio and the Rig proof remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
+arrangement/note view. Native audition and Rig are implemented; physical-output and live-model evidence remain pending. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
 Existing musical requirements remain in force.
 For desktop ownership and stack decisions, this plan supersedes the historical
 TypeScript implementation details below while preserving their product semantics.
 
-The next selected milestone is [RIG_PROOF_PLAN.md](RIG_PROOF_PLAN.md), replacing
-the Node/Mastra desktop sidecar proposal. Live-model evidence is required.
+The selected milestone is [NATIVE_AUDIO_PROOF_PLAN.md](NATIVE_AUDIO_PROOF_PLAN.md).
+The Rig proof is implemented separately; its live-model evidence remains pending.
 
 ## Built-in Mastra agent — hosted prototype superseded
 

@@ -13,7 +13,7 @@ jobs:
         with:
           bun-version-file: .bun-version
       - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libwebkit2gtk-4.1-dev libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev
       - run: bun install --frozen-lockfile
       - run: rustup show active-toolchain
       - run: bun run verify:desktop
@@ -24,10 +24,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
-      - run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev webkit2gtk-driver xvfb dbus-x11
+      - run: sudo apt-get update && sudo apt-get install -y libasound2-dev libwebkit2gtk-4.1-dev libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev webkit2gtk-driver xvfb dbus-x11 pulseaudio libasound2-plugins
       - run: bun install --frozen-lockfile
       - run: bun run desktop:build --debug
-      - run: xvfb-run -a dbus-run-session -- python3 scripts/desktop/native-smoke.py src-tauri/target/debug/songwriter-desktop .agent/native-smoke
+      - run: xvfb-run -a dbus-run-session -- python3 scripts/desktop/audio-smoke.py src-tauri/target/debug/songwriter-desktop .agent/native-smoke
       - uses: actions/upload-artifact@v4
         if: always()
         with:

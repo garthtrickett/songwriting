@@ -289,3 +289,72 @@ async fn completion_is_explicit_and_request_budget_survives_resume() {
     runtime.shutdown().await;
     session.close();
 }
+
+struct AudioReplay;
+impl Model for AudioReplay {
+    fn identity(&self) -> String {
+        "test:audio-replay".into()
+    }
+    fn next(&self, messages: Vec<Message>) -> ModelFuture<'_> {
+        Box::pin(async move {
+            assert!(
+                serde_json::to_string(&messages)
+                    .unwrap()
+                    .contains("interrupted")
+            );
+            Ok(call(
+                "done-audio",
+                "complete_task",
+                json!({"summary":"Interrupted audition was not replayed."}),
+            ))
+        })
+    }
+}
+#[tokio::test]
+async fn interrupted_ephemeral_audio_is_not_replayed_on_resume() {
+    let dir = tempfile::tempdir().unwrap();
+    let session = Session::start(dir.path().join("workspace.sqlite"), |_| {});
+    let task = session
+        .agent(AgentWork::Begin {
+            prompt: "Play sketch".into(),
+            model: "test:audio-replay".into(),
+        })
+        .await
+        .unwrap()
+        .unwrap();
+    let mut checkpoint = task.checkpoint;
+    checkpoint.messages.push(
+        serde_json::to_value(call("play-once", "play_audio", json!({"deviceId":null}))).unwrap(),
+    );
+    checkpoint.calls.push(song_session::agent::ToolCall {
+        id: "play-once".into(),
+        name: "play_audio".into(),
+        arguments: json!({"deviceId":null}),
+        result: Some(json!({"interrupted":true})),
+    });
+    session
+        .agent(AgentWork::Checkpoint {
+            id: task.id.clone(),
+            generation: task.generation,
+            checkpoint,
+        })
+        .await
+        .unwrap();
+    session
+        .agent(AgentWork::Control {
+            id: task.id.clone(),
+            status: song_session::agent::Status::Interrupted,
+        })
+        .await
+        .unwrap();
+    let audio = song_audio::Engine::new();
+    let runtime = Runtime::with_audio(session.clone(), audio.clone());
+    runtime.set_model(Arc::new(AudioReplay)).await.unwrap();
+    runtime.resume(task.id).await.unwrap();
+    wait_status(&runtime, "completed").await;
+    assert_eq!(audio.view().await.unwrap().generation, 0);
+    assert_eq!(session.read().await.unwrap().revision, 0);
+    runtime.shutdown().await;
+    audio.close();
+    session.close();
+}

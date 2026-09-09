@@ -187,3 +187,29 @@ Expect revision 1/title `Crooked Steps` before and after resume, then revision 2
 and the original title after undo. The crash command refuses an existing database.
 This harness uses a separate fixture path; it does not open your desktop profile.
 A fake model test is separate recovery evidence and does not satisfy the live gate.
+
+## Native audition proof
+
+`bun run desktop:dev` now includes Play sketch, Stop audio and output selection.
+The Nix shell includes ALSA on Linux (including aarch64-linux); enter `nix develop`
+again after pulling this change. Debian/Ubuntu builds need `libasound2-dev` in
+addition to the existing Tauri dependencies. No model key is needed for playback. Linux uses CPAL’s direct PulseAudio backend when a PulseAudio/pipewire-pulse server is available, otherwise ALSA.
+
+The D1 audition uses simple tones in C4 and grouped metronome clicks, with a
+30-second bound. It plays the committed revision shown in the transport. Editing
+remains available while playing; press Play again to hear the changes. Unsupported
+music or unavailable outputs produce an error. Full instruments and live schedule
+updates arrive in D3. Natural completion leaves an open silent stream until Stop,
+replacement or app exit so the last queued sound is not truncated.
+
+Linux integration proof (virtual output, not physical latency):
+
+```sh
+bun run desktop:build --debug
+# Requires pulseaudio, libasound2-plugins, WebKitWebDriver, Xvfb and dbus-run-session.
+xvfb-run -a dbus-run-session -- python3 scripts/desktop/audio-smoke.py src-tauri/target/debug/songwriter-desktop .agent/audio-native
+```
+
+The harness creates and destroys its own PulseAudio null sink and temporary local
+profile; it does not change system sound settings. See NATIVE_AUDIO_PROOF_PLAN.md
+and docs/NATIVE_AUDIO_PROOF_VALIDATION.md for scope and outstanding device evidence.

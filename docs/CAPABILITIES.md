@@ -127,3 +127,26 @@ All these outcomes use schema 7 unchanged. The UI's pure note-edit helpers compo
 ordinary entity changes; agents retain the underlying primitives. Snapping and
 panel layout are view preferences, not a second musical model. The seven-degree
 axis preserves authored alterations and octaves when the audition tonic changes.
+
+## Desktop D1 native audition
+
+| Writer outcome | Shared Rust host / Rig primitive |
+| --- | --- |
+| Inspect transport and available outputs | `Engine::view/devices` / `audio_status` |
+| Play or restart the committed fixture, optionally on a selected output | Shared host `audio::play` / `play_audio` |
+| Stop, including while a start is pending | `Engine::stop` / `stop_audio` |
+
+Lit sends intents; Rust reads the saved song and prepares audio off the workspace
+worker. Neither caller supplies a replacement document or arbitrary PCM. Playback
+uses C4 as the audition tonic; canonical notes stay relative. Edits affect the next
+play. This D1 cohort supports normal/sustained pitched notes and chord members,
+zero-phase continuing occurrences and ring/cut tails, plus grouped mixed-meter
+clicks. Other playback semantics return visible unsupported errors pending D3.
+The audition is limited to 30 seconds, 2048 attacks/cycles and 120 cumulative voice
+seconds at 8–192 kHz; these are explicit proof limits, not final product limits.
+
+Audio is ephemeral, not musical history. A task journals an attempted transport
+call before issuing it; interrupted playback attempts are never automatically
+replayed. A restart opens stopped. Model tools receive saved results and can inspect
+current status; counters do not establish physical audibility. A cancelled pending
+play fences only its own generation, preserving a newer manual transport command.

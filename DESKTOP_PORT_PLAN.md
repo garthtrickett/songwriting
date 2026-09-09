@@ -1,8 +1,8 @@
 # Songwriter desktop port — Rust SAM core, Tauri and lit/TypeScript view
 
 Status: D1 in progress, 2026-09-09. The Rust SAM/SQLite slice is
-connected to a Tauri window and Lit view. Native audio/media, the Rig agent proof and
-cross-platform release evidence remain outstanding. See
+connected to a Tauri window and Lit view. Native audition and Rig are implemented.
+Physical-output, media, live-model and cross-platform release evidence remain outstanding. See
 [D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete.
 
 This is the selected product direction for the next implementation workstream.
@@ -312,7 +312,7 @@ snapshots, resnapshot on reconnect, retain drafts on conflicts and retry uncerta
 saves with their original operation ID. Show rename, horizontal note/member moves
 and undo; keep the fixture limitation visible. Test the actual packaged Linux
 window, including a real pointer drag, restart and undo, and compile/check the
-host on Windows and macOS. The current third slice is [the Rig proof](RIG_PROOF_PLAN.md). Native audio remains a later D1 slice.
+host on Windows and macOS. The current third slice is [the Rig proof](RIG_PROOF_PLAN.md). The next selected D1 slice is [the native audio proof](NATIVE_AUDIO_PROOF_PLAN.md).
 
 **Purpose:** prove one thin path through the intended production architecture,
 using disposable fixtures and a local profile. Keep the old web implementation

@@ -19,16 +19,23 @@ struct Execution {
 pub struct Runtime {
     session: Arc<Session>,
     execution: Mutex<Execution>,
+    audio: Option<Arc<song_audio::Engine>>,
 }
 impl Runtime {
     pub fn new(session: Arc<Session>) -> Self {
         Self {
             session,
+            audio: None,
             execution: Mutex::new(Execution {
                 model: None,
                 job: None,
             }),
         }
+    }
+    pub fn with_audio(session: Arc<Session>, audio: Arc<song_audio::Engine>) -> Self {
+        let mut runtime = Self::new(session);
+        runtime.audio = Some(audio);
+        runtime
     }
     pub async fn configure(&self, config: AgentConfig) -> Result<(), Failure> {
         self.set_model(Arc::new(RigModel::new(
@@ -74,7 +81,13 @@ impl Runtime {
             })
             .await?
             .ok_or_else(|| Failure::new("missing", "Task was not created"))?;
-        launch(&mut execution, self.session.clone(), model, task);
+        launch(
+            &mut execution,
+            self.session.clone(),
+            model,
+            task,
+            self.audio.clone(),
+        );
         Ok(())
     }
     pub async fn resume(&self, id: String) -> Result<(), Failure> {
@@ -107,7 +120,13 @@ impl Runtime {
             })
             .await?
             .unwrap();
-        launch(&mut execution, self.session.clone(), model, task);
+        launch(
+            &mut execution,
+            self.session.clone(),
+            model,
+            task,
+            self.audio.clone(),
+        );
         Ok(())
     }
     pub async fn cancel(&self, id: String) -> Result<(), Failure> {
@@ -155,11 +174,17 @@ fn configured(execution: &Execution) -> Result<Arc<dyn Model>, Failure> {
         .clone()
         .ok_or_else(|| Failure::new("configuration", "Configure a session API key first"))
 }
-fn launch(execution: &mut Execution, session: Arc<Session>, model: Arc<dyn Model>, task: Task) {
+fn launch(
+    execution: &mut Execution,
+    session: Arc<Session>,
+    model: Arc<dyn Model>,
+    task: Task,
+    audio: Option<Arc<song_audio::Engine>>,
+) {
     let id = task.id.clone();
     let generation = task.generation;
     execution.job = Some(tokio::spawn(async move {
-        if let Err(error) = runner::run(session.clone(), model, task).await {
+        if let Err(error) = runner::run_with_audio(session.clone(), model, task, audio).await {
             let _ = session
                 .agent(AgentWork::Pause {
                     id,

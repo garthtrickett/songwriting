@@ -17,7 +17,7 @@ jobs:
             rustc --version
             cargo --version
             test "$(bun --version)" = "$(cat .bun-version)"
-            pkg-config --modversion gtk+-3.0 webkit2gtk-4.1 javascriptcoregtk-4.1 libsoup-3.0 openssl ayatana-appindicator3-0.1
+            pkg-config --modversion alsa gtk+-3.0 webkit2gtk-4.1 javascriptcoregtk-4.1 libsoup-3.0 openssl ayatana-appindicator3-0.1
             bun install --frozen-lockfile
             bunx tauri --version
             bun run verify

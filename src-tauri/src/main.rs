@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use song_agent::runtime::Runtime;
+use song_audio::{AudioPlay, AudioView, Engine, OutputDevice};
 use song_session::{
     Session,
     protocol::{AgentConfig, AgentView, EditRequest, Failure, STATE_EVENT, Snapshot},
@@ -77,6 +78,40 @@ async fn desktop_agent_cancel(
     check_window(&window)?;
     agent.cancel(id).await
 }
+#[tauri::command]
+async fn desktop_audio_status(
+    window: tauri::WebviewWindow,
+    audio: tauri::State<'_, Arc<Engine>>,
+) -> Result<AudioView, Failure> {
+    check_window(&window)?;
+    audio.view().await.map_err(Failure::from)
+}
+#[tauri::command]
+async fn desktop_audio_devices(
+    window: tauri::WebviewWindow,
+    audio: tauri::State<'_, Arc<Engine>>,
+) -> Result<Vec<OutputDevice>, Failure> {
+    check_window(&window)?;
+    audio.devices().await.map_err(Failure::from)
+}
+#[tauri::command]
+async fn desktop_audio_play(
+    window: tauri::WebviewWindow,
+    audio: tauri::State<'_, Arc<Engine>>,
+    session: tauri::State<'_, Arc<Session>>,
+    request: AudioPlay,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    song_agent::audio::play(&session, &audio, request).await
+}
+#[tauri::command]
+async fn desktop_audio_stop(
+    window: tauri::WebviewWindow,
+    audio: tauri::State<'_, Arc<Engine>>,
+) -> Result<(), Failure> {
+    check_window(&window)?;
+    audio.stop().map_err(Failure::from)
+}
 fn check_window(window: &tauri::WebviewWindow) -> Result<(), Failure> {
     if window.label() == "main" {
         Ok(())
@@ -90,9 +125,12 @@ fn close(app: &tauri::AppHandle) {
     }
     let app = app.clone();
     let session = app.state::<Arc<Session>>().inner().clone();
+    let audio = app.state::<Arc<Engine>>().inner().clone();
     let agent = app.state::<Arc<Runtime>>().inner().clone();
     tauri::async_runtime::spawn(async move {
+        let _ = audio.stop();
         agent.shutdown().await;
+        let _ = tauri::async_runtime::spawn_blocking(move || audio.close()).await;
         let _ = tauri::async_runtime::spawn_blocking(move || session.close()).await;
         app.state::<Shutdown>()
             .finished
@@ -119,7 +157,12 @@ fn main() {
                 // Persistence succeeded even if a renderer has gone away.
                 let _ = handle.emit_to("main", STATE_EVENT, snapshot);
             });
-            app.manage(Arc::new(Runtime::new(session.clone())));
+            let audio = Engine::new();
+            app.manage(Arc::new(Runtime::with_audio(
+                session.clone(),
+                audio.clone(),
+            )));
+            app.manage(audio);
             app.manage(session);
             Ok(())
         })
@@ -130,7 +173,11 @@ fn main() {
             desktop_agent_configure,
             desktop_agent_start,
             desktop_agent_resume,
-            desktop_agent_cancel
+            desktop_agent_cancel,
+            desktop_audio_status,
+            desktop_audio_devices,
+            desktop_audio_play,
+            desktop_audio_stop
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {

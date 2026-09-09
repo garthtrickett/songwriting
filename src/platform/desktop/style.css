@@ -43,3 +43,9 @@
 .desktop-agent textarea { min-height: 76px; resize: vertical; }
 .desktop-agent p, .desktop-agent small { overflow-wrap: anywhere; }
 .desktop-agent-task { border-top: 1px solid #525556; padding-top: 10px; }
+
+.desktop-audio { padding: 8px 14px; background: #272b2e; border-bottom: 1px solid #121517; }
+.desktop-audio-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.desktop-audio-controls select { max-width: 260px; }
+.desktop-audio small { color: #aeb5b9; }
+.desktop-audio p { margin: 4px 0; color: #f8bc91; }

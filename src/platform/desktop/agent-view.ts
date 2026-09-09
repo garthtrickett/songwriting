@@ -40,7 +40,7 @@ export function agentPanel(client: AgentClient) {
         ${task.status === "interrupted" ? html`<button ?disabled=${client.busy || client.state.configuredModel !== task.model} @click=${() => client.resume(task.id)}>Resume agent</button>` : nothing}
         ${pending ? html`<button ?disabled=${client.busy} @click=${() => client.cancel(task.id)}>Cancel agent</button>` : nothing}
       </div>` : nothing}
-      <small>Edits appear in History and can be undone. Playback is still coming.</small>
+      <small>Edits appear in History and can be undone. Ask to audition the sketch or stop playback.</small>
     </section>`;
   };
 }

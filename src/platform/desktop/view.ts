@@ -5,6 +5,8 @@ import type { NoteView } from "../../generated/desktop/NoteView.ts";
 import type { Time } from "../../generated/desktop/Time.ts";
 import type { Snapshot } from "./wire.ts";
 import type { AgentClient } from "./agent.ts";
+import type { AudioClient } from "./audio.ts";
+import { audioPanel } from "./audio-view.ts";
 import { agentPanel } from "./agent-view.ts";
 import { DesktopClient } from "./client.ts";
 import { format, fraction, parse, value } from "./coordinates.ts";
@@ -13,7 +15,8 @@ const key = (note: NoteView) => `${note.eventId}/${note.memberId ?? ""}`;
 interface Draft { value: string; base: Snapshot }
 interface Gesture { note: NoteView; base: Snapshot; x: number; pointer: number; element: HTMLElement; moved: boolean; zoom: number; snap: number }
 
-export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient) {
+export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient, audio?: AudioClient) {
+  const transport = audio ? audioPanel(audio) : null;
   const assistant = agent ? agentPanel(agent) : null;
   let selected = "", patternId = "", zoom = 110, snap = 3;
   let titleDraft: Draft | null = null, noteDraft: Draft | null = null;
@@ -104,6 +107,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
         ${client.error || client.status === "offline" ? html`<button ?disabled=${client.status === "saving" || client.status === "connecting"} @click=${() => client.connect()}>Reconnect</button>` : nothing}
         ${client.pending ? html`<button ?disabled=${client.status !== "ready"} @click=${() => client.retry()}>Retry same edit</button>` : nothing}
       </div>
+      ${transport?.() ?? nothing}
       <main class="desktop-main">
         <aside class="desktop-library"><h2>SONG</h2><p>${s.title}</p><hr /><h2>HISTORY</h2>
           ${s.undoable.length ? repeat(s.undoable.slice(-8).reverse(), (u) => u.operationId, (u) => html`<button ?disabled=${busy()}
@@ -155,6 +159,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
   }
   const stop = client.subscribe(paint);
   const stopAgent = agent?.subscribe(paint);
+  const stopAudio = audio?.subscribe(paint);
   paint();
-  return () => { disposed = true; stop(); stopAgent?.(); root.removeEventListener("keydown", keyboard); };
+  return () => { disposed = true; stop(); stopAgent?.(); stopAudio?.(); root.removeEventListener("keydown", keyboard); };
 }

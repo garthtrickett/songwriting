@@ -73,7 +73,7 @@ generated files to LF on every platform. Musical comparisons remain unchanged.
 ## Outstanding D1 work
 
 - General asynchronous audio/agent effect scheduling and bounded next actions.
-- Native audio callback, prepared schedules, device and codec/capture feasibility.
+- Native audio implementation and virtual-device proof: see [audio evidence](NATIVE_AUDIO_PROOF_VALIDATION.md). Physical-device evidence and codec/capture feasibility remain outstanding.
 - The Node/Mastra desktop proposal is superseded by [the Rig proof](../RIG_PROOF_PLAN.md).
   Its Rust journal/agent implementation and deterministic tests are documented in
   [Rig evidence](RIG_PROOF_VALIDATION.md); actual-model evaluation remains pending.

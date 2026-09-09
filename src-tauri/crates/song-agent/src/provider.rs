@@ -91,6 +91,9 @@ async fn request<M: CompletionModel + Clone>(
 pub fn tools() -> Vec<ToolDefinition> {
     let object = |properties, required| json!({"type":"object", "properties":properties,"required":required,"additionalProperties":false});
     vec![
+        ToolDefinition { name: "audio_status".into(), description: "Inspect native transport status and available output device IDs. No musical changes.".into(), parameters: object(json!({}),json!([])) },
+        ToolDefinition { name: "play_audio".into(), description: "Audition the currently saved sketch from the beginning. Ephemeral: never automatically replay after interruption. Supports the D1 pitched fixture only.".into(), parameters: object(json!({"deviceId":{"type":["string","null"]}}),json!(["deviceId"])) },
+        ToolDefinition { name: "stop_audio".into(), description: "Stop native audition, including a pending start.".into(), parameters: object(json!({}),json!([])) },
         ToolDefinition { name: "read_song".into(), description: "Inspect the current relative song, revision and undoable operation IDs.".into(), parameters: object(json!({}), json!([])) },
         ToolDefinition { name: "edit_song".into(), description: "Apply one musical action at the revision you inspected. Rust validates and saves it with an undo receipt. On conflict, inspect again and reconsider the request.".into(), parameters: object(json!({
             "expectedRevision":{"type":"integer","minimum":0},

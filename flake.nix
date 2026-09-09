@@ -21,7 +21,7 @@
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           bun = import ./nix/bun.nix { inherit pkgs; };
           nativeLibraries = with pkgs; [ openssl ] ++ lib.optionals stdenv.hostPlatform.isLinux [
-            gtk3 webkitgtk_4_1 libsoup_3 libayatana-appindicator xdotool librsvg
+            alsa-lib gtk3 webkitgtk_4_1 libsoup_3 libayatana-appindicator xdotool librsvg
             glib-networking gsettings-desktop-schemas stdenv.cc.cc.lib
           ];
         in {

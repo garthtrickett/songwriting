@@ -18,6 +18,7 @@ use tokio::sync::oneshot;
 type Reply = oneshot::Sender<Result<Snapshot, Failure>>;
 enum Work {
     Read(Reply),
+    Song(oneshot::Sender<Result<(Song, u64), Failure>>),
     Edit(EditRequest, Reply),
     Agent(
         agent::AgentWork,
@@ -56,6 +57,17 @@ impl Session {
                         let _ = reply.send(result);
                         continue;
                     }
+                    Work::Song(reply) => {
+                        let result = match workspace.as_mut() {
+                            Err(e) => Err(e.clone()),
+                            Ok(w) => w
+                                .read("desktop-fixture")
+                                .map(|e| (e.song, e.revision))
+                                .map_err(Failure::from),
+                        };
+                        let _ = reply.send(result);
+                        continue;
+                    }
                     Work::Read(r) => (None, r),
                     Work::Edit(m, r) => (Some(m), r),
                     Work::Close => break,
@@ -78,6 +90,13 @@ impl Session {
             closing: AtomicBool::new(false),
             join: Mutex::new(Some(join)),
         })
+    }
+    /// Committed musical input for native workers; not a renderer write surface.
+    pub async fn song(&self) -> Result<(Song, u64), Failure> {
+        let (tx, rx) = oneshot::channel();
+        self.send(Work::Song(tx))?;
+        rx.await
+            .map_err(|_| Failure::new("unavailable", "Workspace stopped"))?
     }
     pub async fn read(&self) -> Result<Snapshot, Failure> {
         let (tx, rx) = oneshot::channel();
