@@ -11,6 +11,10 @@
     "build": "vite build",
     "verify": "bun run check && bun run test && bun run build",
     "test:browser": "playwright test",
+    "fixtures:desktop": "bun scripts/desktop/fixtures.ts",
+    "test:desktop": "bun scripts/desktop/fixtures.ts --check && cargo test --manifest-path src-tauri/Cargo.toml --locked",
+    "verify:desktop": "cargo fmt --all --manifest-path src-tauri/Cargo.toml --check && cargo clippy --manifest-path src-tauri/Cargo.toml --locked --workspace --all-targets -- -D warnings && bun run test:desktop",
+    "desktop:fixture": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-workspace --",
     "agent": "bun scripts/agent.ts"
   },
   "dependencies": {

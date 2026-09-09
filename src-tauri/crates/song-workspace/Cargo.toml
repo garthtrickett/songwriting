@@ -1,0 +1,17 @@
+[package]
+name = "song-workspace"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+song-core = { path = "../song-core" }
+serde.workspace = true
+serde_json.workspace = true
+rusqlite.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

@@ -2,15 +2,35 @@
 
 Status: Phases 1–7 complete; the Phase 8 arrangement workspace is implemented; broader Phases 8–9 remain planned; see PHASES.md and docs/PHASE7_VALIDATION.md for delivery status. `songwriting` is a working name.
 
-## Built-in Mastra agent — proposed workstream
+## Desktop port — selected next workstream
+
+[DESKTOP_PORT_PLAN.md](DESKTOP_PORT_PLAN.md) defines the move to Tauri, the existing
+lit/TypeScript view, and a local Rust SAM core and audio engine. Rust owns musical
+state, actions/proposal acceptance, validation, history, persistence and derived
+state representations. Lit and Mastra use the same Rust action/state interface;
+the agent sidecar is optional for manual operation. Port existing TypeScript
+musical rules with differential behavior checks. Use a local profile under the
+writer's OS account, SQLite for durable local data, and bundled local Mastra with
+the writer's own model credentials. Neon sign-in is no longer a prerequisite.
+The plan sequences D1–D7 and details D1's packaged feasibility proof. D1's first
+headless Rust SAM/SQLite slice is implemented; desktop shell, native audio and
+Mastra integration remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
+Existing musical requirements remain in force.
+For desktop ownership and stack decisions, this plan supersedes the historical
+TypeScript implementation details below while preserving their product semantics.
+
+## Built-in Mastra agent — hosted prototype superseded
 
 [MASTRA_AGENT_PLAN.md](MASTRA_AGENT_PLAN.md) specifies the requested replacement
 of the hosted app's external-agent dependency with a built-in Mastra assistant.
 It includes the reviewed architecture, implementation slices, recovery protocol,
-acceptance gates and revision record. Status: plan only, not implemented.
-For this proposed workstream it supersedes Phase 7's local-host-only deployment
-decision while preserving its musical editing, undo and recovery requirements.
-It does not activate Phase 9 song synchronization or the remaining mobile work.
+acceptance gates and revision record. Historical status: M1 partially implemented,
+using provisioned Neon Free for hosted Postgres in development/preview.
+No hosted agent release is claimed; see [evidence](https://github.com/garthtrickett/songwriting/blob/4d8d95a885f4c4d1c6203b95a6294abaea7fea5b/docs/MASTRA_VALIDATION.md).
+The desktop plan now supersedes its hosted deployment target. Carry forward useful
+Mastra, musical editing, undo and recovery work; do not continue Neon configuration
+as part of the desktop port. Neither workstream activates Phase 9 song
+synchronization or the remaining mobile work.
 
 ## Song-view redesign
 
@@ -390,6 +410,13 @@ CI runs that same command after a frozen-lockfile install. A successful Vite
 build does not substitute for type checking.
 
 ### State management
+
+Desktop target: move this SAM pattern into the Rust core, including musical
+actions, proposal acceptance, canonical model and state derivation. Lit retains
+presentation state and renders Rust representations; Mastra calls the same Rust
+actions. See [desktop SAM ownership](DESKTOP_PORT_PLAN.md#rust-sam-workspace-module)
+for persistence ordering, async proposals and audio separation. The TypeScript
+wiring below documents the existing browser implementation used during migration.
 
 Carry over the notes app's SAM (State-Action-Model) pattern:
 

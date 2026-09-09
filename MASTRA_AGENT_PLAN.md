@@ -1,9 +1,20 @@
 # Built-in songwriting agent with Mastra
 
-Status: planning only. Requested 2026-09-08. No implementation, dependency
-installation, provider provisioning or production changes are included in this
-planning task. This is the next proposed agent workstream, separate from the
-remaining mobile/offline work and Phase 9 song sync.
+Status: hosted deployment target superseded by
+[DESKTOP_PORT_PLAN.md](DESKTOP_PORT_PLAN.md) on 2026-09-09. Keep Mastra and useful
+editing/recovery modules, but run the desktop agent locally with a local profile
+and local storage. The Rust SAM core owns musical state and accepts edits; Mastra
+is an on-demand client of its action/state interface. Manual operation requires
+no running agent sidecar. Neon configuration is no longer the next delivery gate.
+The remainder of this document records the historical hosted design and status.
+
+Historical status: implementation authorized; M1 partially implemented. Neon Free was selected by
+the owner on 2026-09-08. The database is provisioned and connected to Vercel
+development/preview, with agent schemas migrated. The hosted API, sign-in UI and
+durable browser executor are deployed on a protected preview. Neon trusted-origin
+configuration still blocks the deployed sign-in acceptance test; production is
+unchanged. See [implementation evidence](https://github.com/garthtrickett/songwriting/blob/4d8d95a885f4c4d1c6203b95a6294abaea7fea5b/docs/MASTRA_VALIDATION.md).
+This workstream remains separate from mobile/offline work and Phase 9 song sync.
 
 ## Outcome
 
@@ -70,9 +81,19 @@ inside Mastra or a separate “AI edit” implementation.
 
 - Existing Vercel project: static Vite frontend plus explicit Node.js 24 API
   handlers importing Mastra core. No React/Next.js rewrite is required.
-- Supabase Auth plus its managed Postgres is the proposed identity/storage
-  combination. Start with owner/invite-only agent access; manual editing remains
-  available without sign-in. This requires provisioning during implementation.
+- Neon Free through the Vercel integration is the selected Postgres host. Start
+  with a development/preview project in `iad1`; production data must be isolated.
+  Use the standard `pg` connection with Mastra's Postgres adapter; no Neon-specific
+  query API or cloud song store is needed. Use the pooled connection for requests
+  and a direct connection for explicit migrations. Keep both URLs server-only.
+- Use Neon Auth for the proposed managed sign-in integration, subject to M1's
+  server-side session verification and two-account access tests. Start with
+  owner/invite-only agent access; manual editing remains available without sign-in.
+  Database access must never depend on a browser-supplied owner ID.
+- The Free plan is the provisioning ceiling for this work. Do not upgrade the
+  billing plan automatically. Model usage is separate from database usage. Let
+  the database sleep when idle: stop agent polling when no task needs execution
+  and use backoff while disconnected rather than keeping Postgres awake.
 - Configure Mastra's Postgres adapter and conversation memory. Use separate
   application tables for ownership, pending browser commands and delivery receipts.
 - Use Vercel AI Gateway with one server-selected, tool-capable model. Configure
@@ -240,9 +261,11 @@ song context. Clarification replies are user messages, never forged tool receipt
 
 ### Server boundary
 
-- Use Supabase sign-in (proposed GitHub OAuth) with verified issuer, audience,
-  expiry and owner/invite allowlist. Derive the owner on every API request; ignore
-  client-supplied owner/resource identifiers as authority.
+- Verify Neon Auth sessions on the server, including expiry and the owner/invite
+  allowlist. If using signed tokens, verify signature, issuer and audience against
+  the configured project. Derive the owner on every API request; ignore
+  client-supplied owner/resource identifiers as authority. Verify the supported
+  sign-in flow in M1 before choosing a browser SDK; no React dependency is needed.
 - Enforce ownership on create, read/list, stream, result, continue, cancel,
   checkpoint and deletion routes. A Mastra thread/resource ID is not an access
   check. Browser session headers from the loopback bridge are not hosted auth.
@@ -396,7 +419,7 @@ Proposed modules, keeping the project as one repository/package initially:
   musical/browser regression suites.
 
 Expected dependencies are Mastra core/memory/Postgres adapter, an AI Gateway
-provider adapter, a schema library and Supabase authentication client. Reuse the
+provider adapter, a schema library and the required Neon Auth client. Reuse the
 Postgres driver's pool for app queries where compatible. No React chat package,
 vector database, Redis, agent swarm or separate durable worker is required for
 the selected browser-connected release. Add dependencies only during implementation
@@ -417,7 +440,7 @@ frontend fallback. Server credentials must be absent from built frontend assets.
 Before production release configure model access, the database, sign-in callback
 URLs, the owner allowlist, quotas and redacted diagnostics. Existing Vercel CLI
 authentication is deployment access, not proof of funded AI Gateway access or a
-configured Supabase project. GitHub auto-deploy access was rejected during the
+configured Neon project. GitHub auto-deploy access was rejected during the
 static deployment; repair that integration or document a repeatable CLI deploy.
 Do not make a Git integration failure block a valid CLI release.
 
@@ -524,12 +547,33 @@ the choices above are this app's proposed architecture, not vendor guarantees.
 - [Mastra deployment](https://mastra.ai/docs/deployment/overview) and
   [server adapters](https://mastra.ai/docs/server/server-adapters): Node integration.
 - [Mastra Postgres storage](https://mastra.ai/integrations/databases/postgresql).
-- [Supabase Auth](https://supabase.com/docs/guides/auth).
+- [Neon on Vercel](https://vercel.com/marketplace/neon).
+- [Neon pricing](https://neon.com/pricing): recheck Free limits at provisioning.
+- [Neon Auth on Vercel previews](https://neon.com/blog/auth-that-just-works-in-vercel-previews).
 - [Vercel Node functions](https://vercel.com/docs/functions/runtimes/node-js) and
   [function limits](https://vercel.com/docs/functions/limitations).
 - [Mastra with Vercel AI Gateway](https://vercel.com/docs/ai-gateway/ecosystem/framework-integrations/mastra).
 
 ## Revision record
+
+### Provider selection — Neon Free (2026-09-08)
+
+The owner selected Neon in place of the proposed Supabase service. Retain the
+same Postgres task ledger, browser-owned songs, ownership checks and M1 gates.
+The unused Supabase client dependency is removed. Neon Auth is the proposed
+replacement for bundled sign-in, with its compatibility still to be verified.
+After the owner accepted Marketplace terms, the Vercel CLI provisioned
+`songwriting-agent` on plan `free_v3` in `iad1`, with Auth enabled, and connected
+development/preview. Direct migrations and pooled queries succeeded without
+logging credentials. No production connection or hosted-runtime acceptance is
+claimed by this change.
+
+Mastra's bundled declarations require its documented `skipLibCheck` setting.
+Scope this to `tsconfig.agent.json`; retain strict application flags and the
+editor's existing declaration checks. Both projects are checked by `bun run check`.
+Actual Postgres tests caught key-order-sensitive JSON comparisons breaking
+idempotent requests and receipts. Canonical JSON now preserves value comparisons
+across JSONB storage. See the validation record for evidence and remaining gates.
 
 ### Pass 1 — Execution and persistence
 

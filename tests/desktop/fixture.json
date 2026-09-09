@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 7,
+  "id": "desktop-fixture",
+  "title": "Mixed-meter sketch",
+  "mode": "major",
+  "degreeReference": "major",
+  "writing": {
+    "instructions": "",
+    "preferences": ""
+  },
+  "tempo": {
+    "bpm": 112,
+    "beatUnit": [
+      1,
+      1
+    ]
+  },
+  "arrangementOrder": [
+    "verse1"
+  ],
+  "tables": {
+    "prompts": {},
+    "assets": {},
+    "takes": {},
+    "fretted": {},
+    "fingerings": {},
+    "harmony": {},
+    "parts": {
+      "guitar": {
+        "id": "guitar",
+        "name": "Guitar",
+        "instrument": "guitar",
+        "volume": 0.8,
+        "muted": false
+      }
+    },
+    "voices": {
+      "lead": {
+        "id": "lead",
+        "name": "Lead",
+        "partId": "guitar"
+      }
+    },
+    "patterns": {
+      "riff": {
+        "id": "riff",
+        "name": "Riff",
+        "length": [
+          7,
+          2
+        ],
+        "groups": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "sourceId": null
+      }
+    },
+    "chords": {
+      "chord": {
+        "id": "chord",
+        "name": "Open chord",
+        "labelTonic": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "label": "I",
+        "notes": [
+          {
+            "id": "root",
+            "pitch": {
+              "degree": 1,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "third",
+            "pitch": {
+              "degree": 3,
+              "alteration": 0,
+              "octave": 0
+            }
+          },
+          {
+            "id": "fifth",
+            "pitch": {
+              "degree": 5,
+              "alteration": 0,
+              "octave": 1
+            }
+          }
+        ]
+      }
+    },
+    "events": {
+      "note": {
+        "id": "note",
+        "name": "Note",
+        "originId": "note",
+        "patternId": "riff",
+        "kind": "note",
+        "start": [
+          1,
+          3
+        ],
+        "duration": [
+          2,
+          3
+        ],
+        "pitch": {
+          "degree": 7,
+          "alteration": -1,
+          "octave": 1
+        },
+        "chordId": null,
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      },
+      "harmony": {
+        "id": "harmony",
+        "name": "Note",
+        "originId": "harmony",
+        "patternId": "riff",
+        "kind": "chord",
+        "start": [
+          1,
+          1
+        ],
+        "duration": [
+          3,
+          1
+        ],
+        "pitch": {
+          "degree": 1,
+          "alteration": 0,
+          "octave": 0
+        },
+        "chordId": "chord",
+        "drum": "kick",
+        "accent": 0.7,
+        "articulation": "normal",
+        "performance": []
+      }
+    },
+    "bars": {
+      "seven": {
+        "id": "seven",
+        "name": "7/8",
+        "sectionId": "verse",
+        "numerator": 7,
+        "denominator": 8,
+        "groups": [
+          2,
+          2,
+          3
+        ],
+        "actual": null
+      },
+      "five": {
+        "id": "five",
+        "name": "5/4",
+        "sectionId": "verse",
+        "numerator": 5,
+        "denominator": 4,
+        "groups": [
+          3,
+          2
+        ],
+        "actual": null
+      }
+    },
+    "sections": {
+      "verse": {
+        "id": "verse",
+        "name": "Verse",
+        "sourceId": null,
+        "barIds": [
+          "seven",
+          "five"
+        ]
+      }
+    },
+    "arrangement": {
+      "verse1": {
+        "id": "verse1",
+        "name": "Verse",
+        "sectionId": "verse"
+      }
+    },
+    "occurrences": {
+      "lead1": {
+        "id": "lead1",
+        "name": "Lead",
+        "sectionId": "verse",
+        "patternId": "riff",
+        "voiceId": "lead",
+        "start": [
+          0,
+          1
+        ],
+        "span": [
+          17,
+          2
+        ],
+        "phase": [
+          0,
+          1
+        ],
+        "boundary": "continue",
+        "tails": "ring"
+      }
+    },
+    "markers": {},
+    "phrases": {},
+    "lyrics": {},
+    "polyrhythms": {}
+  }
+}

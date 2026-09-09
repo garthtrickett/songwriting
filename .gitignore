@@ -4,3 +4,4 @@ playwright-report/
 test-results/
 .agent/
 .env*
+src-tauri/target/

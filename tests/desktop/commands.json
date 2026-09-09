@@ -1,0 +1,685 @@
+[
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "rename",
+      "label": "rename",
+      "action": {
+        "kind": "rename",
+        "title": "A new ending"
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "meta",
+        "id": "title",
+        "before": "Mixed-meter sketch",
+        "after": "A new ending"
+      }
+    ],
+    "revision": 1
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 1,
+      "operationId": "note-third",
+      "label": "note-third",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          2,
+          3
+        ]
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "events",
+        "id": "note",
+        "before": {
+          "id": "note",
+          "name": "Note",
+          "originId": "note",
+          "patternId": "riff",
+          "kind": "note",
+          "start": [
+            1,
+            3
+          ],
+          "duration": [
+            2,
+            3
+          ],
+          "pitch": {
+            "degree": 7,
+            "alteration": -1,
+            "octave": 1
+          },
+          "chordId": null,
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        },
+        "after": {
+          "id": "note",
+          "name": "Note",
+          "originId": "note",
+          "patternId": "riff",
+          "kind": "note",
+          "start": [
+            2,
+            3
+          ],
+          "duration": [
+            2,
+            3
+          ],
+          "pitch": {
+            "degree": 7,
+            "alteration": -1,
+            "octave": 1
+          },
+          "chordId": null,
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        }
+      }
+    ],
+    "revision": 2
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 2,
+      "operationId": "root-earlier",
+      "label": "root-earlier",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "harmony",
+        "memberId": "root",
+        "start": [
+          1,
+          3
+        ]
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "events",
+        "id": "harmony",
+        "before": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            1
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        },
+        "after": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            3
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": [
+            {
+              "memberId": "root",
+              "offset": [
+                0,
+                1
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "third",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "fifth",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "revision": 3
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 3,
+      "operationId": "undo-title",
+      "label": "undo-title",
+      "action": {
+        "kind": "undo",
+        "targetId": "rename"
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "meta",
+        "id": "title",
+        "before": "A new ending",
+        "after": "Mixed-meter sketch"
+      }
+    ],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "rename",
+      "label": "rename",
+      "action": {
+        "kind": "rename",
+        "title": "A new ending"
+      }
+    },
+    "ok": true,
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 0,
+      "operationId": "rename",
+      "label": "rename",
+      "action": {
+        "kind": "rename",
+        "title": "Different content"
+      }
+    },
+    "ok": false,
+    "error": "Operation ID reused with different content",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 1,
+      "operationId": "stale",
+      "label": "stale",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          1,
+          1
+        ]
+      }
+    },
+    "ok": false,
+    "error": "Revision conflict: expected 1, current 4. Refresh before editing.",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 4,
+      "operationId": "negative",
+      "label": "negative",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          -1,
+          3
+        ]
+      }
+    },
+    "ok": false,
+    "error": "Musical time must be nonnegative (durations positive)",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 4,
+      "operationId": "boundary",
+      "label": "boundary",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          7,
+          2
+        ]
+      }
+    },
+    "ok": false,
+    "error": "Event attack must be inside its pattern",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 4,
+      "operationId": "missing",
+      "label": "missing",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "gone",
+        "memberId": null,
+        "start": [
+          1,
+          1
+        ]
+      }
+    },
+    "ok": false,
+    "error": "The selected note no longer exists",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 4,
+      "operationId": "missing-member",
+      "label": "missing-member",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "harmony",
+        "memberId": "gone",
+        "start": [
+          1,
+          1
+        ]
+      }
+    },
+    "ok": false,
+    "error": "The chord member no longer exists",
+    "changes": [],
+    "revision": 4
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 4,
+      "operationId": "note-again",
+      "label": "note-again",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          4,
+          3
+        ]
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "events",
+        "id": "note",
+        "before": {
+          "id": "note",
+          "name": "Note",
+          "originId": "note",
+          "patternId": "riff",
+          "kind": "note",
+          "start": [
+            2,
+            3
+          ],
+          "duration": [
+            2,
+            3
+          ],
+          "pitch": {
+            "degree": 7,
+            "alteration": -1,
+            "octave": 1
+          },
+          "chordId": null,
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        },
+        "after": {
+          "id": "note",
+          "name": "Note",
+          "originId": "note",
+          "patternId": "riff",
+          "kind": "note",
+          "start": [
+            4,
+            3
+          ],
+          "duration": [
+            2,
+            3
+          ],
+          "pitch": {
+            "degree": 7,
+            "alteration": -1,
+            "octave": 1
+          },
+          "chordId": null,
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        }
+      }
+    ],
+    "revision": 5
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 5,
+      "operationId": "undo-conflict",
+      "label": "undo-conflict",
+      "action": {
+        "kind": "undo",
+        "targetId": "note-third"
+      }
+    },
+    "ok": false,
+    "error": "Undo conflict at events/note: changed since this operation",
+    "changes": [],
+    "revision": 5
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 5,
+      "operationId": "undo-root",
+      "label": "undo-root",
+      "action": {
+        "kind": "undo",
+        "targetId": "root-earlier"
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "events",
+        "id": "harmony",
+        "before": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            3
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": [
+            {
+              "memberId": "root",
+              "offset": [
+                0,
+                1
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "third",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "fifth",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            }
+          ]
+        },
+        "after": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            1
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        }
+      }
+    ],
+    "revision": 6
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 6,
+      "operationId": "redo-root",
+      "label": "redo-root",
+      "action": {
+        "kind": "undo",
+        "targetId": "undo-root"
+      }
+    },
+    "ok": true,
+    "changes": [
+      {
+        "table": "events",
+        "id": "harmony",
+        "before": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            1
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": []
+        },
+        "after": {
+          "id": "harmony",
+          "name": "Note",
+          "originId": "harmony",
+          "patternId": "riff",
+          "kind": "chord",
+          "start": [
+            1,
+            3
+          ],
+          "duration": [
+            3,
+            1
+          ],
+          "pitch": {
+            "degree": 1,
+            "alteration": 0,
+            "octave": 0
+          },
+          "chordId": "chord",
+          "drum": "kick",
+          "accent": 0.7,
+          "articulation": "normal",
+          "performance": [
+            {
+              "memberId": "root",
+              "offset": [
+                0,
+                1
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "third",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            },
+            {
+              "memberId": "fifth",
+              "offset": [
+                2,
+                3
+              ],
+              "duration": [
+                3,
+                1
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "revision": 7
+  },
+  {
+    "request": {
+      "songId": "desktop-fixture",
+      "expectedRevision": 7,
+      "operationId": "no-change",
+      "label": "no-change",
+      "action": {
+        "kind": "moveNote",
+        "eventId": "note",
+        "memberId": null,
+        "start": [
+          4,
+          3
+        ]
+      }
+    },
+    "ok": true,
+    "changes": [],
+    "revision": 8
+  }
+]

@@ -1,5 +1,12 @@
 # UI / agent capability map — Phases 1–7 and arrangement workspace
 
+Desktop rewrite status: the headless D1 Rust interface implements `rename`,
+`moveNote` (individual note or chord member), `undo`, state reads and durable
+receipt reads for a restricted fixture cohort. Neither the Lit desktop adapter nor
+Mastra desktop tools are wired yet; these are core capabilities, not delivered
+desktop UI/agent parity. Both adapters will call the same Rust interface. See
+[D1 evidence](DESKTOP_D1_VALIDATION.md). The map below describes the existing web app.
+
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;
 structural dependencies may require an atomic multi-object edit.
