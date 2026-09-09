@@ -5,7 +5,7 @@ import { emptySong, noteEvent, semitone } from "../../src/song/model.ts";
 import { applyCommand, difference, type Envelope, type Mutation } from "../../src/song/commands.ts";
 import { changeNotes } from "../../src/song/note-edit.ts";
 import { validateSong } from "../../src/song/validate.ts";
-import { time, add, sub, mul, cmp, type Time } from "../../src/song/time.ts";
+import { time, add, sub, mul, cmp, modulo, value, type Time } from "../../src/song/time.ts";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const song = emptySong("desktop-fixture", "Mixed-meter sketch");
@@ -89,6 +89,17 @@ const times = arithmetic.flatMap(([a, b]) => Object.entries({ add, sub, mul, cmp
   try { return { a, b, operation, result: fn(time(...a), time(...b)) }; }
   catch (error) { return { a, b, operation, error: (error as Error).message }; }
 }));
+const modulos = [
+  [[1, 3], [7, 2]], [[-1, 3], [7, 2]], [[-7, 2], [7, 2]],
+  [[5, 1], [2, 1]], [[7, 2], [7, 2]], [[0, 1], [3, 1]],
+  [[9007199254740991, 1], [7, 3]], [[1, 3], [9007199254740991, 1]],
+  [[1, 2], [0, 1]], [[1, 2], [-3, 1]],
+] as [Time, Time][];
+for (const [a, b] of modulos) {
+  try { times.push({ a, b, operation: "modulo", result: modulo(time(...a), time(...b)) }); }
+  catch (error) { times.push({ a, b, operation: "modulo", error: (error as Error).message }); }
+}
+for (const [a] of arithmetic) times.push({ a, b: a, operation: "value", result: value(time(...a)) });
 const audio = ["baseline", "member-offsets", "cut-tails", "repeated-section", "muted"].map(name => {
   const input = structuredClone(song);
   if (name !== "baseline") input.tables.events.harmony!.performance = [

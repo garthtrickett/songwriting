@@ -51,6 +51,11 @@ fn exact_arithmetic_matches_typescript_at_safe_integer_boundaries() {
     for case in cases {
         let a: Time = serde_json::from_value(case["a"].clone()).unwrap();
         let b: Time = serde_json::from_value(case["b"].clone()).unwrap();
+        if case["operation"] == "value" {
+            // Floats have no integer spelling in JSON; compare numerically.
+            assert_eq!(case["result"].as_f64(), Some(a.value()), "{case}");
+            continue;
+        }
         let result = match case["operation"].as_str().unwrap() {
             "add" => a.checked_add(b).map(|v| json!(v)),
             "sub" => a.checked_sub(b).map(|v| json!(v)),
@@ -60,6 +65,7 @@ fn exact_arithmetic_matches_typescript_at_safe_integer_boundaries() {
                 std::cmp::Ordering::Equal => 0,
                 std::cmp::Ordering::Greater => 1,
             })),
+            "modulo" => a.checked_modulo(b).map(|v| json!(v)),
             _ => unreachable!(),
         };
         match result {
