@@ -1,6 +1,7 @@
 // The existing TypeScript implementation is the migration reference, not a
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
 import { historyStacks } from "../../src/song/history.ts";
+import type { StructureAction } from "../../src/song/structure.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -229,7 +230,41 @@ const validateCases = [
   }),
   broken("marker-negative", s => { s.tables.markers.m1 = { id: "m1", name: "M", at: [-1, 1] }; }),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history })) {
+const structural = (
+  name: string,
+  setup: (s: typeof song) => void,
+  action: StructureAction,
+  exact = true,
+) => {
+  const input = structuredClone(song);
+  setup(input);
+  const mutation = { songId: input.id, expectedRevision: 0, operationId: "op", label: "op", command: { kind: "structure", action } as const };
+  try {
+    const envelope = applyCommand({ id: input.id, revision: 0, song: input, updatedAt: 0, history: [] }, mutation, 100);
+    return { name, song: input, mutation, ok: true as const, exact, songAfter: envelope.song };
+  } catch (error) {
+    return { name, song: input, mutation, ok: false as const, exact, error: (error as Error).message };
+  }
+};
+const structures = [
+  structural("repeat-ok", () => {}, { type: "repeat", appearanceId: "verse1", newId: "verse2" }),
+  structural("repeat-dup", () => {}, { type: "repeat", appearanceId: "verse1", newId: "verse1" }),
+  structural("repeat-bad-id", () => {}, { type: "repeat", appearanceId: "verse1", newId: "??" }),
+  structural("move-ok", s => {
+    s.tables.arrangement.verse2 = { id: "verse2", name: "Again", sectionId: "verse" };
+    s.arrangementOrder.push("verse2");
+  }, { type: "move", appearanceId: "verse1", direction: 1 }),
+  structural("move-direction", () => {}, { type: "move", appearanceId: "verse1", direction: 2 as unknown as 1 }),
+  structural("move-edge", () => {}, { type: "move", appearanceId: "verse1", direction: -1 }),
+  structural("move-missing", () => {}, { type: "move", appearanceId: "gone", direction: 1 }),
+  structural("remove-ok", () => {}, { type: "remove", appearanceId: "verse1" }),
+  structural("attach-ok", s => {
+    s.tables.occurrences.g1 = { id: "g1", name: "G", sectionId: null, patternId: "riff", voiceId: "lead", start: [1, 1], span: [1, 1], phase: [0, 1], boundary: "continue", tails: "ring" };
+  }, { type: "attach", appearanceId: "verse1", occurrenceId: "g1" }),
+  structural("attach-pitched", () => {}, { type: "attach", appearanceId: "verse1", occurrenceId: "lead1" }),
+  structural("variation-ok", () => {}, { type: "variation", appearanceId: "verse1", newId: "v2", name: "Again" }, false),
+];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
