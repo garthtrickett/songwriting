@@ -23,6 +23,41 @@ Mastra and general project import remain outstanding. The browser app still work
 
 ## Run the desktop preview
 
+### Nix / NixOS (including ARM Linux)
+
+From the repository root:
+
+```sh
+nix develop
+bun install --frozen-lockfile
+bun run desktop:dev
+```
+
+`nix develop` automatically selects your machine's architecture. The flake supports
+ARM Linux (`aarch64-linux`), x86 Linux and Apple Silicon macOS. It provides Rust
+from `rust-toolchain.toml` (including Cargo, rustfmt and Clippy), Bun from
+`.bun-version`, a C linker, pkg-config and the platform's Tauri libraries. No
+separate Rust installation is needed. The lockfile pins nixpkgs and rust-overlay;
+Bun's upstream release archives are hash-pinned and patched for Nix.
+
+Run all three commands in the same terminal. `exit` leaves the development shell.
+If Nix says flakes are disabled, enter it with
+`nix --extra-experimental-features 'nix-command flakes' develop` instead.
+Check `rustc --version` and `bun --version` inside the shell when troubleshooting;
+a globally installed older Bun outside the shell is not the project version.
+
+The Linux shell includes GTK 3, WebKitGTK 4.1, libsoup 3, OpenSSL, AppIndicator,
+libxdo (from xdotool), GLib network modules and settings schemas. Run the window
+in your normal graphical desktop session. This is a development environment,
+not an installer or a replacement for the host's display server/graphics driver.
+
+When changing `.bun-version`, update `nix/bun.nix`'s release hashes too. When
+changing the Rust version, update `rust-overlay` in `flake.lock` if necessary.
+`nix flake check --all-systems --no-build` evaluates every supported shell; CI
+also builds/tests the desktop through Nix on real x86 and ARM Linux runners.
+
+### Without Nix
+
 Install Bun 1.4.2, rustup, and the native [Tauri prerequisites](https://tauri.app/start/prerequisites/)
 for your OS (Linux needs WebKitGTK 4.1 development libraries; Windows needs MSVC
 build tools and WebView2; macOS needs Xcode command-line tools). Then from the repo:

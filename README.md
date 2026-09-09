@@ -6,8 +6,9 @@ independent riff cycles, mixed meters, and an agent editing the same song you do
 ## Desktop preview
 
 The Rust rewrite now has a Tauri window with the relative note editor, local saves
-and undo for a restricted mixed-meter starter. With Rust and the native system
-prerequisites installed, run `bun install --frozen-lockfile` then
+and undo for a restricted mixed-meter starter. On Nix/NixOS, including ARM Linux,
+start with `nix develop` to get Rust, Bun and the Tauri libraries. Otherwise install
+Rust and the native system prerequisites. Run `bun install --frozen-lockfile`, followed by
 `bun run desktop:dev`. No Neon login is needed. Native audio, Mastra and full song
 import are still pending. See [desktop setup and scope](src-tauri/README.md).
 
