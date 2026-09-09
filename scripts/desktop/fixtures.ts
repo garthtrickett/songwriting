@@ -9,6 +9,9 @@ import { changeNotes, removeNotes, combineNotes } from "../../src/song/note-edit
 import { annotations } from "../../src/song/arrangement.ts";
 import { alignmentMap, polyrhythmGrid, comparePatterns } from "../../src/song/rhythm-analysis.ts";
 import { harmonicSpans, harmonicContext, interpretations, chordCandidates, soundingHarmony } from "../../src/song/harmony-analysis.ts";
+import { tablature } from "../../src/song/tablature.ts";
+import { fretPositions, fingeringIssues, targetPitch } from "../../src/song/fretted.ts";
+import { takePlacements } from "../../src/song/media.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -486,7 +489,34 @@ const analyzed = () => {
     },
   };
 };
-const analysis = [analyzed()];
+const tabulated = () => {
+  const input = structuredClone(song);
+  input.tables.fretted.tab1 = { id: "tab1", name: "Tab", partId: "guitar", tonic: 40, tuning: [64, 59, 55, 50, 45, 40], capo: 0, maxFret: 12, handSpan: 4 };
+  input.tables.fingerings.f1 = { id: "f1", name: "F1", arrangementId: "tab1", occurrenceId: "lead1", eventId: "harmony", memberId: "root", string: 1, fret: 0, technique: "pluck", fromId: null };
+  input.tables.fingerings.f2 = { id: "f2", name: "F2", arrangementId: "tab1", occurrenceId: "lead1", eventId: "gone", memberId: null, string: 2, fret: 3, technique: "tap", fromId: null };
+  input.tables.takes.take1 = { id: "take1", name: "Take", assetId: "a1", partId: "guitar", sectionId: "verse", start: [0, 1], offset: 0, duration: 2, gain: 0.8, muted: false };
+  input.tables.takes.take2 = { id: "take2", name: "Take", assetId: "a1", partId: "guitar", sectionId: null, start: [1, 1], offset: 0, duration: 1, gain: 1, muted: true };
+  const attempt = (fn: () => unknown) => {
+    try { return { ok: true as const, value: fn() }; }
+    catch (error) { return { ok: false as const, error: (error as Error).message }; }
+  };
+  const f1 = input.tables.fingerings.f1!;
+  const arrangement = input.tables.fretted.tab1!;
+  return {
+    name: "tabtakes",
+    song: input,
+    tab: attempt(() => tablature(input, "tab1", [0, 1], [17, 2])),
+    tabUnknown: attempt(() => tablature(input, "gone", [0, 1], [17, 2])),
+    tabRange: attempt(() => tablature(input, "tab1", [2, 1], [1, 1])),
+    positions: attempt(() => fretPositions(input, "tab1", "lead1", "harmony", "root")),
+    positionsUnknown: attempt(() => fretPositions(input, "gone", "lead1", "harmony", "root")),
+    target: attempt(() => targetPitch(input, arrangement, "lead1", "harmony", "root")),
+    targetStale: attempt(() => targetPitch(input, arrangement, "lead1", "gone", null)),
+    issues: attempt(() => fingeringIssues(input, f1)),
+    placements: attempt(() => takePlacements(input)),
+  };
+};
+const analysis = [analyzed(), tabulated()];
 for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits, "analysis.json": analysis })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";

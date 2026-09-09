@@ -127,6 +127,18 @@ data!(Prompt {
     name: String,
     text: String
 });
+data!(AudioAsset {
+    id: String,
+    name: String,
+    mime: String,
+    bytes: u32,
+    duration: f64
+});
+data!(Take {
+    id: String, name: String, asset_id: String, part_id: String,
+    section_id: Option<String>, start: Time, offset: f64, duration: f64,
+    gain: f64, muted: bool
+});
 data!(Tempo {
     bpm: f64,
     beat_unit: Time
@@ -135,8 +147,8 @@ data!(Tables {
     patterns: Table<Pattern>, events: Table<MusicalEvent>, chords: Table<Chord>,
     bars: Table<Bar>, sections: Table<Section>, arrangement: Table<Arrangement>,
     parts: Table<Part>, voices: Table<Voice>, occurrences: Table<Occurrence>,
-    prompts: Table<Prompt>, assets: Table<serde_json::Value>,
-    takes: Table<serde_json::Value>, fretted: Table<Fretted>,
+    prompts: Table<Prompt>, assets: Table<AudioAsset>,
+    takes: Table<Take>, fretted: Table<Fretted>,
     fingerings: Table<Fingering>, harmony: Table<HarmonicRegion>,
     markers: Table<Marker>, phrases: Table<Phrase>,
     lyrics: Table<Lyric>, polyrhythms: Table<Polyrhythm>

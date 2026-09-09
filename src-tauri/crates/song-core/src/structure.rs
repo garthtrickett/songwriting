@@ -317,18 +317,19 @@ fn variation(
         .tables
         .takes
         .iter()
-        .filter(|(_, take)| {
-            take.get("sectionId").and_then(serde_json::Value::as_str) == Some(section.id.as_str())
-        })
+        .filter(|(_, take)| take.section_id.as_deref() == Some(section.id.as_str()))
         .map(|(key, record)| (key.clone(), record.clone()))
         .collect::<Vec<_>>()
     {
-        // Takes stay schemaless until slice 5; copy the record with a new id.
         let id = copier.copied(song, "takes", &key)?;
-        let mut record = record;
-        record["id"] = serde_json::Value::String(id.clone());
-        record["sectionId"] = serde_json::Value::String(new_id.to_string());
-        song.tables.takes.insert(id, record);
+        song.tables.takes.insert(
+            id.clone(),
+            crate::Take {
+                id,
+                section_id: Some(new_id.to_string()),
+                ..record
+            },
+        );
     }
     let local_occurrences: std::collections::BTreeSet<&str> =
         local.iter().map(|o| o.id.as_str()).collect();
