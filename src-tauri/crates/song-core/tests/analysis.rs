@@ -43,6 +43,29 @@ fn check(
     }
 }
 
+/// Voice/note order follows expansion order, which differs by map ordering;
+/// canonicalize both sides and compare content exactly.
+fn canonical_sounding(mut value: serde_json::Value) -> serde_json::Value {
+    if let Some(voices) = value.get_mut("voices").and_then(|v| v.as_array_mut()) {
+        for voice in voices.iter_mut() {
+            if let Some(notes) = voice.get_mut("notes").and_then(|v| v.as_array_mut()) {
+                notes.sort_by_key(|n| {
+                    (
+                        n["start"][0].as_i64().unwrap(),
+                        n["start"][1].as_i64().unwrap(),
+                        n["eventId"].as_str().unwrap().to_string(),
+                        n["pitch"]["degree"].as_i64().unwrap(),
+                        n["pitch"]["alteration"].as_i64().unwrap(),
+                        n["pitch"]["octave"].as_i64().unwrap(),
+                    )
+                });
+            }
+        }
+        voices.sort_by_key(|v| v["id"].as_str().unwrap().to_string());
+    }
+    value
+}
+
 #[test]
 fn analysis_derivations_match_typescript() {
     let case: serde_json::Value =
@@ -116,4 +139,115 @@ fn analysis_derivations_match_typescript() {
         &case["compareUnknown"],
         "compareUnknown",
     );
+    let harmony = &case["harmony"];
+    check(
+        song_core::harmonic_spans(&song).map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["spans"],
+        "spans",
+    );
+    for (key, at) in [
+        ("contextEarly", [0, 1]),
+        ("contextLater", [5, 1]),
+        ("contextEmpty", [8, 1]),
+    ] {
+        check(
+            song_core::harmonic_context(&song, song_core::Time::new(at[0], at[1]).unwrap())
+                .map(|v| serde_json::to_value(v).unwrap()),
+            &harmony[key],
+            key,
+        );
+    }
+    check(
+        song_core::harmonic_context(&song, song_core::Time::new(-1, 1).unwrap())
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["contextNegative"],
+        "contextNegative",
+    );
+    let chord_notes: Vec<song_core::Pitch> = song.tables.chords["chord"]
+        .notes
+        .iter()
+        .map(|n| n.pitch.clone())
+        .collect();
+    check(
+        song_core::interpretations(
+            &chord_notes,
+            &song_core::Pitch {
+                degree: 1,
+                alteration: 0,
+                octave: 0,
+            },
+            "major",
+        )
+        .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["interpretChord"],
+        "interpretChord",
+    );
+    check(
+        song_core::interpretations(
+            &[song_core::Pitch {
+                degree: 8,
+                alteration: 0,
+                octave: 0,
+            }],
+            &song_core::Pitch {
+                degree: 1,
+                alteration: 0,
+                octave: 0,
+            },
+            "major",
+        )
+        .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["interpretInvalid"],
+        "interpretInvalid",
+    );
+    check(
+        song_core::interpretations(
+            &vec![
+                song_core::Pitch {
+                    degree: 1,
+                    alteration: 0,
+                    octave: 0,
+                };
+                65
+            ],
+            &song_core::Pitch {
+                degree: 1,
+                alteration: 0,
+                octave: 0,
+            },
+            "major",
+        )
+        .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["interpretMany"],
+        "interpretMany",
+    );
+    check(
+        song_core::chord_candidates(&song, "chord", None, None)
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["candidates"],
+        "candidates",
+    );
+    check(
+        song_core::chord_candidates(&song, "gone", None, None)
+            .map(|v| serde_json::to_value(v).unwrap()),
+        &harmony["candidatesUnknown"],
+        "candidatesUnknown",
+    );
+    for (key, at) in [("soundingEarly", [1, 1]), ("soundingEmpty", [8, 1])] {
+        match song_core::sounding_harmony(&song, song_core::Time::new(at[0], at[1]).unwrap()) {
+            Ok(value) => {
+                assert_eq!(case["harmony"][key]["ok"], true, "{key}");
+                let actual = canonical_sounding(serde_json::to_value(value).unwrap());
+                let expected = canonical_sounding(case["harmony"][key]["value"].clone());
+                assert!(
+                    float_aware_eq(&actual, &expected),
+                    "{key}\nactual: {actual}\nexpected: {expected}"
+                );
+            }
+            Err(error) => {
+                assert_eq!(case["harmony"][key]["ok"], false, "{key}");
+                assert_eq!(error.message, case["harmony"][key]["error"], "{key}");
+            }
+        }
+    }
 }
