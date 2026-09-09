@@ -1,11 +1,18 @@
 # UI / agent capability map — Phases 1–7 and arrangement workspace
 
-Desktop rewrite status: the headless D1 Rust interface implements `rename`,
-`moveNote` (individual note or chord member), `undo`, state reads and durable
-receipt reads for a restricted fixture cohort. Neither the Lit desktop adapter nor
-Mastra desktop tools are wired yet; these are core capabilities, not delivered
-desktop UI/agent parity. Both adapters will call the same Rust interface. See
-[D1 evidence](DESKTOP_D1_VALIDATION.md). The map below describes the existing web app.
+Desktop D1 now connects the Lit arrangement/note view to Rust through Tauri.
+The native window supports local-profile opening, arrangement inspection, rename,
+exact/horizontal note and chord-member moves, saved-state refresh and undo after
+restart. `desktop_open` reads a Rust projection; `desktop_dispatch` sends generated,
+versioned actions with session epoch, operation ID and expected revision. Events
+carry full committed snapshots; uncertain saves retry the identical request.
+The Rust session worker, core and SQLite adapter own validation and persistence.
+
+The native cohort is the disposable mixed-meter starter, not a general importer.
+Mastra desktop tools and native playback are not wired yet, so desktop UI/agent
+parity is not claimed. The future Mastra adapter must use this same session/core
+path. See [D1 evidence](DESKTOP_D1_VALIDATION.md). The map below describes the
+existing web app, whose broader features remain available in the browser.
 
 All mutations below use the same revision-checked `mutate` interface and durable
 command path as the editor. Every table supports read/create/update/delete;

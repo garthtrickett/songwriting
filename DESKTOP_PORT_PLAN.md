@@ -1,7 +1,7 @@
 # Songwriter desktop port — Rust SAM core, Tauri and lit/TypeScript view
 
-Status: D1 in progress, 2026-09-09. The first headless Rust SAM/SQLite slice is
-implemented. Desktop shell, bindings, native audio/media, packaged Mastra and
+Status: D1 in progress, 2026-09-09. The Rust SAM/SQLite slice is
+connected to a Tauri window and Lit view. Native audio/media, packaged Mastra and
 cross-platform release evidence remain outstanding. See
 [D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete.
 
@@ -313,7 +313,18 @@ because its UI renders or its build compiles.
 First implementation slice: the Rust core and SQLite adapter portions of steps 3
 and 5, with a disposable fixture runner and TypeScript comparison fixtures. This
 slice starts before the shell because it can be checked independently. It does
-not satisfy the full steps' view/IPC requirements or the D1 acceptance gate.
+not satisfy the D1 acceptance gate.
+
+Second implementation slice (current): complete the shell/view portions of steps
+2, 3 and 5. A single Tauri application owns a default local-profile worker. Typed
+commands carry protocol, session epoch, operation ID and captured revision. Rust
+projects full arrangement/note snapshots; generated TypeScript bindings keep Lit
+as a view and intent producer. Subscribe before the initial read, ignore older
+snapshots, resnapshot on reconnect, retain drafts on conflicts and retry uncertain
+saves with their original operation ID. Show rename, horizontal note/member moves
+and undo; keep the fixture limitation visible. Test the actual packaged Linux
+window, including a real pointer drag, restart and undo, and compile/check the
+host on Windows and macOS. Native audio and Mastra stay in later D1 slices.
 
 **Purpose:** prove one thin path through the intended production architecture,
 using disposable fixtures and a local profile. Keep the old web implementation
@@ -480,8 +491,9 @@ failed commits, receipt replay, agent-off operation and view resubscription.
 Add Rust tests and deterministic offline audio renders for scheduling/DSP, then
 real-device latency/recording evidence. Retain legacy browser tests while replacing browser
 APIs incrementally. Tauri native-window tests are additional evidence: Playwright
-against Vite alone is not a packaged desktop test. Current Tauri WebDriver support
-has a macOS gap; use a documented alternative/manual native checklist there.
+against Vite alone is not a packaged desktop test. The direct `tauri-driver` route used here supports Linux and Windows; macOS
+native interaction still needs separate evidence via an alternative driver or
+manual checklist. Compilation on macOS is not a native interaction test.
 
 Before publication: frozen dependency installs, applicable TypeScript checks and
 tests, cargo fmt/clippy/test for new crates, platform builds, relevant browser and

@@ -1,20 +1,70 @@
-# Desktop D1: headless SAM foundation
+# Desktop D1: native shell and Rust SAM foundation
 
-This is the first portion of the desktop rewrite. It is a runnable Rust musical
-core and local SQLite adapter, not yet a Tauri window or an audio engine.
-The existing browser app is unchanged. No Neon, account, model key or JavaScript
-runtime is needed to run the compiled fixture binary.
+This is a restricted desktop preview with an actual Tauri window. The Lit view
+shows the starter's arrangement and relative 1–7 note editor. Rename the song,
+drag a note horizontally, enter an exact fractional start, or undo a saved edit.
+Rust owns the song and saves every accepted edit to local SQLite. No Neon sign-in,
+account, model key, browser database or agent process is needed. Native audio,
+Mastra and general project import remain outstanding. The browser app still works.
 
 - `song-core`: exact musical time, a restricted schema-7 model, named actions,
   private proposals, validation/acceptance, undo and detached state representations.
 - `song-workspace`: serializes read/accept/commit through SQLite transactions,
   exposes state only after successful persistence, and recovers durable receipts.
-  A future host must call it on a workspace worker, outside UI/audio threads.
+  `song-session` calls it on a dedicated worker, outside UI/audio threads.
+- `song-session`: bounded worker queue, local session epoch, typed action/state
+  contract, Rust view projections and post-commit state notifications.
+- Tauri host: local app-data profile, single-instance ownership, minimal renderer
+  capabilities and queue-draining shutdown. Lit imports generated DTOs and the
+  Tauri transport; it does not instantiate the old TypeScript Controller.
 - `song-workspace` binary: a development-only line-based fixture runner. It loads
   the checked-in mixed-meter fixture, accepts actions on stdin and returns JSON.
   It is not the future production IPC protocol or a general song importer.
 
-From the repository root, with Bun 1.4.2 and rustup installed:
+## Run the desktop preview
+
+Install Bun 1.4.2, rustup, and the native [Tauri prerequisites](https://tauri.app/start/prerequisites/)
+for your OS (Linux needs WebKitGTK 4.1 development libraries; Windows needs MSVC
+build tools and WebView2; macOS needs Xcode command-line tools). Then from the repo:
+
+```sh
+bun install --frozen-lockfile
+bun run desktop:dev
+```
+
+`bun run desktop:build` creates an unsigned executable with the compiled Lit assets
+inside; no Vite server or installed JS runtime is needed to launch that executable.
+It does not create installers yet. `bun run desktop:build --debug` builds the same
+packaged-asset route without release optimization, for native smoke tests.
+
+The preview creates one default profile at the OS app-data directory for
+`com.songwriter.desktop.d1`, under `profiles/default/workspace.sqlite`. It loads
+the starter only when that database has no song; it never overwrites an existing
+workspace. An unreadable database produces a startup error. OS account permissions
+protect the profile; this is not a separate login or encrypted storage.
+
+## Contracts and verification
+
+`bun run bindings:desktop` regenerates `src/generated/desktop` from Rust using ts-rs.
+`bun run verify:desktop` checks the generated files, TypeScript reference fixtures,
+Rust formatting, Clippy and all workspace tests. Snapshot DTO validation protects
+the renderer; musical acceptance happens only in Rust. A captured-revision conflict
+keeps the user's draft. An uncertain save retains its original request for retry.
+A full renderer restart reloads saved state; unsent drafts are not durable yet.
+
+Linux native test (install `tauri-driver` 2.0.5, `webkit2gtk-driver`, Xvfb and D-Bus):
+
+```sh
+bun run desktop:build --debug
+xvfb-run -a dbus-run-session -- python3 scripts/desktop/native-smoke.py src-tauri/target/debug/songwriter-desktop
+```
+
+The test uses an isolated temporary OS app-data profile and writes its screenshot
+and driver log under ignored `.agent/native-smoke`.
+
+## Headless fixture runner
+
+From the repository root:
 
 ```sh
 bun install --frozen-lockfile

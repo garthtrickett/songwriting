@@ -6,8 +6,9 @@ pub const MAX_SAFE_INTEGER: i64 = 9_007_199_254_740_991;
 
 /// Exact quarter-note units, with the same JSON bounds as the existing editor.
 /// i128 intermediates cover sums/products of two bounded i64 fractions.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ts_rs::TS)]
 #[serde(try_from = "[i64; 2]", into = "[i64; 2]")]
+#[ts(type = "[number, number]")]
 pub struct Time(i64, i64);
 
 impl Time {

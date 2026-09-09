@@ -1,7 +1,7 @@
 use crate::{Error, MusicalEvent, Performance, Result, Song, Time, ensure, validate::identity};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ts_rs::TS)]
 #[serde(
     tag = "kind",
     rename_all = "camelCase",

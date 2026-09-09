@@ -13,8 +13,8 @@ musical rules with differential behavior checks. Use a local profile under the
 writer's OS account, SQLite for durable local data, and bundled local Mastra with
 the writer's own model credentials. Neon sign-in is no longer a prerequisite.
 The plan sequences D1–D7 and details D1's packaged feasibility proof. D1's first
-headless Rust SAM/SQLite slice is implemented; desktop shell, native audio and
-Mastra integration remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
+Rust SAM/SQLite core now has a Tauri window, generated bindings and a Lit
+arrangement/note view. Native audio and Mastra integration remain outstanding. See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md).
 Existing musical requirements remain in force.
 For desktop ownership and stack decisions, this plan supersedes the historical
 TypeScript implementation details below while preserving their product semantics.

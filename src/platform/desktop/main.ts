@@ -1,0 +1,11 @@
+import "../../style.css";
+import "./style.css";
+import { DesktopClient } from "./client.ts";
+import { nativeTransport } from "./native.ts";
+import { mountDesktop } from "./view.ts";
+const client = new DesktopClient(nativeTransport);
+const disposeView = mountDesktop(document.getElementById("app")!, client);
+void client.connect();
+const focus = () => { if (client.status !== "saving") void client.connect(); };
+addEventListener("focus", focus);
+addEventListener("pagehide", () => { removeEventListener("focus", focus); disposeView(); client.dispose(); }, { once: true });

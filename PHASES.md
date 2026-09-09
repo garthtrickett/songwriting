@@ -16,8 +16,9 @@ It replaces the hosted Mastra rollout as the next delivery direction and details
 only D1's implementation tasks. D1 proves a thin Rust SAM musical slice against
 TypeScript fixtures, durable edits, native audio and independent Mastra recovery.
 D2 completes the Rust musical workspace and migrates existing data; Lit and Mastra
-are clients of its action/state interface. D1 is in progress: its first headless
-Rust SAM/SQLite slice is implemented; the packaged desktop gate remains open.
+are clients of its action/state interface. D1 is in progress: its Rust SAM/SQLite
+core is connected to a Tauri window and Lit view for the restricted fixture cohort.
+Native audio, Mastra and the full packaged desktop gate remain open.
 See [D1 evidence](docs/DESKTOP_D1_VALIDATION.md). D2–D7 remain planned.
 The historical phases below retain their existing delivery status;
 the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
