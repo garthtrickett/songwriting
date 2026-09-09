@@ -71,6 +71,44 @@ pub struct State {
     pub undoable: Vec<String>,
 }
 
+/// Minimal receipt view for undo/redo stack computation. Deletion tombstones
+/// arrive with delete commands; until then every entry is deletion-unchanged.
+#[derive(Debug, Clone, PartialEq)]
+pub struct StackEntry {
+    pub operation_id: String,
+    pub undo_of: Option<String>,
+    pub has_deltas: bool,
+    pub deletion_unchanged: bool,
+}
+
+/// Undo/redo stacks mirroring historyStacks in history.ts. An entry that
+/// undoes a redoable operation becomes undoable again and vice versa; any
+/// other accepted operation clears the redo stack.
+pub fn history_stacks(entries: &[StackEntry]) -> (Vec<String>, Vec<String>) {
+    let mut undo = vec![];
+    let mut redo = vec![];
+    for entry in entries {
+        if !entry.has_deltas && entry.deletion_unchanged {
+            continue;
+        }
+        match &entry.undo_of {
+            Some(target) if redo.contains(target) => {
+                redo.retain(|id| id != target);
+                undo.push(entry.operation_id.clone());
+            }
+            Some(target) if undo.contains(target) => {
+                undo.retain(|id| id != target);
+                redo.push(entry.operation_id.clone());
+            }
+            _ => {
+                undo.push(entry.operation_id.clone());
+                redo.clear();
+            }
+        }
+    }
+    (undo, redo)
+}
+
 // Proposals are private. External callers cannot submit already-accepted deltas.
 struct Proposal {
     song: Song,
