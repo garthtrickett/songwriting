@@ -145,3 +145,20 @@ release installer or runtime-performance measurements. CI's native job uploads
 its screenshot and driver log; macOS/Windows runtime interaction, signing, release
 footprint and real audio-device evidence remain unverified. Cross-OS CI and merge
 status belong to PR #12; D1's full acceptance gate remains open.
+
+## Read-only desktop media status (D1 slice, 2026-09-09)
+
+The desktop client now surfaces `song_media::status` through a
+`desktop_media_status` Tauri command: configured decoder, preserved-original
+list and capture states from the app's own `profiles/default/media` profile,
+shown in a read-only panel beside native playback. The shared crate gained a
+read-only `Store::assets` listing and a `Store::open_named` profile-stem helper
+(the proof CLI keeps its `media-proof` files); no command records, imports or
+mutates song state, and the restricted song schema is unchanged. Recording
+controls, take CRUD and revision-checked attachment stay D4 work.
+
+Validated locally with `bun run verify` (typecheck, 104 TypeScript tests
+including 3 new media boundary/client tests, production build) and the full
+pinned-decoder `bun run verify:desktop` (formatting, Clippy, contract check and
+the workspace Rust suite including the new status/assets regression test).
+Physical microphones, Safari exports and live-model evidence remain open.

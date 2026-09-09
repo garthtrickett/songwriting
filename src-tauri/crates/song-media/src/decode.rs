@@ -1,7 +1,8 @@
 use crate::{MAX_BYTES, MAX_SECONDS, Result, check_format};
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
-#[derive(Debug, Clone, Serialize, Deserialize)]
+use ts_rs::TS;
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Summary {
     pub sample_rate: u32,

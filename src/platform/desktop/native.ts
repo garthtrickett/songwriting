@@ -23,3 +23,8 @@ export const nativeAudioTransport: AudioTransport = {
   play: (request) => invoke("desktop_audio_play", { request }),
   stop: () => invoke("desktop_audio_stop"),
 };
+
+import type { MediaTransport } from "./media.ts";
+export const nativeMediaTransport: MediaTransport = {
+  status: () => invoke("desktop_media_status"),
+};

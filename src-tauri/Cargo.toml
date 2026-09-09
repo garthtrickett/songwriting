@@ -13,6 +13,7 @@ tauri-plugin-single-instance = "2"
 song-session = { path = "crates/song-session" }
 song-agent = { path = "crates/song-agent" }
 song-audio = { path = "crates/song-audio" }
+song-media = { path = "crates/song-media" }
 
 [lints]
 workspace = true

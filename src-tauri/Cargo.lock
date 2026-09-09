@@ -4168,6 +4168,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "tempfile",
+ "ts-rs",
 ]
 
 [[package]]
@@ -4178,6 +4179,7 @@ dependencies = [
  "serde_json",
  "song-audio",
  "song-core",
+ "song-media",
  "song-workspace",
  "tempfile",
  "tokio",
@@ -4202,6 +4204,7 @@ version = "0.1.0"
 dependencies = [
  "song-agent",
  "song-audio",
+ "song-media",
  "song-session",
  "tauri",
  "tauri-build",
