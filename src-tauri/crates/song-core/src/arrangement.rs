@@ -45,6 +45,58 @@ pub fn section_spans(song: &Song) -> Result<Vec<SectionSpan>> {
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct Annotation {
+    pub table: String,
+    pub id: String,
+    pub name: String,
+    pub start: Time,
+    pub duration: Time,
+    pub appearance_id: String,
+}
+
+pub fn annotations(song: &Song) -> Result<Vec<Annotation>> {
+    let mut out = Vec::new();
+    let mut push = |annotation: Annotation| -> Result<()> {
+        out.push(annotation);
+        ensure(out.len() <= 100000, "Too many arranged annotations")
+    };
+    for span in section_spans(song)? {
+        for phrase in song
+            .tables
+            .phrases
+            .values()
+            .filter(|p| p.section_id == span.section_id)
+        {
+            push(Annotation {
+                table: "phrases".into(),
+                id: phrase.id.clone(),
+                name: phrase.name.clone(),
+                start: span.start.checked_add(phrase.start)?,
+                duration: phrase.duration,
+                appearance_id: span.id.clone(),
+            })?;
+        }
+        for lyric in song
+            .tables
+            .lyrics
+            .values()
+            .filter(|l| l.section_id == span.section_id)
+        {
+            push(Annotation {
+                table: "lyrics".into(),
+                id: lyric.id.clone(),
+                name: lyric.name.clone(),
+                start: span.start.checked_add(lyric.start)?,
+                duration: lyric.duration,
+                appearance_id: span.id.clone(),
+            })?;
+        }
+    }
+    Ok(out)
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Placement {
     pub id: String,
     pub name: String,

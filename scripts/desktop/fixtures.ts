@@ -6,6 +6,8 @@ import type { RhythmAction } from "../../src/song/rhythm.ts";
 import type { HarmonyAction } from "../../src/song/harmony.ts";
 import type { ChordRecipe } from "../../src/song/chord-builder.ts";
 import { changeNotes, removeNotes, combineNotes } from "../../src/song/note-edit.ts";
+import { annotations } from "../../src/song/arrangement.ts";
+import { alignmentMap, polyrhythmGrid, comparePatterns } from "../../src/song/rhythm-analysis.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -430,7 +432,42 @@ const edits = [
   edited("table-proto", () => {}, "edit", [{ table: "events", id: "__proto__", value: null }]),
   edited("delete-event", () => {}, "edit", [{ table: "events", id: "note", value: null }]),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits })) {
+const analyzed = () => {
+  const input = structuredClone(song);
+  input.tables.parts.bass = { id: "bass", name: "Bass", instrument: "bass", volume: 0.8, muted: false };
+  input.tables.voices.bass1 = { id: "bass1", name: "Bass", partId: "bass" };
+  input.tables.phrases.ph1 = { id: "ph1", name: "Phrase", sectionId: "verse", start: [0, 1], duration: [2, 1] };
+  input.tables.lyrics.ly1 = { id: "ly1", name: "Lyric", sectionId: "verse", start: [0, 1], duration: [1, 1], text: "la", phraseId: "ph1", partId: null };
+  input.tables.patterns.riff2 = { ...input.tables.patterns.riff!, id: "riff2", name: "Again" };
+  input.tables.events.e1 = { ...input.tables.events.note!, id: "e1", patternId: "riff2", start: [2, 3] };
+  input.tables.occurrences.lead2 = { ...input.tables.occurrences.lead1!, id: "lead2", name: "Second", start: [7, 2], span: [5, 1] };
+  input.tables.occurrences.bass1o = { id: "bass1o", name: "Bass", sectionId: "verse", patternId: "riff", voiceId: "bass1", start: [0, 1], span: [2, 1], phase: [0, 1], boundary: "continue", tails: "ring" };
+  input.tables.polyrhythms.p1 = {
+    id: "p1", name: "Poly", sectionId: "verse", start: [0, 1], duration: [2, 1],
+    lanes: [{ occurrenceId: "lead1", divisions: 2 }, { occurrenceId: "bass1o", divisions: 2 }],
+  };
+  const attempt = (fn: () => unknown) => {
+    try { return { ok: true as const, value: fn() }; }
+    catch (error) { return { ok: false as const, error: (error as Error).message }; }
+  };
+  const until = songEnd(input);
+  return {
+    name: "analysis",
+    song: input,
+    annotations: attempt(() => annotations(input)),
+    alignment: attempt(() => alignmentMap(input, ["lead1", "lead2"], [0, 1], until)),
+    alignmentSingle: attempt(() => alignmentMap(input, ["lead1"], [0, 1], until)),
+    alignmentUnknown: attempt(() => alignmentMap(input, ["lead1", "gone"], [0, 1], until)),
+    alignmentRange: attempt(() => alignmentMap(input, ["lead1", "lead2"], [2, 1], [1, 1])),
+    alignmentMany: attempt(() => alignmentMap(input, ["a", "b", "c", "d", "e", "f", "g", "h", "i"], [0, 1], until)),
+    grid: attempt(() => polyrhythmGrid(input, "p1")),
+    gridUnknown: attempt(() => polyrhythmGrid(input, "gone")),
+    compare: attempt(() => comparePatterns(input, "riff", "riff2")),
+    compareUnknown: attempt(() => comparePatterns(input, "riff", "gone")),
+  };
+};
+const analysis = [analyzed()];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits, "analysis.json": analysis })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
