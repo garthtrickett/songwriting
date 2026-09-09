@@ -22,7 +22,8 @@
     "desktop:build": "tauri build --no-bundle",
     "bindings:desktop": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-session --example bindings -- src/generated/desktop",
     "desktop:media": "cargo run --manifest-path src-tauri/Cargo.toml --locked -p song-media --",
-    "build:decoder": "python3 scripts/desktop/build-ffmpeg.py"
+    "build:decoder": "python3 scripts/desktop/build-ffmpeg.py",
+    "desktop:sidecar": "python3 scripts/desktop/stage-sidecar.py"
   },
   "dependencies": {
     "@tauri-apps/api": "2.11.1",

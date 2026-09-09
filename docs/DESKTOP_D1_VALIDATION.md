@@ -162,3 +162,12 @@ including 3 new media boundary/client tests, production build) and the full
 pinned-decoder `bun run verify:desktop` (formatting, Clippy, contract check and
 the workspace Rust suite including the new status/assets regression test).
 Physical microphones, Safari exports and live-model evidence remain open.
+
+## Decoder sidecar staging (packaging gate, 2026-09-09)
+
+Decoder resolution is now explicit override → staged sidecar beside the app
+executable → PATH, with a resolution-order regression test and a
+`desktop:sidecar` staging script that refuses SHA-256 mismatches. Proven on
+Linux x86_64: override unset and no system decoder on PATH, the Chromium WebM
+fixture decoded through the staged 2.7 MiB sidecar. Per-target installer
+bundling, trusted code signing and Windows runtime-DLL auditing remain open.

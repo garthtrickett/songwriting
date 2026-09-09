@@ -29,10 +29,16 @@ The recipe saves `build.json`, the exact source archive, `LICENSE.md` and
 notices under `share/songwriter-ffmpeg`.
 
 The proof CLI uses `SONGWRITER_FFMPEG` (or the developer's `ffmpeg` on PATH).
-The packaged application must supply a verified bundled executable path and
-ship the matching notices/source-access information. Tauri sidecar packaging,
-code signing and Windows runtime-DLL auditing are still release gates; this
-proof does not silently add an unverified executable to the desktop installer.
+Packaged resolution is explicit: an override path first, then a staged sidecar
+beside the application executable (`ffmpeg`/`ffmpeg.exe`), then PATH. `bun run
+desktop:sidecar` stages the verified proof set beside the built app binary after
+refusing SHA-256 mismatches against `build.json`; notices travel under
+`ffmpeg-COPYING.LGPLv2.1`, `ffmpeg-LICENSE.md` and `ffmpeg-build.json` names.
+Proven on Linux x86_64: with the override unset and no system decoder on PATH,
+the proof binary decoded the Chromium WebM fixture through its staged sidecar
+(2.7 MiB executable, ~31 KiB notices/metadata). Installer bundling per target,
+trusted code signing and Windows runtime-DLL auditing remain release gates;
+this does not silently add an unverified executable to the desktop installer.
 
 FFmpeg describes its default license as LGPL 2.1-or-later, with distribution
 requirements depending on enabled components. Keep the build configuration,
