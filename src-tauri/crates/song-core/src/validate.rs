@@ -69,7 +69,6 @@ impl Song {
             ("takes", &t.takes),
             ("fretted", &t.fretted),
             ("fingerings", &t.fingerings),
-            ("harmony", &t.harmony),
             ("markers", &t.markers),
             ("phrases", &t.phrases),
             ("lyrics", &t.lyrics),
@@ -77,6 +76,9 @@ impl Song {
         ] {
             unsupported(table.is_empty(), name)?;
         }
+        // Harmonic regions are typed for timeline use; content validation
+        // arrives with the remaining table coverage.
+        unsupported(t.harmony.is_empty(), "harmony")?;
         let mut count = 0;
         macro_rules! table {
             ($table:ident) => {

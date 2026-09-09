@@ -26,7 +26,9 @@ data!(Pattern { id: String, name: String, groups: Vec<Time>, length: Time, sourc
 data!(Performance {
     member_id: String,
     offset: Time,
-    duration: Time
+    duration: Time,
+    gain: Option<f64>,
+    articulation: Option<String>
 });
 data!(MusicalEvent {
     id: String, name: String, origin_id: String, pattern_id: String,
@@ -60,6 +62,10 @@ data!(Writing {
     instructions: String,
     preferences: String
 });
+data!(HarmonicRegion {
+    id: String, name: String, section_id: Option<String>,
+    start: Time, duration: Time, tonic: Pitch, mode: String, annotation: String
+});
 data!(Tempo {
     bpm: f64,
     beat_unit: Time
@@ -70,7 +76,7 @@ data!(Tables {
     parts: Table<Part>, voices: Table<Voice>, occurrences: Table<Occurrence>,
     prompts: Table<serde_json::Value>, assets: Table<serde_json::Value>,
     takes: Table<serde_json::Value>, fretted: Table<serde_json::Value>,
-    fingerings: Table<serde_json::Value>, harmony: Table<serde_json::Value>,
+    fingerings: Table<serde_json::Value>, harmony: Table<HarmonicRegion>,
     markers: Table<serde_json::Value>, phrases: Table<serde_json::Value>,
     lyrics: Table<serde_json::Value>, polyrhythms: Table<serde_json::Value>
 });
