@@ -3,6 +3,7 @@ mod actions;
 mod arrangement;
 mod fretted;
 mod model;
+mod rhythm;
 mod structure;
 mod time;
 mod timeline;
@@ -11,6 +12,7 @@ mod validate;
 pub use actions::{Action, Delta, Envelope, Mutation, Receipt, StackEntry, State, history_stacks};
 pub use arrangement::{Placement, placements, section_length, section_spans};
 pub use model::*;
+pub use rhythm::{RhythmAction, RhythmLane};
 pub use structure::StructureAction;
 pub use time::{MAX_SAFE_INTEGER, Time};
 pub use timeline::{

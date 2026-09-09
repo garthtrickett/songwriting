@@ -2,6 +2,7 @@
 // runtime dependency of the Rust workspace. Regenerate deliberately; CI checks drift.
 import { historyStacks } from "../../src/song/history.ts";
 import type { StructureAction } from "../../src/song/structure.ts";
+import type { RhythmAction } from "../../src/song/rhythm.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -264,7 +265,65 @@ const structures = [
   structural("attach-pitched", () => {}, { type: "attach", appearanceId: "verse1", occurrenceId: "lead1" }),
   structural("variation-ok", () => {}, { type: "variation", appearanceId: "verse1", newId: "v2", name: "Again" }, false),
 ];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures })) {
+const rhythmic = (
+  name: string,
+  setup: (s: typeof song) => void,
+  action: RhythmAction,
+) => {
+  const input = structuredClone(song);
+  setup(input);
+  const mutation = { songId: input.id, expectedRevision: 0, operationId: "op", label: "op", command: { kind: "rhythm", action } as const };
+  try {
+    const envelope = applyCommand({ id: input.id, revision: 0, song: input, updatedAt: 0, history: [] }, mutation, 100);
+    return { name, song: input, mutation, ok: true as const, songAfter: envelope.song };
+  } catch (error) {
+    return { name, song: input, mutation, ok: false as const, error: (error as Error).message };
+  }
+};
+const rhythms = [
+  rhythmic("variation-ok", () => {}, { type: "variation", patternId: "riff", newId: "riff2", name: "Again" }),
+  rhythmic("variation-dup", () => {}, { type: "variation", patternId: "riff", newId: "riff", name: "Again" }),
+  rhythmic("variation-missing", () => {}, { type: "variation", patternId: "gone", newId: "riff2", name: "Again" }),
+  rhythmic("displace-ok", s => { s.tables.occurrences.lead1!.span = [1, 1]; }, { type: "displace", occurrenceId: "lead1", amount: [1, 2] }),
+  rhythmic("displace-missing", () => {}, { type: "displace", occurrenceId: "gone", amount: [1, 2] }),
+  rhythmic("phase-ok", () => {}, { type: "phase", occurrenceId: "lead1", amount: [1, 2] }),
+  rhythmic("rotate-ok", () => {}, { type: "rotate", patternId: "riff", amount: [1, 2] }),
+  rhythmic("accents-ok", () => {}, { type: "accents", patternId: "riff", steps: 1 }),
+  rhythmic("accents-fraction", () => {}, { type: "accents", patternId: "riff", steps: 1.5 }),
+  rhythmic("scale-ok", () => {}, { type: "scale", patternId: "riff", factor: [2, 1], releases: "scale", phases: "follow" }),
+  rhythmic("scale-policy", () => {}, { type: "scale", patternId: "riff", factor: [2, 1], releases: "stretch" as unknown as "scale", phases: "follow" }),
+  rhythmic("scale-factor", () => {}, { type: "scale", patternId: "riff", factor: [0, 1], releases: "scale", phases: "follow" }),
+  rhythmic("splice-insert", () => {}, { type: "splice", patternId: "riff", at: [1, 1], amount: [1, 2], mode: "insert", attacks: "reject", phases: "follow" }),
+  rhythmic("splice-remove", () => {}, { type: "splice", patternId: "riff", at: [1, 1], amount: [1, 2], mode: "remove", attacks: "delete", phases: "keep" }),
+  rhythmic("splice-reject", () => {}, { type: "splice", patternId: "riff", at: [0, 1], amount: [2, 1], mode: "remove", attacks: "reject", phases: "keep" }),
+  rhythmic("splice-policy", () => {}, { type: "splice", patternId: "riff", at: [1, 1], amount: [1, 2], mode: "cut" as unknown as "insert", attacks: "reject", phases: "keep" }),
+  rhythmic("splice-outside", () => {}, { type: "splice", patternId: "riff", at: [4, 1], amount: [1, 2], mode: "insert", attacks: "reject", phases: "keep" }),
+  rhythmic("poly-ok", s => {
+    s.tables.parts.bass = { id: "bass", name: "Bass", instrument: "bass", volume: 0.8, muted: false };
+    s.tables.voices.bass1 = { id: "bass1", name: "Bass", partId: "bass" };
+  }, {
+    type: "polyrhythm", newId: "poly", name: "Poly", sectionId: null,
+    start: [0, 1], duration: [2, 1], noteDuration: [1, 4],
+    lanes: [
+      { voiceId: "lead", divisions: 2, pitch: { degree: 1, alteration: 0, octave: 0 }, drum: "kick" },
+      { voiceId: "bass1", divisions: 3, pitch: { degree: 3, alteration: 0, octave: 0 }, drum: "hat" },
+    ],
+  }),
+  rhythmic("poly-voices", () => {}, {
+    type: "polyrhythm", newId: "poly", name: "Poly", sectionId: null,
+    start: [0, 1], duration: [2, 1], noteDuration: [1, 4],
+    lanes: [{ voiceId: "lead", divisions: 2, pitch: { degree: 1, alteration: 0, octave: 0 }, drum: "kick" }],
+  }),
+  rhythmic("poly-divisions", () => {}, {
+    type: "polyrhythm", newId: "poly", name: "Poly", sectionId: null,
+    start: [0, 1], duration: [2, 1], noteDuration: [1, 4],
+    lanes: [
+      { voiceId: "lead", divisions: 2, pitch: { degree: 1, alteration: 0, octave: 0 }, drum: "kick" },
+      { voiceId: "lead", divisions: 0, pitch: { degree: 3, alteration: 0, octave: 0 }, drum: "hat" },
+    ],
+  }),
+];
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
