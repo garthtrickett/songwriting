@@ -279,7 +279,7 @@ pub fn sounds(song: &Song) -> Result<Vec<Sound>> {
             audible.push(trimmed);
         }
     }
-    audible.sort_by(|a, b| a.start.cmp(&b.start));
+    audible.sort_by_key(|note| note.start);
     Ok(audible)
 }
 
