@@ -92,21 +92,30 @@ impl Runtime {
     }
     pub async fn resume(&self, id: String) -> Result<(), Failure> {
         let mut execution = self.execution.lock().await;
-        let model = configured(&execution)?;
         let task = self
             .session
             .agent(AgentWork::Read)
             .await?
             .ok_or_else(|| Failure::new("missing", "No task to resume"))?;
+        // The durable interruption can become visible before the worker's final
+        // await unwinds. An exhausted task cannot resume regardless of whether
+        // that worker's JoinHandle has finished yet.
+        let exhausted = task.checkpoint.rounds >= song_workspace::agent::MAX_ROUNDS
+            && task.checkpoint.calls.is_empty();
+        if task.id == id && task.status == Status::Interrupted && exhausted {
+            return Err(Failure::new(
+                "limit",
+                "This task has exhausted its model-request budget",
+            ));
+        }
+        let model = configured(&execution)?;
         if task.id != id || task.model != model.identity() {
             return Err(Failure::new(
                 "configuration",
                 "Resume the current task using its original provider and model",
             ));
         }
-        if task.checkpoint.rounds >= song_workspace::agent::MAX_ROUNDS
-            && task.checkpoint.calls.is_empty()
-        {
+        if exhausted {
             return Err(Failure::new(
                 "limit",
                 "This task has exhausted its model-request budget",
@@ -218,3 +227,6 @@ fn view(task: Task) -> TaskView {
         rounds: task.checkpoint.rounds,
     }
 }
+
+#[cfg(test)]
+mod tests;

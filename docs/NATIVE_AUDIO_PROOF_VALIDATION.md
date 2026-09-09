@@ -2,7 +2,7 @@
 
 Status: implementation and local virtual-output proof complete. Physical-device coverage and
 D1's remaining media/live-model gates are not complete. This slice builds on the
-unmerged Rig proof; it does not close or merge that proof implicitly.
+Rig proof; code integration does not close its live-model evidence gate.
 
 ## Delivered
 

@@ -2,7 +2,7 @@
 
 Status: implemented; local verification and device evidence are tracked in
 [the validation record](docs/NATIVE_AUDIO_PROOF_VALIDATION.md). D2–D7 remain planned.
-This slice is based on the unmerged Rig proof; its live-model gate stays open.
+This slice builds on the Rig proof; its live-model gate stays open after code integration.
 
 ## Outcome
 

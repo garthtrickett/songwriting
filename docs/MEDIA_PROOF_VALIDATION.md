@@ -1,6 +1,7 @@
 # D1 media compatibility and native capture evidence
 
-Status: implemented and locally verified; draft publication/CI tracked below. This standalone
+Status: implemented and verified on Linux/macOS/Windows and Nix ARM/x86 CI;
+code integration is tracked in PR #16. This standalone
 proof does not complete D1 or add desktop recording controls. See
 [the selected scope](../MEDIA_PROOF_PLAN.md) and [decoder decision](FFMPEG.md).
 
@@ -115,3 +116,23 @@ shared API into both clients, add full media controls/CRUD and attach assets thr
 revision-checked Rust musical commands. Decoder sidecar packaging, signing,
 Windows runtime dependencies and installer footprint are still release gates.
 Parent Rig real-model and native-audio physical-output gates remain open.
+
+## Integration follow-up
+
+The original media head `b949d54` passed all PR/push workflows, including native
+window/capture and pinned decoder builds/tests on the target CI matrix. The user
+authorized integration of the stacked work on 2026-09-09; outstanding physical,
+Safari and actual-model evidence remains open after code merges.
+
+Review of parent #14 found a Windows race: its budget-limit checkpoint could be
+visible before the runner's JoinHandle finished, causing immediate Resume to
+return `busy` instead of `limit`. PR #16's integration correction checks the
+matching interrupted task's durable budget first, without launching another
+request. A deterministic test holds the old worker unfinished while checking that
+result. Existing budget/recovery assertions are retained. The combined stack is
+validated against main before merge; code integration is not D1 completion.
+
+Integration validation: the focused deterministic regression passed, followed by
+`bun run verify` (101 TypeScript tests/build) and the full pinned-decoder
+`bun run verify:desktop` (41 Rust tests, Clippy/format, generated contracts and
+musical fixtures). `git diff --check` passed. Exact new-head CI is tracked in PR #16.
