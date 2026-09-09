@@ -88,7 +88,7 @@ the port; desktop will not fall back to it as a second authority.
 
 Toolchain: Tauri 2.11.5, CLI 2.11.4, frontend API 2.11.1, single-instance plugin
 2.4.4, ts-rs 12.0.1; exact resolved Rust/JS dependencies are checked in. Local
-native target: Ubuntu 24.04 x64, WebKitGTK 2.52.6, Xvfb, tauri-driver 2.0.5.
+native target: Ubuntu 24.04 x64, WebKitGTK 2.52.6, Xvfb and the system WebKitWebDriver.
 The Linux native test launches the unsigned debug binary with compiled assets,
 uses an isolated temporary app-data profile, and requires no Vite/bridge server.
 It is not a release-size or real audio-device measurement.
@@ -116,8 +116,12 @@ renderer reload, forced process termination, database reopening and undo.
 `native-smoke.py` uses a private D-Bus session to identify its own app process,
 checks its executable path and kills only that disposable process. WebKit's
 session deletion only detaches automation, so it is not used as proof of app exit.
-Read-only WebDriver observations may retry a dropped proxy connection; clicks,
-drags and native edits never retry at the test harness layer.
+An initial CI push run exposed a dropped pooled connection in tauri-driver's
+HTTP intermediary during a read, while the PR's identical native run passed.
+The Linux harness now talks directly to WebKitWebDriver using the same binary
+capability and automation environment used by tauri-driver 2.0.5. It drives the
+same packaged Tauri window and performs all assertions without command retries;
+no app behavior, assertions or native-window coverage were removed.
 
 The Rust session tests additionally hold a committed response, disconnect its
 renderer, queue another edit and close the worker; reopening confirms both edits.

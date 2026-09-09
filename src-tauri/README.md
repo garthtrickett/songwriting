@@ -52,7 +52,7 @@ the renderer; musical acceptance happens only in Rust. A captured-revision confl
 keeps the user's draft. An uncertain save retains its original request for retry.
 A full renderer restart reloads saved state; unsent drafts are not durable yet.
 
-Linux native test (install `tauri-driver` 2.0.5, `webkit2gtk-driver`, Xvfb and D-Bus):
+Linux native test (install `webkit2gtk-driver`, Xvfb and D-Bus):
 
 ```sh
 bun run desktop:build --debug

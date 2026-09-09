@@ -16,6 +16,9 @@ import time
 import urllib.error
 import urllib.request
 
+# Same Linux binary capability and automation environment as tauri-driver 2.0.5,
+# talking directly to WebKit to avoid its intermediary's pooled-connection race.
+# Every assertion still drives the actual compiled Tauri application.
 BINARY = Path(sys.argv[1]).resolve()
 ARTIFACTS = Path(sys.argv[2] if len(sys.argv) > 2 else ".agent/native-smoke").resolve()
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
@@ -37,15 +40,12 @@ def wait(fn, label, timeout=30):
 
 
 with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
-    env = {**os.environ, "XDG_DATA_HOME": profile}
+    env = {**os.environ, "XDG_DATA_HOME": profile, "TAURI_WEBVIEW_AUTOMATION": "true"}
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
-    with socket.socket() as sock:
-        sock.bind(("127.0.0.1", 0))
-        native_port = sock.getsockname()[1]
     driver_log = (ARTIFACTS / "driver.log").open("w")
-    driver = subprocess.Popen(["tauri-driver", "--port", str(port), "--native-port", str(native_port)], env=env, stdout=driver_log, stderr=subprocess.STDOUT)
+    driver = subprocess.Popen(["WebKitWebDriver", f"--port={port}", "--host=127.0.0.1"], env=env, stdout=driver_log, stderr=subprocess.STDOUT)
     session = None
 
     def request(method, path, body=None):
@@ -64,15 +64,7 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
         return request(method, f"/session/{session}{path}", body)
 
     def js(script, *args):
-        # WebKit occasionally closes an idle proxy connection. Retry read-only
-        # observations only; never repeat an input, click, drag or native edit.
-        for attempt in range(3):
-            try:
-                return command("/execute/sync", {"script": script, "args": list(args)})
-            except http.client.RemoteDisconnected:
-                if not script.startswith("return ") or attempt == 2:
-                    raise
-                time.sleep(0.1)
+        return command("/execute/sync", {"script": script, "args": list(args)})
 
     def invoke(name, args=None):
         result = command("/execute/async", {"script": "const done=arguments[arguments.length-1]; window.__TAURI_INTERNALS__.invoke(arguments[0],arguments[1]).then(v=>done({ok:v}),e=>done({error:e}));", "args": [name, args or {}]})
@@ -91,7 +83,7 @@ with tempfile.TemporaryDirectory(prefix="songwriter-native-") as profile:
 
     def start():
         global session
-        opened = request("POST", "/session", {"capabilities": {"alwaysMatch": {"tauri:options": {"application": str(BINARY)}}}})
+        opened = request("POST", "/session", {"capabilities": {"alwaysMatch": {"webkitgtk:browserOptions": {"binary": str(BINARY), "args": []}}}})
         session = opened["sessionId"]
         command("/timeouts", {"script": 30000})
         wait(lambda: js("return document.querySelector('.desktop-status')?.textContent === 'Saved locally'"), "local workspace loaded")
