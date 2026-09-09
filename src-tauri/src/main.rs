@@ -112,6 +112,19 @@ async fn desktop_audio_stop(
     check_window(&window)?;
     audio.stop().map_err(Failure::from)
 }
+#[tauri::command]
+async fn desktop_media_status(
+    window: tauri::WebviewWindow,
+    app: tauri::AppHandle,
+) -> Result<song_media::MediaView, Failure> {
+    check_window(&window)?;
+    let root = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| Failure::new("media", e.to_string()))?
+        .join("profiles/default/media");
+    Ok(song_media::status(&root))
+}
 fn check_window(window: &tauri::WebviewWindow) -> Result<(), Failure> {
     if window.label() == "main" {
         Ok(())
@@ -177,7 +190,8 @@ fn main() {
             desktop_audio_status,
             desktop_audio_devices,
             desktop_audio_play,
-            desktop_audio_stop
+            desktop_audio_stop,
+            desktop_media_status
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {

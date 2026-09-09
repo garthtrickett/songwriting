@@ -156,7 +156,10 @@ play fences only its own generation, preserving a newer manual transport command
 `song-media` exposes input discovery, bounded capture, capture inspection/recovery,
 original import/export and decoding through a Rust API and proof CLI. It uses a
 separate disposable media profile; it cannot attach takes or alter a song.
-No desktop UI action or Rig tool has been added in this feasibility slice.
+The desktop client surfaces read-only media status (`desktop_media_status` over
+`song_media::status`: decoder configuration, preserved-original list and capture
+states from the app's own `profiles/default/media` profile). No desktop UI action
+or Rig tool records, imports or attaches audio.
 Tauri/Rig parity and full media CRUD remain explicit D4 integration requirements;
 the existing browser media capabilities above retain their current status.
 

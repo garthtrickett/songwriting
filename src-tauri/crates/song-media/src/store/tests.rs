@@ -87,3 +87,33 @@ fn pcm_validation_and_failed_asset_write_leave_recoverable_capture() {
     fs::rename(dir.path().join("saved-assets"), dir.path().join("assets")).unwrap();
     assert_eq!(store.recover("take").unwrap().status, "ready");
 }
+#[test]
+fn status_reports_preserved_originals_without_mutating_song_state() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path().join("desktop");
+    let view = crate::status(&root);
+    assert!(view.available);
+    assert!(view.error.is_none());
+    assert!(view.assets.is_empty() && view.captures.is_empty());
+    assert!(!view.decoder.is_empty());
+    assert!(root.join("media.sqlite").exists());
+    assert!(!root.join("media-proof.sqlite").exists());
+    let wav = decode::wav(48000, 1, &tone(4800)).unwrap();
+    {
+        let mut store = Store::open_named(&root, "media").unwrap();
+        let asset = store.import(&wav).unwrap();
+        assert!(asset.audio.is_some());
+        store.begin("take", 48000, 1).unwrap();
+    }
+    let view = crate::status(&root);
+    assert_eq!(view.assets.len(), 1);
+    assert_eq!(view.assets[0].audio.as_ref().unwrap().frames, 4800);
+    assert_eq!(view.captures.len(), 1);
+    assert_eq!(view.captures[0].status, "interrupted");
+    let blocker = dir.path().join("blocker");
+    fs::write(&blocker, b"not a directory").unwrap();
+    let view = crate::status(&blocker);
+    assert!(!view.available);
+    assert!(view.error.is_some());
+    assert!(view.assets.is_empty() && view.captures.is_empty());
+}

@@ -49,3 +49,8 @@
 .desktop-audio-controls select { max-width: 260px; }
 .desktop-audio small { color: #aeb5b9; }
 .desktop-audio p { margin: 4px 0; color: #f8bc91; }
+
+.desktop-media { padding: 8px 14px; background: #272b2e; border-bottom: 1px solid #121517; }
+.desktop-media-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.desktop-media small { color: #aeb5b9; }
+.desktop-media p { margin: 4px 0; color: #f8bc91; }

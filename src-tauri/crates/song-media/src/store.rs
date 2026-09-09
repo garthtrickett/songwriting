@@ -7,8 +7,9 @@ use std::{
     io::{Read, Write},
     path::{Path, PathBuf},
 };
+use ts_rs::TS;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Asset {
     pub id: String,
@@ -16,7 +17,7 @@ pub struct Asset {
     pub audio: Option<decode::Summary>,
     pub error: Option<String>,
 }
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Capture {
     pub id: String,
@@ -58,21 +59,24 @@ fn identifier(id: &str) -> Result<()> {
 }
 impl Store {
     pub fn open(root: &Path) -> Result<Self> {
+        Self::open_named(root, "media-proof")
+    }
+    /// Open a profile with distinct lock/journal file names so the desktop app
+    /// and the proof CLI never share durable state. Behavior is identical.
+    pub fn open_named(root: &Path, stem: &str) -> Result<Self> {
         fs::create_dir_all(root.join("assets"))?;
         let lock = OpenOptions::new()
             .create(true)
             .truncate(false)
             .read(true)
             .write(true)
-            .open(root.join("media-proof.lock"))?;
+            .open(root.join(format!("{stem}.lock")))?;
         lock.try_lock()
-            .map_err(|_| "Media proof profile is already open; stop that host before recovery")?;
-        let db = Connection::open(root.join("media-proof.sqlite"))?;
+            .map_err(|_| "Media profile is already open; stop that host before recovery")?;
+        let db = Connection::open(root.join(format!("{stem}.sqlite")))?;
         let version: u32 = db.query_row("PRAGMA user_version", [], |r| r.get(0))?;
         if version > 1 {
-            return Err(
-                "This media proof profile needs a newer application; it was not changed".into(),
-            );
+            return Err("This media profile needs a newer application; it was not changed".into());
         }
         db.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; BEGIN IMMEDIATE;
             CREATE TABLE IF NOT EXISTS assets(id TEXT PRIMARY KEY, bytes INTEGER NOT NULL, audio TEXT, error TEXT);
@@ -181,6 +185,42 @@ impl Store {
             .query_map([], |r| r.get::<_, String>(0))?
             .collect::<std::result::Result<Vec<_>, _>>()?;
         ids.iter().map(|id| self.capture(id)).collect()
+    }
+    /// Read-only listing of preserved originals for status surfaces. A stored
+    /// summary that no longer parses is reported per asset, never fatal.
+    pub fn assets(&self) -> Result<Vec<Asset>> {
+        let mut stmt = self
+            .db
+            .prepare("SELECT id, bytes, audio, error FROM assets ORDER BY rowid DESC LIMIT 100")?;
+        let rows = stmt.query_map([], |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, u32>(1)? as usize,
+                r.get::<_, Option<String>>(2)?,
+                r.get::<_, Option<String>>(3)?,
+            ))
+        })?;
+        let mut assets = Vec::new();
+        for row in rows {
+            let (id, bytes, audio, error) = row?;
+            let (audio, error) = match audio {
+                None => (None, error),
+                Some(json) => match serde_json::from_str(&json) {
+                    Ok(summary) => (Some(summary), error),
+                    Err(_) => (
+                        None,
+                        Some("Stored audio summary is corrupt; the original is retained".into()),
+                    ),
+                },
+            };
+            assets.push(Asset {
+                id,
+                bytes,
+                audio,
+                error,
+            });
+        }
+        Ok(assets)
     }
     /// Chunk bytes and durable frame count commit in one transaction.
     pub fn append(&mut self, id: &str, samples: &[f32]) -> Result<()> {
