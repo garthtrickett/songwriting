@@ -1,5 +1,5 @@
 use crate::{
-    Error, MusicalEvent, Performance, Result, Song, StructureAction, Time, ensure,
+    Error, MusicalEvent, Performance, Result, RhythmAction, Song, StructureAction, Time, ensure,
     validate::identity,
 };
 use serde::{Deserialize, Serialize};
@@ -26,6 +26,9 @@ pub enum Action {
     },
     Structure {
         action: StructureAction,
+    },
+    Rhythm {
+        action: RhythmAction,
     },
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -410,6 +413,7 @@ fn propose(current: &Envelope, action: &Action) -> Result<Proposal> {
             reverse(&mut song, &receipt.deltas)?;
         }
         Action::Structure { action } => crate::structure::structure(&mut song, action)?,
+        Action::Rhythm { action } => crate::rhythm::rhythm(&mut song, action)?,
     }
     Ok(Proposal { song })
 }
