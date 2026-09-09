@@ -19,10 +19,37 @@ pub fn check_format(rate: u32, channels: usize) -> Result<()> {
     Ok(())
 }
 
-/// Configured compressed-audio decoder without probing execution. Mirrors the
-/// resolution in `ffmpeg::decode`: an explicit executable or `ffmpeg` on PATH.
+/// Configured compressed-audio decoder without probing execution. An explicit
+/// `SONGWRITER_FFMPEG` path wins (proof harness, developer override), then a
+/// staged sidecar beside the application executable, then `ffmpeg` on PATH.
 pub fn decoder() -> String {
-    std::env::var("SONGWRITER_FFMPEG").unwrap_or_else(|_| "ffmpeg".into())
+    resolve_decoder(
+        &std::env::current_exe()
+            .ok()
+            .and_then(|path| path.parent().map(|parent| parent.to_path_buf()))
+            .unwrap_or_default(),
+        std::env::var_os("SONGWRITER_FFMPEG").as_deref(),
+    )
+}
+
+pub(crate) fn sidecar_name() -> &'static str {
+    if cfg!(windows) {
+        "ffmpeg.exe"
+    } else {
+        "ffmpeg"
+    }
+}
+
+/// Pure resolution order for tests: explicit override, staged sidecar, PATH.
+fn resolve_decoder(exe_dir: &std::path::Path, env_override: Option<&std::ffi::OsStr>) -> String {
+    if let Some(explicit) = env_override {
+        return explicit.to_string_lossy().into_owned();
+    }
+    let staged = exe_dir.join(sidecar_name());
+    if staged.is_file() {
+        return staged.to_string_lossy().into_owned();
+    }
+    "ffmpeg".into()
 }
 
 /// Read-only desktop status over a media profile. D1 surfaces visibility only;

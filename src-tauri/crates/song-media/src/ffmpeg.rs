@@ -17,7 +17,7 @@ impl Drop for Process {
     }
 }
 pub fn decode(bytes: &[u8]) -> Result<File> {
-    let executable = std::env::var_os("SONGWRITER_FFMPEG").unwrap_or_else(|| "ffmpeg".into());
+    let executable = std::ffi::OsString::from(crate::decoder());
     decode_with(bytes, &executable, Duration::from_secs(15))
 }
 fn decode_with(bytes: &[u8], executable: &std::ffi::OsStr, timeout: Duration) -> Result<File> {
@@ -157,6 +157,26 @@ mod tests {
         assert!(
             start.elapsed() < Duration::from_secs(5),
             "Host waited for the unresponsive decoder"
+        );
+    }
+    #[test]
+    fn decoder_prefers_override_then_staged_sidecar_then_path() {
+        use crate::resolve_decoder;
+        let dir = tempfile::tempdir().unwrap();
+        assert_eq!(resolve_decoder(dir.path(), None), "ffmpeg");
+        assert_eq!(
+            resolve_decoder(dir.path(), Some("explicit-decoder".as_ref())),
+            "explicit-decoder"
+        );
+        let staged = dir.path().join(crate::sidecar_name());
+        std::fs::write(&staged, b"staged").unwrap();
+        assert_eq!(
+            resolve_decoder(dir.path(), None),
+            staged.to_string_lossy().into_owned()
+        );
+        assert_eq!(
+            resolve_decoder(dir.path(), Some("explicit-decoder".as_ref())),
+            "explicit-decoder"
         );
     }
 }
