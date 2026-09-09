@@ -358,3 +358,28 @@ async fn interrupted_ephemeral_audio_is_not_replayed_on_resume() {
     audio.close();
     session.close();
 }
+#[tokio::test]
+async fn manual_playback_never_requires_a_configured_provider() {
+    let dir = tempfile::tempdir().unwrap();
+    let session = Session::start(dir.path().join("w.sqlite"), |_| {});
+    let runtime = Runtime::new(session.clone());
+    assert_eq!(
+        runtime.start("Play".into()).await.unwrap_err().code,
+        "configuration"
+    );
+    let audio = song_audio::Engine::new();
+    match song_agent::audio::play(&session, &audio, song_audio::AudioPlay { device_id: None }).await
+    {
+        Ok(()) => {
+            let _ = audio.stop();
+        }
+        Err(failure) => assert!(
+            !["configuration", "provider"].contains(&failure.code.as_str()),
+            "Playback failed on provider setup: {failure:?}"
+        ),
+    }
+    manual(&session, "After playback attempt").await;
+    runtime.shutdown().await;
+    audio.close();
+    session.close();
+}

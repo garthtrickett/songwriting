@@ -3,11 +3,11 @@
 Status: core and Tauri/Lit connection implemented; D1 remains in progress. This
 is a restricted desktop preview, not a completed native agent/audio integration.
 
-The next delivered feasibility slice is the standalone
-[native media compatibility/capture proof](MEDIA_PROOF_VALIDATION.md). It selects
-FFmpeg after real browser-format comparison and tests recoverable CPAL input;
-it does not add media controls to the restricted desktop window or close physical
-device, Safari, live-model or release-packaging gates.
+The standalone [native media compatibility/capture proof](MEDIA_PROOF_VALIDATION.md)
+is merged (FFmpeg selected after real browser-format comparison, recoverable
+CPAL input tested), and the desktop client surfaces read-only media status plus
+a staged decoder sidecar. Physical device, Safari, live-model and
+release-packaging gates remain open.
 
 ## Delivered
 
@@ -171,3 +171,34 @@ executable → PATH, with a resolution-order regression test and a
 Linux x86_64: override unset and no system decoder on PATH, the Chromium WebM
 fixture decoded through the staged 2.7 MiB sidecar. Per-target installer
 bundling, trusted code signing and Windows runtime-DLL auditing remain open.
+
+## Target matrix and measured footprint (D1 step 1/9, 2026-09-09)
+
+Declared Tauri 2 baseline (Tauri 2.11.5): macOS 10.15+, Windows 10 1803+,
+Linux distributions shipping webkit2gtk 4.1 and the CI apt set
+(libasound2, librsvg2, ayatana-appindicator, xdo, ssl). Exact minimum OS
+versions stay provisional until installer bundling (D7) pins them.
+
+| Target | Evidence as of 2026-09-09 |
+| --- | --- |
+| Linux x86_64 | Full: workspace tests, contract checks, pinned-decoder matrix and native WebDriver window smoke on CI `ubuntu-latest`; droplet runs on Ubuntu 24.04. Debug app binary 364 MiB with symbols; staged decoder sidecar 2.7 MiB + ~31 KiB notices/metadata; desktop frontend bundle ~24 kB JS + ~19 kB CSS. Cold launch ~1 s to profile ready, ~658 MiB idle RSS (debug, Xvfb software rendering). |
+| Linux arm64 | Builds and workspace/decoder tests through the Nix ARM job; no native-window or device evidence. |
+| Windows x64 | Workspace compile, tests and pinned-decoder build in CI; no native-window, device, permission or DLL-audit evidence. |
+| macOS arm64 | Workspace compile, tests and pinned-decoder build in CI; no native-window, device or permission evidence. |
+| macOS Intel | Not built. Per the plan it is an explicit additional target, not an assumed property of the arm64 binary. |
+
+Cold-launch timing and idle-memory measurement are pending a local instrumented
+run (debug binary build in progress); release-installer size needs bundling
+enabled (D7). No hosted auth/database calls exist in the desktop path; no
+embedded credentials are shipped.
+
+## Cold launch and idle footprint, debug binary (2026-09-09)
+
+Measured on this droplet (Ubuntu 24.04 x86_64, Xvfb software rendering,
+pulseaudio running, fresh profile, debug symbols included): cold launch to
+profile `workspace.sqlite` ready takes ~1 s; after 10 s idle the process tree
+holds ~658 MiB RSS (app ~206 MiB, WebKit web process ~325 MiB, network process
+~49 MiB). The debug app binary is 364 MiB on disk. The launched window got far
+enough to invoke the new `desktop_media_status` command on its own
+(`profiles/default/media/media.sqlite` created with no test driving it).
+These are debug-build figures, not release/installer or real-device evidence.
