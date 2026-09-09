@@ -41,7 +41,7 @@ fn sound_key(sound: &Value) -> (i64, i64, String) {
 }
 
 fn canonical(mut sounds: Vec<Value>) -> Vec<Value> {
-    sounds.sort_by(|a, b| sound_key(a).cmp(&sound_key(b)));
+    sounds.sort_by_key(sound_key);
     sounds
 }
 
