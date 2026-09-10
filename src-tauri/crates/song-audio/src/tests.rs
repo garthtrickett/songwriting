@@ -449,13 +449,20 @@ async fn playback_continues_through_control_plane_load() {
     };
     let song = song_testkit::audition_song();
     let generation = engine.intent().unwrap();
-    // Burn the control plane with reference expansions that outlast the
-    // null-device drain, so overlap is asserted rather than hoped for.
-    let burn = tokio::task::spawn_blocking(|| {
-        let reference = song_testkit::reference_song();
-        for _ in 0..4 {
+    // Saturate a sibling thread for the whole playback window: the flag stays
+    // set until "ended" is observed, so the burn is alive (not merely
+    // scheduled) throughout. Rounds completed vary by machine; the contention
+    // does not.
+    let reference = song_testkit::reference_song();
+    let loading = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
+    let flag = loading.clone();
+    let burn = tokio::task::spawn_blocking(move || {
+        let mut rounds = 0;
+        while flag.load(std::sync::atomic::Ordering::Relaxed) {
             let _ = song_core::sounds(&reference);
+            rounds += 1;
         }
+        rounds
     });
     let started = engine
         .play(
@@ -492,7 +499,7 @@ async fn playback_continues_through_control_plane_load() {
         if view.status == "ended" {
             assert!(
                 !burn.is_finished(),
-                "control-plane load must still be running when playback ends"
+                "control-plane load must be alive when playback ends"
             );
             break view;
         }
@@ -500,10 +507,11 @@ async fn playback_continues_through_control_plane_load() {
         assert!(std::time::Instant::now() < deadline, "playback never ended");
         tokio::time::sleep(std::time::Duration::from_millis(100)).await;
     };
-    burn.await.unwrap();
+    loading.store(false, std::sync::atomic::Ordering::Relaxed);
+    let rounds = burn.await.unwrap();
     eprintln!(
-        "continuity: frames={} callbacks={} xruns={} observations={}",
-        final_view.frames, final_view.callbacks, final_view.xruns, observations
+        "continuity: frames={} callbacks={} xruns={} observations={} burn_rounds={}",
+        final_view.frames, final_view.callbacks, final_view.xruns, observations, rounds
     );
     assert_eq!(final_view.frames, final_view.total_frames);
     assert!(final_view.callbacks > 0);
