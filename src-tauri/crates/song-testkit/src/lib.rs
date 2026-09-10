@@ -139,7 +139,7 @@ pub fn reference_song() -> Song {
                     start: time((k % 4) as i64, 1),
                     duration: time(1, 2),
                     pitch: Pitch {
-                        degree: (k % 7) as i32 + 1,
+                        degree: (k % 7) + 1,
                         alteration: 0,
                         octave: 0,
                     },
@@ -295,7 +295,7 @@ pub fn audition_song() -> Song {
                     start: time((k % 4) as i64, 1),
                     duration: time(1, 4),
                     pitch: Pitch {
-                        degree: (k % 7) as i32 + 1,
+                        degree: (k % 7) + 1,
                         alteration: 0,
                         octave: 0,
                     },
@@ -365,7 +365,7 @@ pub fn stress_song() -> Song {
                     start: time((k % 4) as i64, 1),
                     duration: time(1, 2),
                     pitch: Pitch {
-                        degree: (k % 7) as i32 + 1,
+                        degree: (k % 7) + 1,
                         alteration: 0,
                         octave: 0,
                     },
