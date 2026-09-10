@@ -107,6 +107,7 @@ pub struct Snapshot {
     pub bars: Vec<BarView>,
     pub placements: Vec<PlacementView>,
     pub undoable: Vec<UndoView>,
+    pub redoable: Vec<UndoView>,
     pub warning: Option<String>,
 }
 

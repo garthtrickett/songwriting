@@ -24,6 +24,15 @@ fn label(p: &Pitch) -> String {
 /// edit. The authoritative title/revision/undo remain available for recovery.
 pub fn snapshot(envelope: &Envelope, epoch: &str, profile: &str) -> Snapshot {
     let state = envelope.state();
+    let views = |ids: &[String]| {
+        ids.iter()
+            .filter_map(|id| envelope.history.iter().find(|r| &r.operation_id == id))
+            .map(|r| UndoView {
+                operation_id: r.operation_id.clone(),
+                label: r.mutation.label.clone(),
+            })
+            .collect::<Vec<_>>()
+    };
     let Some(song) = envelope.song.clone() else {
         return Snapshot {
             protocol: PROTOCOL,
@@ -38,15 +47,8 @@ pub fn snapshot(envelope: &Envelope, epoch: &str, profile: &str) -> Snapshot {
             warning: Some(
                 "This song was deleted. Undo the deletion or import a song to continue.".into(),
             ),
-            undoable: state
-                .undoable
-                .iter()
-                .filter_map(|id| envelope.history.iter().find(|r| &r.operation_id == id))
-                .map(|r| UndoView {
-                    operation_id: r.operation_id.clone(),
-                    label: r.mutation.label.clone(),
-                })
-                .collect(),
+            undoable: views(&state.undoable),
+            redoable: views(&state.redoable),
         };
     };
     let mut out = Snapshot {
@@ -69,15 +71,8 @@ pub fn snapshot(envelope: &Envelope, epoch: &str, profile: &str) -> Snapshot {
         bars: vec![],
         placements: vec![],
         warning: None,
-        undoable: state
-            .undoable
-            .iter()
-            .filter_map(|id| envelope.history.iter().find(|r| &r.operation_id == id))
-            .map(|r| UndoView {
-                operation_id: r.operation_id.clone(),
-                label: r.mutation.label.clone(),
-            })
-            .collect(),
+        undoable: views(&state.undoable),
+        redoable: views(&state.redoable),
     };
     if let Err(error) = project(&song, &mut out) {
         out.notes.clear();

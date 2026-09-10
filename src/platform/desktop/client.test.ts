@@ -4,7 +4,7 @@ import { DesktopClient, type Transport } from "./client.ts";
 import type { EditRequest } from "../../generated/desktop/EditRequest.ts";
 
 const state = (revision = 0): Snapshot => ({ protocol: 1, epoch: "session-one", profile: "Local profile", revision,
-  title: "Sketch", patterns: [], notes: [], bars: [], placements: [], undoable: [], warning: null });
+  title: "Sketch", patterns: [], notes: [], bars: [], placements: [], undoable: [], redoable: [], warning: null });
 function setup() {
   let changed: (value: unknown) => void = () => {};
   let stopped = false;

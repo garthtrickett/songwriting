@@ -1,7 +1,7 @@
 # D2 — Rust musical workspace and migration
 
-Active as of 2026-09-09 by operator selection. Slices land in order with their
-parity evidence; no slice starts until the previous one is merged.
+Complete as of slice 7 (see DESKTOP_D2_VALIDATION.md). Slices landed in order
+with their parity evidence; no slice started until the previous one merged.
 
 ## Outcome
 

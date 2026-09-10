@@ -21,7 +21,8 @@ export function snapshot(input: unknown): Snapshot {
     || !items(input.bars, (b) => text(b.label) && text(b.section) && time(b.start) && time(b.duration)
       && Array.isArray(b.groups) && b.groups.length <= 64 && b.groups.every(integer))
     || !items(input.placements, (p) => text(p.id) && text(p.name) && text(p.voice) && text(p.patternId) && time(p.start) && time(p.duration))
-    || !items(input.undoable, (u) => text(u.operationId) && text(u.label))) {
+    || !items(input.undoable, (u) => text(u.operationId) && text(u.label))
+    || !items(input.redoable, (u) => text(u.operationId) && text(u.label))) {
     throw new Error("Invalid desktop state received; reconnect to reload the saved song.");
   }
   return structuredClone(input) as unknown as Snapshot;

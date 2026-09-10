@@ -5,4 +5,4 @@ import type { PatternView } from "./PatternView.ts";
 import type { PlacementView } from "./PlacementView.ts";
 import type { UndoView } from "./UndoView.ts";
 
-export type Snapshot = { protocol: number, epoch: string, profile: string, revision: number, title: string, patterns: Array<PatternView>, notes: Array<NoteView>, bars: Array<BarView>, placements: Array<PlacementView>, undoable: Array<UndoView>, warning: string | null, };
+export type Snapshot = { protocol: number, epoch: string, profile: string, revision: number, title: string, patterns: Array<PatternView>, notes: Array<NoteView>, bars: Array<BarView>, placements: Array<PlacementView>, undoable: Array<UndoView>, redoable: Array<UndoView>, warning: string | null, };

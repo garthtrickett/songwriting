@@ -54,3 +54,8 @@
 .desktop-media-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .desktop-media small { color: #aeb5b9; }
 .desktop-media p { margin: 4px 0; color: #f8bc91; }
+
+.desktop-profiles { padding: 8px 14px; background: #272b2e; border-bottom: 1px solid #121517; }
+.desktop-profiles-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.desktop-profiles small { color: #aeb5b9; }
+.desktop-profiles p { margin: 4px 0; color: #f8bc91; }
