@@ -21,8 +21,9 @@ workspace, derivations, migration, profiles and desktop command surface run in
 Rust with differential parity (see [D2 evidence](docs/DESKTOP_D2_VALIDATION.md)
 and [D2_PLAN.md](D2_PLAN.md)). Physical-output and live-model evidence, media
 feasibility and the full packaged desktop gate remain open. D3 (instrumental
-playback) and D6 (responsiveness/lifecycle) are active — see
-[D3_PLAN.md](D3_PLAN.md); D4–D5 and D7 remain planned.
+playback) and D6 (responsiveness/lifecycle) are complete — see
+[D3_PLAN.md](D3_PLAN.md) and
+[DESKTOP_D6_VALIDATION.md](docs/DESKTOP_D6_VALIDATION.md); D4–D5 and D7 remain planned.
 The historical phases below retain their existing delivery status;
 the desktop plan does not implicitly activate remaining mobile or cloud-sync work.
 
