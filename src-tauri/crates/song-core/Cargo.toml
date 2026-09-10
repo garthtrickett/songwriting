@@ -11,3 +11,6 @@ ts-rs.workspace = true
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+song-testkit = { path = "../song-testkit" }

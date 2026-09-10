@@ -22,7 +22,7 @@ workspace = true
 custom-protocol = ["tauri/custom-protocol"]
 
 [workspace]
-members = ["crates/song-core", "crates/song-workspace", "crates/song-session", "crates/song-agent", "crates/song-audio", "crates/song-media"]
+members = ["crates/song-core", "crates/song-workspace", "crates/song-session", "crates/song-agent", "crates/song-audio", "crates/song-media", "crates/song-testkit"]
 resolver = "3"
 
 [workspace.package]

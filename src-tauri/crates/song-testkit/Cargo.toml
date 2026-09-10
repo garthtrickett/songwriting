@@ -1,0 +1,11 @@
+[package]
+name = "song-testkit"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+song-core = { path = "../song-core" }
+
+[lints]
+workspace = true

@@ -103,7 +103,7 @@ impl Song {
         table!(polyrhythms);
         table!(fretted);
         table!(fingerings);
-        ensure(count <= 20000, "Song exceeds 20,000 entities")?;
+        ensure(count <= 100000, "Song exceeds 100,000 entities")?;
         for p in t.parts.values() {
             ensure(
                 ["guitar", "bass", "drums", "voice"].contains(&p.instrument.as_str())
