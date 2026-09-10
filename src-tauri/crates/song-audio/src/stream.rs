@@ -11,6 +11,9 @@ pub(crate) struct Metrics {
     pub done: AtomicBool,
     pub xruns: AtomicU32,
     pub warning: AtomicU32,
+    /// RMS level of the most recent callback buffer as f32 bits. The view
+    /// polls far slower than callbacks, which throttles the meter.
+    pub level: AtomicU32,
     pub detail: ErrorDetail,
 }
 pub(crate) struct ErrorDetail {
@@ -105,12 +108,22 @@ impl Cursor {
         {
             return;
         }
+        let mut energy = 0.0f64;
+        let mut count = 0usize;
         for frame in data.chunks_exact_mut(channels) {
             if let Some(sample) = self.pcm.get(self.at) {
                 frame.fill(T::from_sample(*sample));
+                energy += f64::from(*sample) * f64::from(*sample);
+                count += 1;
                 self.at += 1;
             }
         }
+        let level = if count > 0 {
+            (energy / count as f64).sqrt().min(1.0) as f32
+        } else {
+            0.0
+        };
+        self.metrics.level.store(level.to_bits(), Ordering::Relaxed);
         self.metrics.frames.store(self.at as u32, Ordering::Release);
         self.metrics.callbacks.fetch_add(1, Ordering::Relaxed);
         if self.at == self.pcm.len() {

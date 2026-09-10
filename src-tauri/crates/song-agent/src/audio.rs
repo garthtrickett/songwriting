@@ -58,8 +58,12 @@ async fn execute_inner(
             json!({"transport":engine.view().await.map_err(Failure::from)?, "devices":engine.devices().await.map_err(Failure::from)?}),
         ),
         "play_audio" => {
-            let request = serde_json::from_value(call.arguments.clone())
-                .map_err(|_| Failure::new("invalid", "Expected deviceId: string or null"))?;
+            let request = serde_json::from_value(call.arguments.clone()).map_err(|_| {
+                Failure::new(
+                    "invalid",
+                    "Expected playback options: deviceId, tonic, metronome and from",
+                )
+            })?;
             play(session, engine, request).await?;
             Ok(
                 json!({"started":true,"message":"Ephemeral playback started; inspect audio_status for its current state."}),

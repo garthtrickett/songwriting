@@ -1,3 +1,4 @@
+pub mod instruments;
 pub mod schedule;
 mod stream;
 mod worker;
@@ -24,6 +25,7 @@ pub struct AudioView {
     pub total_frames: u32,
     pub callbacks: u32,
     pub xruns: u32,
+    pub level: f32,
     pub warning: Option<String>,
     #[ts(type = "number | null")]
     pub revision: Option<u64>,
@@ -41,6 +43,7 @@ impl Default for AudioView {
             total_frames: 0,
             callbacks: 0,
             xruns: 0,
+            level: 0.0,
             warning: None,
             revision: None,
             error: None,
