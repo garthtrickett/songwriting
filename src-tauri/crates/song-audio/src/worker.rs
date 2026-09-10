@@ -1,10 +1,10 @@
 use crate::{
-    AudioView, OutputDevice,
-    schedule::Schedule,
+    AudioPlay, AudioView, OutputDevice,
+    schedule::{Compile, Schedule},
     stream::{Cursor, Metrics},
 };
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use song_core::{Error, Result, Song};
+use song_core::{Error, Result, Song, Time};
 use std::{
     sync::{
         Arc, Mutex,
@@ -24,7 +24,7 @@ enum Work {
         generation: u32,
         song: Box<Song>,
         revision: u64,
-        device: Option<String>,
+        request: AudioPlay,
         reply: Reply<()>,
     },
     Stop,
@@ -68,14 +68,14 @@ impl Engine {
         generation: u32,
         song: Song,
         revision: u64,
-        device: Option<String>,
+        request: AudioPlay,
     ) -> Result<()> {
         let (reply, receive) = oneshot::channel();
         self.send(Work::Play {
             generation,
             song: Box::new(song),
             revision,
-            device,
+            request,
             reply,
         })?;
         receive.await.map_err(|_| error("Audio worker stopped"))?
@@ -167,7 +167,7 @@ fn worker(receiver: mpsc::Receiver<Work>, fence: Arc<AtomicU32>, closing: Arc<At
                 generation,
                 song,
                 revision,
-                device,
+                request,
                 reply,
             } => {
                 if generation != fence.load(Ordering::Acquire) {
@@ -180,7 +180,7 @@ fn worker(receiver: mpsc::Receiver<Work>, fence: Arc<AtomicU32>, closing: Arc<At
                     revision: Some(revision),
                     ..AudioView::default()
                 };
-                let result = open(*song, device, generation, fence.clone(), &mut view);
+                let result = open(*song, request, generation, fence.clone(), &mut view);
                 let result = match result {
                     Ok(p)
                         if generation == fence.load(Ordering::Acquire)
@@ -245,13 +245,13 @@ fn update(view: &mut AudioView, playing: &mut Option<Playing>, fence: &AtomicU32
 }
 fn open(
     song: Song,
-    selected: Option<String>,
+    request: AudioPlay,
     generation: u32,
     fence: Arc<AtomicU32>,
     view: &mut AudioView,
 ) -> Result<Playing> {
     let host = cpal::default_host();
-    let device = if let Some(id) = selected {
+    let device = if let Some(id) = request.device_id {
         host.output_devices()
             .map_err(|e| error(e.to_string()))?
             .find(|d| d.id().is_ok_and(|v| v.to_string() == id))
@@ -270,8 +270,15 @@ fn open(
     if channels == 0 || channels > 32 {
         return Err(error("Unsupported audio channel count"));
     }
-    let pcm =
-        Schedule::compile(&song)?.render(rate, || generation != fence.load(Ordering::Acquire))?;
+    let pcm = Schedule::compile(
+        &song,
+        &Compile {
+            tonic: request.tonic.unwrap_or(48),
+            metronome: request.metronome.unwrap_or(true),
+            from: request.from.unwrap_or(Time::ZERO),
+        },
+    )?
+    .render(rate, || generation != fence.load(Ordering::Acquire))?;
     view.sample_rate = rate;
     view.channels = channels;
     view.device = Some(device.to_string());

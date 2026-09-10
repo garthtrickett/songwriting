@@ -25,7 +25,7 @@ pub async fn play(session: &Session, engine: &Engine, request: AudioPlay) -> Res
     let (song, revision) = session.song().await?;
     // Preserve device errors in status; only cancellation fences an abandoned start.
     let result = engine
-        .play(generation, song, revision, request.device_id)
+        .play(generation, song, revision, request)
         .await
         .map_err(Failure::from);
     pending.completed = true;

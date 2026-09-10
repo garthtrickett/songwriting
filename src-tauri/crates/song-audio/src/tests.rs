@@ -1,6 +1,6 @@
 use crate::{
     Engine,
-    schedule::{Schedule, frequency},
+    schedule::{Compile, Schedule, frequency},
     stream::{Cursor, Metrics},
 };
 use song_core::{Pitch, Song, Time};
@@ -13,6 +13,13 @@ fn fixture() -> Song {
 }
 fn t(n: i64, d: i64) -> Time {
     Time::new(n, d).unwrap()
+}
+fn opts() -> Compile {
+    Compile {
+        tonic: 48,
+        metronome: true,
+        from: Time::ZERO,
+    }
 }
 fn cursor(pcm: Vec<f32>, fence: Arc<AtomicU32>, generation: u32) -> Cursor {
     Cursor {
@@ -38,43 +45,53 @@ fn exact_mixed_meter_clicks_and_relative_chord_members() {
             gain: None,
             articulation: None,
         });
-    let schedule = Schedule::compile(&song).unwrap();
+    let schedule = Schedule::compile(&song, &opts()).unwrap();
     assert_eq!(schedule.frame(t(7, 2), 48000), 90000);
-    let clicks: Vec<_> = schedule
-        .tones
-        .iter()
-        .filter(|t| t.frequency >= 1000.0 && t.duration == Time::new(1, 16).unwrap())
-        .collect();
-    assert_eq!(clicks.len(), 12); // seven eighths, then five quarters
-    assert_eq!(clicks[2].frequency, 1400.0); // 2+2+3
-    assert_eq!(clicks[7].start, t(7, 2));
-    assert_eq!(clicks[10].frequency, 1400.0); // 3+2
-    let root = frequency(&Pitch {
-        degree: 1,
-        alteration: 0,
-        octave: 0,
-    });
-    assert!(
-        schedule
-            .tones
-            .iter()
-            .any(|n| n.start == t(4, 3) && n.duration == t(2, 1) && n.frequency == root)
-    );
-    assert!(
-        (frequency(&Pitch {
-            degree: 6,
+    let clicks: Vec<_> = schedule.tones.iter().filter(|t| t.metronome).collect();
+    assert_eq!(clicks.len(), 5); // groups 2+2+3 then 3+2
+    assert_eq!(clicks[0].frequency, 1500.0);
+    assert_eq!(clicks[1].frequency, 950.0);
+    assert_eq!(clicks[0].start, t(0, 1));
+    assert_eq!(clicks[3].start, t(7, 2));
+    assert!(clicks.iter().all(|c| c.gain
+        == if c.start == t(0, 1) || c.start == t(7, 2) {
+            0.18
+        } else {
+            0.1
+        }));
+    let root = frequency(
+        &Pitch {
+            degree: 1,
             alteration: 0,
-            octave: 0
-        }) - 440.0)
+            octave: 0,
+        },
+        48,
+    );
+    assert!(schedule.tones.iter().any(|n| !n.metronome
+        && n.start == t(4, 3)
+        && n.duration == t(2, 1)
+        && n.frequency == root));
+    assert!(
+        (frequency(
+            &Pitch {
+                degree: 6,
+                alteration: 0,
+                octave: 0
+            },
+            60
+        ) - 440.0)
             .abs()
             < 1e-8
     );
     assert!(
-        (frequency(&Pitch {
-            degree: 7,
-            alteration: -1,
-            octave: 0
-        }) / root
+        (frequency(
+            &Pitch {
+                degree: 7,
+                alteration: -1,
+                octave: 0
+            },
+            48
+        ) / root
             - 2.0_f64.powf(10.0 / 12.0))
         .abs()
             < 1e-8
@@ -82,7 +99,7 @@ fn exact_mixed_meter_clicks_and_relative_chord_members() {
 }
 #[test]
 fn prepared_audio_is_buffer_invariant_and_naturally_silent() {
-    let pcm = Schedule::compile(&fixture())
+    let pcm = Schedule::compile(&fixture(), &opts())
         .unwrap()
         .render(48000, || false)
         .unwrap();
@@ -129,23 +146,114 @@ fn stop_replacement_and_device_error_silence_obsolete_callbacks() {
     assert_eq!(integers, [32768; 16]);
 }
 #[test]
-fn preparation_limits_cancellation_and_unsupported_music_are_explicit() {
+fn preparation_limits_cancellation_and_long_songs_are_explicit() {
     let mut song = fixture();
     assert_eq!(
-        Schedule::compile(&song)
+        Schedule::compile(&song, &opts())
             .unwrap()
             .render(48000, || true)
             .unwrap_err()
             .code,
         "audio_cancelled"
     );
-    song.tempo.bpm = 10.0;
-    assert_eq!(Schedule::compile(&song).unwrap_err().code, "audio_limit");
-    song = fixture();
-    song.tables.occurrences.get_mut("lead1").unwrap().phase = t(1, 3);
+    // A thousand-verse arrangement runs past the documented 600-second bound.
+    for i in 0..1000 {
+        let id = format!("again{i}");
+        song.tables.arrangement.insert(
+            id.clone(),
+            song_core::Arrangement {
+                id: id.clone(),
+                name: "Again".into(),
+                section_id: "verse".into(),
+            },
+        );
+        song.arrangement_order.push(id);
+    }
+    song.validate().unwrap();
     assert_eq!(
-        Schedule::compile(&song).unwrap_err().code,
-        "audio_unsupported"
+        Schedule::compile(&song, &opts()).unwrap_err().code,
+        "audio_limit"
+    );
+}
+#[test]
+fn phases_drums_and_articulations_play_instead_of_failing() {
+    let mut song = fixture();
+    song.tables.occurrences.get_mut("lead1").unwrap().phase = t(1, 3);
+    song.tables.events.insert(
+        "drum1".into(),
+        song_core::MusicalEvent {
+            id: "drum1".into(),
+            name: "Kick".into(),
+            origin_id: "drum1".into(),
+            pattern_id: "riff".into(),
+            kind: "drum".into(),
+            start: t(0, 1),
+            duration: t(1, 4),
+            pitch: Pitch {
+                degree: 1,
+                alteration: 0,
+                octave: 0,
+            },
+            chord_id: None,
+            drum: "kick".into(),
+            accent: 0.9,
+            articulation: "normal".into(),
+            performance: vec![],
+        },
+    );
+    song.tables.events.get_mut("note").unwrap().articulation = "staccato".into();
+    song.validate().unwrap();
+    let schedule = Schedule::compile(&song, &opts()).unwrap();
+    assert!(
+        schedule
+            .tones
+            .iter()
+            .any(|tone| !tone.metronome && tone.frequency == 70.0)
+    );
+    assert!(schedule.tones.iter().any(|tone| {
+        !tone.metronome
+            && tone.duration == t(1, 3)
+            && (tone.frequency
+                - frequency(
+                    &Pitch {
+                        degree: 7,
+                        alteration: -1,
+                        octave: 1,
+                    },
+                    48,
+                ))
+            .abs()
+                < 1e-8
+    }));
+}
+#[test]
+fn seek_starts_mid_song_with_trimmed_attacks() {
+    let song = fixture();
+    let schedule = Schedule::compile(
+        &song,
+        &Compile {
+            from: t(1, 2),
+            ..opts()
+        },
+    )
+    .unwrap();
+    assert!(
+        schedule
+            .tones
+            .iter()
+            .all(|tone| tone.start.checked_add(tone.duration).unwrap() > t(1, 2))
+    );
+    assert!(
+        schedule
+            .tones
+            .iter()
+            .any(|tone| !tone.metronome && tone.start == t(1, 2) && tone.duration == t(1, 2))
+    );
+    assert!(
+        schedule
+            .tones
+            .iter()
+            .any(|tone| tone.metronome && tone.start >= t(1, 2))
     );
 }
 #[tokio::test]
@@ -155,7 +263,17 @@ async fn pending_starts_are_fenced_and_missing_selection_never_falls_back() {
     engine.stop().unwrap();
     assert!(
         engine
-            .play(pending, fixture(), 0, None)
+            .play(
+                pending,
+                fixture(),
+                0,
+                crate::AudioPlay {
+                    device_id: None,
+                    tonic: None,
+                    metronome: None,
+                    from: None,
+                }
+            )
             .await
             .unwrap_err()
             .message
@@ -170,7 +288,12 @@ async fn pending_starts_are_fenced_and_missing_selection_never_falls_back() {
                 current,
                 fixture(),
                 7,
-                Some("songwriter-missing-output".into())
+                crate::AudioPlay {
+                    device_id: Some("songwriter-missing-output".into()),
+                    tonic: None,
+                    metronome: None,
+                    from: None,
+                }
             )
             .await
             .unwrap_err()
@@ -204,7 +327,15 @@ fn pitched_schedules_match_existing_typescript_timeline() {
     let cases: Vec<Case> =
         serde_json::from_str(include_str!("../../../../tests/desktop/audio.json")).unwrap();
     for mut case in cases {
-        let schedule = Schedule::compile(&case.song).unwrap();
+        let schedule = Schedule::compile(
+            &case.song,
+            &Compile {
+                tonic: 48,
+                metronome: false,
+                from: Time::ZERO,
+            },
+        )
+        .unwrap();
         let mut actual: Vec<_> = schedule
             .tones
             .into_iter()

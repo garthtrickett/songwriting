@@ -154,7 +154,7 @@ const makeVariants = (): Record<string, typeof song> => {
 const variants = makeVariants();
 const audio = audioNames.map(name => {
   const input = variants[name]!;
-  return { name, song: input, notes: sounds(input).map(n => ({ start:n.start, duration:n.duration, frequency:440 * 2 ** ((60 + semitone(n.pitch!) - 69) / 12), gain:n.gain * 0.1 })) };
+  return { name, song: input, notes: sounds(input).map(n => ({ start:n.start, duration:n.duration, frequency:440 * 2 ** ((48 + semitone(n.pitch!) - 69) / 12), gain:n.gain * 0.2 })) };
 });
 const timeline = Object.entries(variants).map(([name, input]) => {
   const ends: Record<string, unknown> = {};

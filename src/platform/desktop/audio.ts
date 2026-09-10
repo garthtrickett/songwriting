@@ -59,7 +59,7 @@ export class AudioClient {
     if (this.disposed || this.busy) return;
     const action = ++this.action;
     ++this.sequence; this.busy = true; this.error = ""; this.notify();
-    try { await this.transport.play({ deviceId }); }
+    try { await this.transport.play({ deviceId, tonic: null, metronome: null, from: null }); }
     catch (e) { if (action === this.action) this.error = failure(e).message; }
     if (action === this.action) this.busy = false;
     await this.refresh();
