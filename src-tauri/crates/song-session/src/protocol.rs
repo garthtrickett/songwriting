@@ -5,6 +5,15 @@ use ts_rs::TS;
 pub const PROTOCOL: u32 = 1;
 pub const STATE_EVENT: &str = "desktop-state";
 
+#[derive(Debug, Clone, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct ProfileView {
+    pub id: String,
+    pub title: Option<String>,
+    #[ts(type = "number | null")]
+    pub revision: Option<u64>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EditRequest {

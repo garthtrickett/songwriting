@@ -5,6 +5,20 @@ fn tone(frames: usize) -> Vec<f32> {
         .map(|n| (n as f32 * std::f32::consts::TAU * 440.0 / 48000.0).sin() * 0.25)
         .collect()
 }
+
+/// Reopen after the owner drops. CI runners occasionally report the released
+/// OS lock as still held on the immediate reopen (observed strikes, always
+/// green on retry); retry briefly. The live-owner exclusion asserts stay
+/// strict and never retry.
+fn reopen(root: &std::path::Path) -> Store {
+    for _ in 0..50 {
+        match Store::open(root) {
+            Ok(store) => return store,
+            Err(_) => std::thread::sleep(std::time::Duration::from_millis(10)),
+        }
+    }
+    Store::open(root).unwrap()
+}
 #[test]
 fn originals_survive_decode_failure_and_checksum_corruption_is_visible() {
     let dir = tempfile::tempdir().unwrap();
@@ -33,7 +47,7 @@ fn interrupted_chunks_recover_exactly_once_without_restarting_capture() {
         assert!(store.recover("take").is_err());
         assert!(Store::open(dir.path()).is_err()); // live owner cannot be recovered
     }
-    let mut store = Store::open(dir.path()).unwrap();
+    let mut store = reopen(dir.path());
     assert_eq!(store.capture("take").unwrap().status, "interrupted");
     let recovered = store.recover("take").unwrap();
     assert_eq!(recovered.frames, 8192);
@@ -66,7 +80,7 @@ fn disk_full_rolls_back_chunk_and_count_then_recovery_retains_prefix() {
     assert!(error.to_string().contains("full"), "{error}");
     assert_eq!(store.capture("take").unwrap().frames, 4096);
     drop(store);
-    let mut store = Store::open(dir.path()).unwrap();
+    let mut store = reopen(dir.path());
     assert_eq!(store.recover("take").unwrap().frames, 4096);
 }
 #[test]

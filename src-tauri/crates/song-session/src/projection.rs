@@ -22,13 +22,13 @@ fn label(p: &Pitch) -> String {
 
 /// View projection failures are visible separately from a successfully committed
 /// edit. The authoritative title/revision/undo remain available for recovery.
-pub fn snapshot(envelope: &Envelope, epoch: &str) -> Snapshot {
+pub fn snapshot(envelope: &Envelope, epoch: &str, profile: &str) -> Snapshot {
     let state = envelope.state();
     let Some(song) = envelope.song.clone() else {
         return Snapshot {
             protocol: PROTOCOL,
             epoch: epoch.into(),
-            profile: "Local profile".into(),
+            profile: profile.into(),
             revision: envelope.revision,
             title: String::new(),
             patterns: vec![],
@@ -52,7 +52,7 @@ pub fn snapshot(envelope: &Envelope, epoch: &str) -> Snapshot {
     let mut out = Snapshot {
         protocol: PROTOCOL,
         epoch: epoch.into(),
-        profile: "Local profile".into(),
+        profile: profile.into(),
         revision: envelope.revision,
         title: song.title.clone(),
         patterns: song

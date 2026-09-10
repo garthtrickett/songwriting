@@ -116,14 +116,50 @@ async fn desktop_audio_stop(
 async fn desktop_media_status(
     window: tauri::WebviewWindow,
     app: tauri::AppHandle,
+    session: tauri::State<'_, Arc<Session>>,
 ) -> Result<song_media::MediaView, Failure> {
     check_window(&window)?;
     let root = app
         .path()
         .app_data_dir()
         .map_err(|e| Failure::new("media", e.to_string()))?
-        .join("profiles/default/media");
+        .join("profiles")
+        .join(session.profile_id().await?)
+        .join("media");
     Ok(song_media::status(&root))
+}
+#[tauri::command]
+async fn desktop_profiles(
+    window: tauri::WebviewWindow,
+    session: tauri::State<'_, Arc<Session>>,
+) -> Result<Vec<song_session::protocol::ProfileView>, Failure> {
+    check_window(&window)?;
+    session.profiles().await
+}
+#[tauri::command]
+async fn desktop_profile_create(
+    window: tauri::WebviewWindow,
+    session: tauri::State<'_, Arc<Session>>,
+    id: String,
+) -> Result<song_session::protocol::ProfileView, Failure> {
+    check_window(&window)?;
+    session.create_profile(id).await
+}
+#[tauri::command]
+async fn desktop_profile_switch(
+    window: tauri::WebviewWindow,
+    session: tauri::State<'_, Arc<Session>>,
+    audio: tauri::State<'_, Arc<Engine>>,
+    agent: tauri::State<'_, Arc<Runtime>>,
+    id: String,
+) -> Result<song_session::protocol::Snapshot, Failure> {
+    check_window(&window)?;
+    let snapshot = session.switch_profile(id).await?;
+    // Quiesce the old profile's workers after the switch commits; agent
+    // reasoning restarts cleanly on the new profile once reconfigured.
+    let _ = audio.stop();
+    agent.shutdown().await;
+    Ok(snapshot)
 }
 fn check_window(window: &tauri::WebviewWindow) -> Result<(), Failure> {
     if window.label() == "main" {
@@ -161,10 +197,7 @@ fn main() {
         }))
         .manage(Shutdown::default())
         .setup(|app| {
-            let path = app
-                .path()
-                .app_data_dir()?
-                .join("profiles/default/workspace.sqlite");
+            let path = app.path().app_data_dir()?.join("profiles");
             let handle = app.handle().clone();
             let session = Session::start(path, move |snapshot| {
                 // Persistence succeeded even if a renderer has gone away.
@@ -191,7 +224,10 @@ fn main() {
             desktop_audio_devices,
             desktop_audio_play,
             desktop_audio_stop,
-            desktop_media_status
+            desktop_media_status,
+            desktop_profiles,
+            desktop_profile_create,
+            desktop_profile_switch
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {

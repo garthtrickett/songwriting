@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex};
 #[tokio::test]
 async fn worker_projects_exact_music_and_rejects_old_sessions_without_losing_saved_changes() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("profile/workspace.sqlite");
+    let path = dir.path().join("profiles");
     let events = Arc::new(Mutex::new(vec![]));
     let capture = events.clone();
     let session = Session::start(path.clone(), move |s| capture.lock().unwrap().push(s));
@@ -100,7 +100,7 @@ async fn worker_projects_exact_music_and_rejects_old_sessions_without_losing_sav
 #[tokio::test]
 async fn startup_failure_is_reported_and_never_replaces_the_unreadable_database() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("workspace.sqlite");
+    let path = dir.path().join("profiles");
     std::fs::write(&path, "not a database").unwrap();
     let session = Session::start(path.clone(), |_| panic!("No saved event expected"));
     assert_eq!(session.read().await.unwrap_err().code, "storage");
@@ -112,7 +112,7 @@ async fn startup_failure_is_reported_and_never_replaces_the_unreadable_database(
 async fn shutdown_drains_accepted_edits_even_when_the_first_renderer_disappears() {
     use std::{future::Future, task::Poll};
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("workspace.sqlite");
+    let path = dir.path().join("profiles");
     let (committed, committed_rx) = std::sync::mpsc::channel();
     let (release, release_rx) = std::sync::mpsc::channel();
     let session = Session::start(path.clone(), move |state| {
