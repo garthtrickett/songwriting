@@ -169,6 +169,7 @@ pub struct State {
     pub revision: u64,
     pub song: Option<Song>,
     pub undoable: Vec<String>,
+    pub redoable: Vec<String>,
 }
 
 /// Minimal receipt view for undo/redo stack computation. Deletion tombstones
@@ -444,20 +445,35 @@ impl Envelope {
     }
 
     pub fn state(&self) -> State {
+        let (undo, redo) = history_stacks(
+            &self
+                .history
+                .iter()
+                .map(|r| StackEntry {
+                    operation_id: r.operation_id.clone(),
+                    undo_of: match &r.mutation.action {
+                        Action::Undo { target_id } => Some(target_id.clone()),
+                        _ => None,
+                    },
+                    has_deltas: !r.deltas.is_empty(),
+                    deletion_unchanged: r.before_deleted == r.after_deleted,
+                })
+                .collect::<Vec<_>>(),
+        );
+        let reversible = |id: &String| {
+            self.history
+                .iter()
+                .find(|r| &r.operation_id == id)
+                .is_some_and(|r| {
+                    let mut candidate = self.song.clone();
+                    reverse_song(&mut candidate, r).is_ok()
+                })
+        };
         State {
             revision: self.revision,
             song: self.song.clone(),
-            undoable: self
-                .history
-                .iter()
-                .filter(|r| {
-                    !r.deltas.is_empty() && {
-                        let mut candidate = self.song.clone();
-                        reverse_song(&mut candidate, r).is_ok()
-                    }
-                })
-                .map(|r| r.operation_id.clone())
-                .collect(),
+            undoable: undo.into_iter().filter(|id| reversible(id)).collect(),
+            redoable: redo.into_iter().filter(|id| reversible(id)).collect(),
         }
     }
 

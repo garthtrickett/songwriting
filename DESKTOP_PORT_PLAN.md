@@ -1,6 +1,7 @@
 # Songwriter desktop port — Rust SAM core, Tauri and lit/TypeScript view
 
-Status: D2 active, 2026-09-09 (see D2_PLAN.md). The Rust SAM/SQLite slice is
+Status: D2 complete, 2026-09-10 (see D2_PLAN.md and DESKTOP_D2_VALIDATION.md).
+D3–D7 remain planned and unactivated. The Rust SAM/SQLite slice is
 connected to a Tauri window and Lit view. Native audition and Rig are implemented.
 Physical-output, media, live-model and cross-platform release evidence remain outstanding. See
 [D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete.

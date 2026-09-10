@@ -43,3 +43,40 @@ fn undo_redo_stacks_match_typescript_at_every_command_step() {
         );
     }
 }
+
+#[test]
+fn state_redoable_tracks_undone_operations() {
+    use song_core::{Action, Envelope, Mutation, Song};
+    let song: Song =
+        serde_json::from_str(include_str!("../../../../tests/desktop/fixture.json")).unwrap();
+    let model = Envelope::fixture(song).unwrap();
+    assert!(model.state().redoable.is_empty());
+    let rename = |revision: u64, id: &str, title: &str| Mutation {
+        song_id: "desktop-fixture".into(),
+        expected_revision: revision,
+        operation_id: id.into(),
+        label: id.into(),
+        action: Action::Rename {
+            title: title.into(),
+        },
+    };
+    let undo = |revision: u64, id: &str, target: &str| Mutation {
+        song_id: "desktop-fixture".into(),
+        expected_revision: revision,
+        operation_id: id.into(),
+        label: id.into(),
+        action: Action::Undo {
+            target_id: target.into(),
+        },
+    };
+    let one = model.accept(&rename(0, "a", "First"), 1).unwrap();
+    assert_eq!(one.state().undoable, ["a"]);
+    assert!(one.state().redoable.is_empty());
+    let two = one.accept(&undo(1, "b", "a"), 2).unwrap();
+    assert!(two.state().undoable.is_empty());
+    assert_eq!(two.state().redoable, ["b"]);
+    let three = two.accept(&undo(2, "c", "b"), 3).unwrap();
+    assert_eq!(three.state().undoable, ["c"]);
+    assert!(three.state().redoable.is_empty());
+    assert_eq!(three.song.as_ref().unwrap().title, "First");
+}

@@ -9,6 +9,8 @@ import type { AudioClient } from "./audio.ts";
 import { audioPanel } from "./audio-view.ts";
 import type { MediaClient } from "./media.ts";
 import { mediaPanel } from "./media-view.ts";
+import type { ProfileClient } from "./profile.ts";
+import { profilePanel } from "./profile-view.ts";
 import { agentPanel } from "./agent-view.ts";
 import { DesktopClient } from "./client.ts";
 import { format, fraction, parse, value } from "./coordinates.ts";
@@ -17,9 +19,10 @@ const key = (note: NoteView) => `${note.eventId}/${note.memberId ?? ""}`;
 interface Draft { value: string; base: Snapshot }
 interface Gesture { note: NoteView; base: Snapshot; x: number; pointer: number; element: HTMLElement; moved: boolean; zoom: number; snap: number }
 
-export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient, audio?: AudioClient, media?: MediaClient) {
+export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient, audio?: AudioClient, media?: MediaClient, profiles?: ProfileClient) {
   const transport = audio ? audioPanel(audio) : null;
   const library = media ? mediaPanel(media) : null;
+  const accounts = profiles ? profilePanel(profiles, () => client.state?.profile ?? "", () => client.connect()) : null;
   const assistant = agent ? agentPanel(agent) : null;
   let selected = "", patternId = "", zoom = 110, snap = 3;
   let titleDraft: Draft | null = null, noteDraft: Draft | null = null;
@@ -112,10 +115,13 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
       </div>
       ${transport?.() ?? nothing}
       ${library?.() ?? nothing}
+      ${accounts?.() ?? nothing}
       <main class="desktop-main">
         <aside class="desktop-library"><h2>SONG</h2><p>${s.title}</p><hr /><h2>HISTORY</h2>
           ${s.undoable.length ? repeat(s.undoable.slice(-8).reverse(), (u) => u.operationId, (u) => html`<button ?disabled=${busy()}
             @click=${() => client.edit({ kind: "undo", targetId: u.operationId }, s, `Undo ${u.label}`)}>Undo · ${u.label}</button>`) : html`<small>Your edits will appear here.</small>`}
+          ${s.redoable.length ? repeat(s.redoable.slice(-8).reverse(), (u) => u.operationId, (u) => html`<button ?disabled=${busy()}
+            @click=${() => client.edit({ kind: "undo", targetId: u.operationId }, s, `Redo ${u.label}`)}>Redo · ${u.label}</button>`) : nothing}
           ${assistant?.() ?? nothing}
         </aside>
         <div class="desktop-editors">
@@ -165,6 +171,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
   const stopAgent = agent?.subscribe(paint);
   const stopAudio = audio?.subscribe(paint);
   const stopMedia = media?.subscribe(paint);
+  const stopProfiles = profiles?.subscribe(paint);
   paint();
-  return () => { disposed = true; stop(); stopAgent?.(); stopAudio?.(); stopMedia?.(); root.removeEventListener("keydown", keyboard); };
+  return () => { disposed = true; stop(); stopAgent?.(); stopAudio?.(); stopMedia?.(); stopProfiles?.(); root.removeEventListener("keydown", keyboard); };
 }

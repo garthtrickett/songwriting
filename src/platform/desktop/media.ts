@@ -51,7 +51,7 @@ export class MediaClient {
     const sequence = ++this.sequence;
     try {
       const state = mediaView(await this.transport.status());
-      if (!this.disposed && sequence === this.sequence) { this.state = state; this.error = ""; this.loaded = true; }
+      if (!this.disposed && sequence === this.sequence) { this.state = state; this.loaded = true; }
     } catch (e) { if (!this.disposed && sequence === this.sequence) { this.error = failure(e).message; this.loaded = true; } }
     this.notify();
   }
