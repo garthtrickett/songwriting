@@ -59,7 +59,7 @@ fn task_result_failure_rolls_back_music_and_retry_is_exactly_once() {
     let e = w.read("desktop-fixture").unwrap();
     assert_eq!(e.history.len(), 1);
     w.dispatch(&Mutation {
-        song_id: e.song.id,
+        song_id: e.song.as_ref().unwrap().id.clone(),
         expected_revision: 1,
         operation_id: "undo".into(),
         label: "Undo agent".into(),
@@ -69,7 +69,7 @@ fn task_result_failure_rolls_back_music_and_retry_is_exactly_once() {
     })
     .unwrap();
     assert_eq!(
-        w.read("desktop-fixture").unwrap().song.title,
+        w.read("desktop-fixture").unwrap().song.unwrap().title,
         "Mixed-meter sketch"
     );
     assert_eq!(
@@ -178,7 +178,7 @@ fn v1_database_migrates_transactionally_without_replacing_music() {
     drop(c);
     let w = Workspace::open(&path).unwrap();
     assert_eq!(
-        w.read("desktop-fixture").unwrap().song.title,
+        w.read("desktop-fixture").unwrap().song.unwrap().title,
         "Keep old music"
     );
     assert_eq!(w.read("desktop-fixture").unwrap().history.len(), 1);

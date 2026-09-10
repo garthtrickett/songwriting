@@ -1,5 +1,5 @@
 use crate::protocol::*;
-use song_core::{Envelope, Pitch, Result, Time};
+use song_core::{Envelope, Pitch, Result, Song, Time};
 
 fn label(p: &Pitch) -> String {
     format!(
@@ -24,14 +24,38 @@ fn label(p: &Pitch) -> String {
 /// edit. The authoritative title/revision/undo remain available for recovery.
 pub fn snapshot(envelope: &Envelope, epoch: &str) -> Snapshot {
     let state = envelope.state();
+    let Some(song) = envelope.song.clone() else {
+        return Snapshot {
+            protocol: PROTOCOL,
+            epoch: epoch.into(),
+            profile: "Local profile".into(),
+            revision: envelope.revision,
+            title: String::new(),
+            patterns: vec![],
+            notes: vec![],
+            bars: vec![],
+            placements: vec![],
+            warning: Some(
+                "This song was deleted. Undo the deletion or import a song to continue.".into(),
+            ),
+            undoable: state
+                .undoable
+                .iter()
+                .filter_map(|id| envelope.history.iter().find(|r| &r.operation_id == id))
+                .map(|r| UndoView {
+                    operation_id: r.operation_id.clone(),
+                    label: r.mutation.label.clone(),
+                })
+                .collect(),
+        };
+    };
     let mut out = Snapshot {
         protocol: PROTOCOL,
         epoch: epoch.into(),
         profile: "Local profile".into(),
         revision: envelope.revision,
-        title: envelope.song.title.clone(),
-        patterns: envelope
-            .song
+        title: song.title.clone(),
+        patterns: song
             .tables
             .patterns
             .values()
@@ -55,7 +79,7 @@ pub fn snapshot(envelope: &Envelope, epoch: &str) -> Snapshot {
             })
             .collect(),
     };
-    if let Err(error) = project(envelope, &mut out) {
+    if let Err(error) = project(&song, &mut out) {
         out.notes.clear();
         out.bars.clear();
         out.placements.clear();
@@ -66,8 +90,7 @@ pub fn snapshot(envelope: &Envelope, epoch: &str) -> Snapshot {
     out
 }
 
-fn project(envelope: &Envelope, out: &mut Snapshot) -> Result<()> {
-    let song = &envelope.song;
+fn project(song: &Song, out: &mut Snapshot) -> Result<()> {
     for event in song.tables.events.values() {
         if event.kind == "note" {
             out.notes.push(NoteView {

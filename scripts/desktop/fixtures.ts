@@ -12,6 +12,7 @@ import { harmonicSpans, harmonicContext, interpretations, chordCandidates, sound
 import { tablature } from "../../src/song/tablature.ts";
 import { fretPositions, fingeringIssues, targetPitch } from "../../src/song/fretted.ts";
 import { takePlacements } from "../../src/song/media.ts";
+import { migrateEntity, migrateSong } from "../../src/song/migrate.ts";
 import { sounds, bars, songEnd, segments, alignment, secondsPerQuarter, clicks, cycleStarts, restSpans } from "../../src/song/timeline.ts";
 import { placements } from "../../src/song/arrangement.ts";
 import { emptySong, noteEvent, semitone, type Fingering, type Performance } from "../../src/song/model.ts";
@@ -517,7 +518,42 @@ const tabulated = () => {
   };
 };
 const analysis = [analyzed(), tabulated()];
-for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits, "analysis.json": analysis })) {
+const migrated: { name: string; table?: string; input: unknown; output: unknown }[] = [
+  { name: "chord-missing-tonic", table: "chords", input: { id: "c", name: "C", notes: [{ id: "n", pitch: { degree: 1, alteration: 0, octave: 0 } }], label: null } },
+  { name: "section-missing-source", table: "sections", input: { id: "s", name: "S", barIds: [] } },
+  { name: "occurrence-missing-scope", table: "occurrences", input: { id: "o", name: "O", patternId: "p", voiceId: "v", start: [0, 1], span: [1, 1], phase: [0, 1], boundary: "continue", tails: "ring" } },
+  { name: "pattern-missing-groups", table: "patterns", input: { id: "p", name: "P", length: [4, 1], sourceId: null } },
+  { name: "event-missing-origin", table: "events", input: { id: "e", name: "E", patternId: "p", kind: "note", start: [0, 1], duration: [1, 1], pitch: { degree: 1, alteration: 0, octave: 0 }, chordId: null, drum: "kick", accent: 0.5, articulation: "normal", performance: [] } },
+  { name: "non-record", table: "events", input: "hello" },
+  { name: "unknown-table", table: "takes", input: { a: 1 } },
+].map(({ name, table, input }) => ({ name, table, input, output: migrateEntity(table, input) }));
+const oldSong = {
+  schemaVersion: 5, id: "old", title: "Old", mode: "major", degreeReference: "major",
+  tempo: { bpm: 100, beatUnit: [1, 1] }, arrangementOrder: [], writing: { instructions: "", preferences: "" },
+  tables: {
+    patterns: { p: { id: "p", name: "P", length: [4, 1], sourceId: null } },
+    events: {}, chords: {}, bars: {}, sections: {}, arrangement: {}, parts: {}, voices: {},
+    occurrences: {}, prompts: {}, markers: {},
+  },
+};
+migrated.push(
+  { name: "song-v5", input: oldSong, output: migrateSong(oldSong) },
+  { name: "song-v7-passthrough", input: song, output: migrateSong(song) },
+  { name: "song-v8-passthrough", input: { ...structuredClone(song), schemaVersion: 8 }, output: migrateSong({ ...structuredClone(song), schemaVersion: 8 }) },
+  { name: "song-missing-tables", input: { schemaVersion: 5, id: "x" }, output: migrateSong({ schemaVersion: 5, id: "x" }) },
+  { name: "song-non-record", input: [1, 2], output: migrateSong([1, 2]) },
+);
+const imported = (() => {
+  let current = { id: song.id, revision: 0, song: structuredClone(song), updatedAt: 0, history: [] as never[] };
+  const dispatch = (operationId: string, command: Mutation["command"]) => {
+    current = applyCommand(current, { songId: song.id, expectedRevision: current.revision, operationId, label: operationId, command }, current.revision + 1) as typeof current;
+  };
+  dispatch("rename", { kind: "edit", changes: [{ table: "meta", id: "title", value: "Imported" }] });
+  dispatch("remove", { kind: "delete" });
+  dispatch("restore", { kind: "undo", targetId: "remove" });
+  return { id: current.id, revision: current.revision, song: current.song, updatedAt: 0, history: current.history };
+})();
+for (const [name, data] of Object.entries({ "fixture.json": song, "commands.json": cases, "time.json": times, "audio.json": audio, "timeline.json": timeline, "validate.json": validateCases, "history.json": history, "structure.json": structures, "rhythm.json": rhythms, "harmony.json": harmonies, "edit.json": edits, "analysis.json": analysis, "migrate.json": migrated, "import.json": imported })) {
   const path = new URL(`../../tests/desktop/${name}`, import.meta.url);
   const content = JSON.stringify(data, null, 2) + "\n";
   if (process.argv.includes("--check")) {
