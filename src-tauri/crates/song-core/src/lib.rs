@@ -6,6 +6,7 @@ mod fretted;
 mod harmony;
 mod harmony_analysis;
 mod harmony_pitch;
+mod migrate;
 mod model;
 mod note_edit;
 mod rhythm;
@@ -29,6 +30,7 @@ pub use harmony_analysis::{
     SoundingVoice, chord_candidates, harmonic_context, harmonic_spans, interpretations,
     sounding_harmony,
 };
+pub use migrate::{migrate_entity, migrate_song};
 pub use model::*;
 pub use note_edit::{NoteEdit, NoteTarget, WireChange, change_notes, combine_notes, remove_notes};
 pub use rhythm::{RhythmAction, RhythmLane};

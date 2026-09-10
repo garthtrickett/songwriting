@@ -40,7 +40,7 @@ fn accept(case: &serde_json::Value) -> Result<Song, String> {
     let model = Envelope::fixture(song).unwrap();
     model
         .accept(&mutation, 100)
-        .map(|next| next.song)
+        .map(|next| next.song.expect("structure ops keep the song"))
         .map_err(|e| e.message)
 }
 
@@ -166,6 +166,6 @@ fn undo_reverses_table_deltas_and_restores_the_input_song() {
         },
     };
     let undone = applied.accept(&undo, 101).unwrap();
-    assert_eq!(undone.song, song);
+    assert_eq!(undone.song, Some(song));
     undone.validate().unwrap();
 }

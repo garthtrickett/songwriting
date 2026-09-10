@@ -76,20 +76,22 @@ impl Workspace {
     /// never replaced. Both the seed and any existing record must validate.
     pub fn initialize_fixture(&mut self, song: Song) -> Result<State> {
         let candidate = Envelope::fixture(song)?;
+        let song_id = candidate
+            .song
+            .as_ref()
+            .map(|song| song.id.clone())
+            .ok_or_else(|| Error::new("storage", "Fixture song is missing"))?;
         let tx = self
             .connection
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
-        let current = load(&tx, &candidate.song.id)?;
+        let current = load(&tx, &song_id)?;
         let state = if let Some(current) = current {
             current.state()
         } else {
             tx.execute(
                 "INSERT INTO workspace (id, revision, envelope) VALUES (?1, 0, ?2)",
-                params![
-                    candidate.song.id,
-                    serde_json::to_string(&candidate).map_err(storage)?
-                ],
+                params![song_id, serde_json::to_string(&candidate).map_err(storage)?],
             )
             .map_err(storage)?;
             candidate.state()
@@ -100,6 +102,45 @@ impl Workspace {
 
     pub fn read(&self, id: &str) -> Result<Envelope> {
         load(&self.connection, id)?.ok_or_else(|| Error::new("missing", "Song does not exist"))
+    }
+
+    /// Import a browser envelope: migrate, convert and revalidate, then store
+    /// it under its song id. Present rows are returned untouched when the
+    /// stored envelope already matches; conflicting content must be replaced
+    /// explicitly rather than merged silently.
+    pub fn import_envelope(&mut self, data: &serde_json::Value) -> Result<State> {
+        let candidate = Envelope::import(data)?;
+        let song_id = candidate
+            .song
+            .as_ref()
+            .map(|song| song.id.clone())
+            .ok_or_else(|| Error::new("invalid", "Imported song is missing"))?;
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)
+            .map_err(storage)?;
+        if let Some(current) = load(&tx, &song_id)? {
+            if current == candidate {
+                tx.commit().map_err(storage)?;
+                return Ok(current.state());
+            }
+            return Err(Error::new(
+                "conflict",
+                "Song already exists with different content; replace it explicitly",
+            ));
+        }
+        tx.execute(
+            "INSERT INTO workspace (id, revision, envelope) VALUES (?1, ?2, ?3)",
+            rusqlite::params![
+                song_id,
+                i64::try_from(candidate.revision).map_err(storage)?,
+                serde_json::to_string(&candidate).map_err(storage)?
+            ],
+        )
+        .map_err(storage)?;
+        let state = candidate.state();
+        tx.commit().map_err(storage)?;
+        Ok(state)
     }
 
     pub fn dispatch(&mut self, mutation: &Mutation) -> Result<State> {
@@ -155,7 +196,8 @@ fn load(connection: &Connection, id: &str) -> Result<Option<Envelope>> {
         .map_err(storage)?;
     row.map(|(revision, data)| {
         let envelope: Envelope = serde_json::from_str(&data).map_err(storage)?;
-        if envelope.song.id != id || i64::try_from(envelope.revision).map_err(storage)? != revision
+        if envelope.song.as_ref().is_some_and(|song| song.id != id)
+            || i64::try_from(envelope.revision).map_err(storage)? != revision
         {
             return Err(Error::new(
                 "storage",

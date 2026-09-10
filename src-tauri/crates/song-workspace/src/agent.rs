@@ -285,16 +285,26 @@ fn execute(
                     "Expected expectedRevision and a supported action",
                 )
             })?;
+            let song = before
+                .song
+                .as_ref()
+                .ok_or_else(|| Error::new("missing", "Song does not exist"))?;
             let mutation = Mutation {
-                song_id: before.song.id.clone(),
+                song_id: song.id.clone(),
                 expected_revision: input.expected_revision,
                 operation_id: format!("agent-{}-{}-{index}", task.id, task.checkpoint.rounds),
                 label: "Agent edit".into(),
                 action: input.action,
             };
             let state = apply(tx, &mutation)?;
+            let title = state
+                .song
+                .as_ref()
+                .ok_or_else(|| Error::new("missing", "Song does not exist"))?
+                .title
+                .clone();
             Ok(
-                json!({"operationId": mutation.operation_id, "revision": state.revision, "title": state.song.title}),
+                json!({"operationId": mutation.operation_id, "revision": state.revision, "title": title}),
             )
         }
         "complete_task" => {

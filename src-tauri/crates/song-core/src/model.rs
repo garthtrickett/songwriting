@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 // Unsupported tables must be present and empty; unknown fields are rejected.
 macro_rules! data {
     ($name:ident { $($field:ident: $ty:ty),* $(,)? }) => {
-        #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+        #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ts_rs::TS)]
         #[serde(rename_all = "camelCase", deny_unknown_fields)]
         pub struct $name { $(pub $field: $ty),* }
     };
@@ -42,7 +42,7 @@ data!(Chord { id: String, name: String, label_tonic: Pitch, notes: Vec<Note>, la
 data!(Pattern { id: String, name: String, groups: Vec<Time>, length: Time, source_id: Option<String> });
 /// Optional performance overrides omit absent keys, matching the reference
 /// JSON shape; deserialization still accepts explicit nulls.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ts_rs::TS)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Performance {
     pub member_id: String,

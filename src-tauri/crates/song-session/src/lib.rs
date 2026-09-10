@@ -60,10 +60,15 @@ impl Session {
                     Work::Song(reply) => {
                         let result = match workspace.as_mut() {
                             Err(e) => Err(e.clone()),
-                            Ok(w) => w
-                                .read("desktop-fixture")
-                                .map(|e| (e.song, e.revision))
-                                .map_err(Failure::from),
+                            Ok(w) => {
+                                w.read("desktop-fixture")
+                                    .map_err(Failure::from)
+                                    .and_then(|e| {
+                                        e.song.map(|song| (song, e.revision)).ok_or_else(|| {
+                                            Failure::new("missing", "Song does not exist")
+                                        })
+                                    })
+                            }
                         };
                         let _ = reply.send(result);
                         continue;

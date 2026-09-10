@@ -36,7 +36,7 @@ fn command_sequences_match_existing_typescript_including_rejections_and_undo() {
         }
         assert_eq!(
             model.song,
-            serde_json::from_value::<Song>(expected.clone()).unwrap(),
+            Some(serde_json::from_value::<Song>(expected.clone()).unwrap()),
             "case {i}"
         );
         assert_eq!(json!(model.revision), case["revision"], "case {i}");
@@ -132,8 +132,8 @@ fn malformed_music_and_unported_features_are_rejected_without_dropping_data() {
 fn clients_cannot_mutate_canonical_state_through_a_render_snapshot() {
     let model = Envelope::fixture(fixture()).unwrap();
     let mut view = model.state();
-    view.song.title = "Only a local preview".into();
-    assert_eq!(model.song.title, "Mixed-meter sketch");
+    view.song.as_mut().unwrap().title = "Only a local preview".into();
+    assert_eq!(model.song.as_ref().unwrap().title, "Mixed-meter sketch");
     let mut wire = json!({"songId": "desktop-fixture", "operationId": "op", "expectedRevision": 0,
         "label": "op", "action": {"kind": "rename", "title": "Hi"}});
     wire["acceptedSong"] = json!({});

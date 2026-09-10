@@ -47,7 +47,12 @@ fn commit_survives_process_exit_before_reply_and_retry_is_idempotent() {
     assert_eq!(String::from_utf8(output.stdout).unwrap().lines().count(), 1);
     let mut workspace = Workspace::open(&path).unwrap();
     assert_eq!(
-        workspace.read("desktop-fixture").unwrap().song.title,
+        workspace
+            .read("desktop-fixture")
+            .unwrap()
+            .song
+            .unwrap()
+            .title,
         "Durable edit"
     );
     assert_eq!(workspace.dispatch(&request).unwrap().revision, 1);
@@ -57,7 +62,7 @@ fn commit_survives_process_exit_before_reply_and_retry_is_idempotent() {
         target_id: "lost-reply".into(),
     };
     assert_eq!(
-        workspace.dispatch(&undo).unwrap().song.title,
+        workspace.dispatch(&undo).unwrap().song.unwrap().title,
         "Mixed-meter sketch"
     );
     drop(workspace);
@@ -84,7 +89,7 @@ fn failed_sqlite_write_never_publishes_state_or_an_operation_receipt() {
     let unchanged = workspace.read("desktop-fixture").unwrap();
     assert_eq!(unchanged.revision, 0);
     assert!(unchanged.history.is_empty());
-    assert_eq!(unchanged.song.title, "Mixed-meter sketch");
+    assert_eq!(unchanged.song.unwrap().title, "Mixed-meter sketch");
     failure.execute_batch("DROP TRIGGER reject_write;").unwrap();
     assert_eq!(workspace.dispatch(&request).unwrap().revision, 1);
 }
@@ -160,7 +165,12 @@ fn initialization_does_not_replace_existing_music_or_claim_another_database() {
     workspace.initialize_fixture(fixture()).unwrap();
     workspace.dispatch(&rename("edit", 0, "Keep this")).unwrap();
     assert_eq!(
-        workspace.initialize_fixture(fixture()).unwrap().song.title,
+        workspace
+            .initialize_fixture(fixture())
+            .unwrap()
+            .song
+            .unwrap()
+            .title,
         "Keep this"
     );
     let foreign = dir.path().join("foreign.sqlite");
