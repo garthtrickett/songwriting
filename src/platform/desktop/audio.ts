@@ -1,6 +1,7 @@
 import type { AudioView } from "../../generated/desktop/AudioView.ts";
 import type { OutputDevice } from "../../generated/desktop/OutputDevice.ts";
 import type { AudioPlay } from "../../generated/desktop/AudioPlay.ts";
+import type { Time } from "../../generated/desktop/Time.ts";
 import { failure } from "./wire.ts";
 export interface AudioTransport {
   status(): Promise<unknown>;
@@ -13,6 +14,7 @@ export function audioView(input: unknown): AudioView {
   const v = input as AudioView;
   if (!["stopped", "playing", "ended", "error"].includes(v.status) ||
       ![v.generation, v.sampleRate, v.channels, v.frames, v.totalFrames, v.callbacks, v.xruns].every(n => Number.isSafeInteger(n) && n >= 0) ||
+      typeof v.level !== "number" || !Number.isFinite(v.level) || v.level < 0 || v.level > 1 ||
       v.frames > v.totalFrames || !(v.revision === null || Number.isSafeInteger(v.revision) && v.revision >= 0) ||
       ![v.device, v.error, v.warning].every(s => s === null || typeof s === "string")) throw new Error("Invalid audio status");
   return v;
@@ -22,7 +24,7 @@ export function outputDevices(input: unknown): OutputDevice[] {
   return input;
 }
 export class AudioClient {
-  state: AudioView = { generation: 0, status: "stopped", device: null, sampleRate: 0, channels: 0, frames: 0, totalFrames: 0, callbacks: 0, xruns: 0, warning: null, revision: null, error: null };
+  state: AudioView = { generation: 0, status: "stopped", device: null, sampleRate: 0, channels: 0, frames: 0, totalFrames: 0, callbacks: 0, xruns: 0, level: 0, warning: null, revision: null, error: null };
   outputs: OutputDevice[] = [];
   error = "";
   busy = false;
@@ -55,11 +57,11 @@ export class AudioClient {
     catch (e) { if (!this.disposed) this.error = failure(e).message; }
     this.notify();
   }
-  async play(deviceId: string | null) {
+  async play(deviceId: string | null, options: { tonic?: number | null; metronome?: boolean; from?: Time | null } = {}) {
     if (this.disposed || this.busy) return;
     const action = ++this.action;
     ++this.sequence; this.busy = true; this.error = ""; this.notify();
-    try { await this.transport.play({ deviceId, tonic: null, metronome: null, from: null }); }
+    try { await this.transport.play({ deviceId, tonic: options.tonic ?? null, metronome: options.metronome ?? true, from: options.from ?? null }); }
     catch (e) { if (action === this.action) this.error = failure(e).message; }
     if (action === this.action) this.busy = false;
     await this.refresh();

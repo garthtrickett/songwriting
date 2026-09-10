@@ -3,7 +3,6 @@
 //! durations are microsecond-approximated (a 60 ms blip, sub-frame at every
 //! supported rate).
 use song_core::{Error, Result, Song, Time, semitone};
-use std::f64::consts::TAU;
 
 pub const MAX_SECONDS: f64 = 600.0;
 const MAX_TONES: usize = 65536;
@@ -174,6 +173,7 @@ impl Schedule {
     /// Prepare bounded mono PCM on the control worker. The device callback only
     /// copies samples, with no oscillators, allocations, queues or locks.
     pub fn render(&self, rate: u32, cancelled: impl Fn() -> bool) -> Result<Vec<f32>> {
+        use crate::instruments::{Voice, decay_for, envelope_value, kick_frequency};
         if !(8000..=192000).contains(&rate) {
             return Err(limit("Unsupported audition sample rate"));
         }
@@ -192,7 +192,9 @@ impl Schedule {
                     "A pitch exceeds this device's audition frequency range",
                 ));
             }
-            let frequency = tone.frequency;
+            let duration = number(tone.duration) * self.seconds_per_quarter;
+            let decay = decay_for(tone.kind);
+            let mut voice = Voice::new(tone.kind, rate);
             for (i, sample) in pcm[start..end].iter_mut().enumerate() {
                 if i % 4096 == 0 && cancelled() {
                     return Err(Error::new(
@@ -200,12 +202,16 @@ impl Schedule {
                         "Audition superseded or stopped",
                     ));
                 }
-                let attack = (i as f64 / (f64::from(rate) * 0.005)).min(1.0);
-                let release = ((end - start - i) as f64 / (f64::from(rate) * 0.015)).min(1.0);
-                *sample += ((TAU * frequency * i as f64 / f64::from(rate)).sin()
-                    * tone.gain
-                    * attack
-                    * release) as f32;
+                let t = i as f64 / f64::from(rate);
+                let frequency = match tone.kind {
+                    crate::schedule::ToneKind::Drum(crate::schedule::Drum::Kick) => {
+                        kick_frequency(t, duration)
+                    }
+                    _ => tone.frequency,
+                };
+                *sample += (voice.sample(frequency, f64::from(rate))
+                    * envelope_value(tone.gain, duration, t, decay))
+                    as f32;
             }
         }
         for sample in &mut pcm {

@@ -207,6 +207,7 @@ fn update(view: &mut AudioView, playing: &mut Option<Playing>, fence: &AtomicU32
     if let Some(p) = playing.as_ref() {
         view.frames = p.metrics.frames.load(Ordering::Acquire);
         view.callbacks = p.metrics.callbacks.load(Ordering::Relaxed);
+        view.level = f32::from_bits(p.metrics.level.load(Ordering::Relaxed));
         view.xruns = p.metrics.xruns.load(Ordering::Relaxed);
         view.warning = if view.xruns > 0 {
             Some(format!(

@@ -1,9 +1,10 @@
 import { expect, test } from "bun:test";
 import { AudioClient, audioView, outputDevices, type AudioTransport } from "./audio.ts";
-const state = { generation: 1, status: "playing", device: "test", sampleRate: 48000, channels: 2, frames: 100, totalFrames: 1000, callbacks: 1, xruns: 0, warning: null, revision: 0, error: null };
+const state = { generation: 1, status: "playing", device: "test", sampleRate: 48000, channels: 2, frames: 100, totalFrames: 1000, callbacks: 1, xruns: 0, level: 0.25, warning: null, revision: 0, error: null };
 test("audio boundary rejects malformed data and counters", () => {
   expect(() => audioView({})).toThrow();
   expect(() => audioView({...state, frames: 2000})).toThrow();
+  expect(() => audioView({...state, level: 2})).toThrow();
   expect(() => outputDevices([{}])).toThrow();
   expect(audioView(state).frames).toBe(100);
 });
@@ -29,4 +30,17 @@ test("device failures stay visible and stale polls cannot restore old playback",
   await client.stop(); reply(state); await old;
   expect(client.state.status).toBe("stopped");
   await client.play("missing"); expect(client.error).toContain("Output unavailable"); client.dispose();
+});
+test("play forwards device, key, metronome and seek position", async () => {
+  let request: unknown = null;
+  const transport: AudioTransport = {
+    status: async () => state, devices: async () => [],
+    play: async (r) => { request = r; }, stop: async () => {},
+  };
+  const client = new AudioClient(transport);
+  await client.play("out", { tonic: 48, metronome: false, from: [1, 2] });
+  expect(request).toEqual({ deviceId: "out", tonic: 48, metronome: false, from: [1, 2] });
+  await client.play(null);
+  expect(request).toEqual({ deviceId: null, tonic: null, metronome: true, from: null });
+  client.dispose();
 });
