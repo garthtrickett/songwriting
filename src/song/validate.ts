@@ -68,7 +68,7 @@ export function validateSong(input: unknown): Result<Song> {
           record(e) && id(key) && e.id === key && text(e.name),
           `Invalid identity in ${table}: ${key}`,
         );
-        if (++count > 20000) throw new Error("Song exceeds 20,000 entities");
+        if (++count > 100000) throw new Error("Song exceeds 100,000 entities");
       }
     }
     assert(record(s.writing) && typeof s.writing.instructions === "string" &&

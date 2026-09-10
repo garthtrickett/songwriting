@@ -384,3 +384,43 @@ fn recovered_device_notices_do_not_stop_audio_but_disconnect_does() {
     assert_eq!(block, [0.0; 8]);
     assert!(c.metrics.failed.load(Ordering::Acquire));
 }
+#[test]
+fn audition_scale_project_compiles_and_renders_within_budget() {
+    // D6 tripwire, not a benchmark: ~60x above droplet debug measurements
+    // (compile ~2ms, render ~500ms for 232 tones / 1.6M frames).
+    use std::time::Instant;
+    let song = song_testkit::audition_song();
+    let before = Instant::now();
+    let schedule = Schedule::compile(&song, &opts()).expect("audition must compile");
+    let compile_ms = before.elapsed().as_millis();
+    eprintln!(
+        "perf audition-compile: {compile_ms}ms tones={}",
+        schedule.tones.len()
+    );
+    let before = Instant::now();
+    let pcm = schedule
+        .render(48000, || false)
+        .expect("audition must render");
+    let render_ms = before.elapsed().as_millis();
+    eprintln!("perf audition-render: {render_ms}ms frames={}", pcm.len());
+    assert!(compile_ms < 10_000, "compile budget");
+    assert!(render_ms < 30_000, "render budget");
+}
+#[test]
+fn reference_scale_project_is_explicitly_beyond_audition_bounds() {
+    let song = song_testkit::reference_song();
+    assert_eq!(
+        Schedule::compile(&song, &opts()).unwrap_err().code,
+        "audio_limit"
+    );
+}
+#[test]
+fn stress_scale_project_compiles_but_render_is_explicitly_bounded() {
+    let song = song_testkit::stress_song();
+    let schedule = Schedule::compile(&song, &opts()).expect("stress must compile");
+    assert!(schedule.tones.len() >= 50_000);
+    assert_eq!(
+        schedule.render(48000, || false).unwrap_err().code,
+        "audio_limit"
+    );
+}

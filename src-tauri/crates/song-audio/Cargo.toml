@@ -17,6 +17,7 @@ workspace = true
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt", "time"] }
+song-testkit = { path = "../song-testkit" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 cpal = { version = "=0.18.2", features = ["pulseaudio"] }
