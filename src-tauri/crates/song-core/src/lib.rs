@@ -30,6 +30,7 @@ pub use harmony_analysis::{
     SoundingVoice, chord_candidates, harmonic_context, harmonic_spans, interpretations,
     sounding_harmony,
 };
+pub use harmony_pitch::semitone;
 pub use migrate::{migrate_entity, migrate_song};
 pub use model::*;
 pub use note_edit::{NoteEdit, NoteTarget, WireChange, change_notes, combine_notes, remove_notes};

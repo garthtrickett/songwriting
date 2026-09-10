@@ -368,7 +368,17 @@ async fn manual_playback_never_requires_a_configured_provider() {
         "configuration"
     );
     let audio = song_audio::Engine::new();
-    match song_agent::audio::play(&session, &audio, song_audio::AudioPlay { device_id: None }).await
+    match song_agent::audio::play(
+        &session,
+        &audio,
+        song_audio::AudioPlay {
+            device_id: None,
+            tonic: None,
+            metronome: None,
+            from: None,
+        },
+    )
+    .await
     {
         Ok(()) => {
             let _ = audio.stop();

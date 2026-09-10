@@ -2,6 +2,7 @@ pub mod schedule;
 mod stream;
 mod worker;
 use serde::{Deserialize, Serialize};
+use song_core::Time;
 use ts_rs::TS;
 pub use worker::Engine;
 
@@ -50,6 +51,12 @@ impl Default for AudioView {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct AudioPlay {
     pub device_id: Option<String>,
+    /// Playback key in MIDI note numbers; browser default 48.
+    pub tonic: Option<i32>,
+    /// Click track; defaults on like the browser engine.
+    pub metronome: Option<bool>,
+    /// Start position in quarters for seek; defaults to the beginning.
+    pub from: Option<Time>,
 }
 
 #[cfg(test)]
