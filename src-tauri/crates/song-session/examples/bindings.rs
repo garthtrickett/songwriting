@@ -1,4 +1,4 @@
-use song_session::protocol::{AgentConfig, AgentView, EditRequest, Failure, Snapshot};
+use song_session::protocol::{AgentConfig, AgentView, EditRequest, Failure, ProfileView, Snapshot};
 use ts_rs::TS;
 fn main() {
     let path = std::env::args().nth(1).expect("Output directory required");
@@ -17,4 +17,5 @@ fn main() {
     Failure::export_all(&config).unwrap();
     AgentConfig::export_all(&config).unwrap();
     AgentView::export_all(&config).unwrap();
+    ProfileView::export_all(&config).unwrap();
 }

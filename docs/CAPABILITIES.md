@@ -7,6 +7,12 @@ restart. `desktop_open` reads a Rust projection; `desktop_dispatch` sends genera
 versioned actions with session epoch, operation ID and expected revision. Events
 carry full committed snapshots; uncertain saves retry the identical request.
 The Rust session worker, core and SQLite adapter own validation and persistence.
+Local profiles live under one profiles directory with a fenced workspace each;
+`desktop_profiles`, `desktop_profile_create` and `desktop_profile_switch` list,
+create and switch them at the Tauri layer. Switching advances the session epoch
+(old renderers must resubscribe), snapshots a bounded backup, stops audio and
+rests agent reasoning until reconfigured. Profile switching UI arrives later;
+the window already displays the active profile name.
 
 The native cohort is the disposable mixed-meter starter, not a general importer.
 The Rig proof exposes `read_song`, `edit_song` (rename, moveNote, undo) and

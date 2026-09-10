@@ -130,7 +130,7 @@ async fn crash_child() {
 #[tokio::test]
 async fn process_restart_replays_saved_result_once_and_preserves_intervening_manual_edit() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("workspace.sqlite");
+    let path = dir.path().join("profiles");
     let child = std::process::Command::new(std::env::current_exe().unwrap())
         .args(["--exact", "crash_child", "--nocapture"])
         .env("SONGWRITER_TEST_CRASH_PATH", &path)
@@ -163,7 +163,7 @@ async fn process_restart_replays_saved_result_once_and_preserves_intervening_man
     assert_eq!(state.revision, 2);
     runtime.shutdown().await;
     session.close();
-    let workspace = song_workspace::Workspace::open(path).unwrap();
+    let workspace = song_workspace::Workspace::open(path.join("default/workspace.sqlite")).unwrap();
     let envelope = workspace.read("desktop-fixture").unwrap();
     assert_eq!(envelope.history.len(), 2);
     assert_eq!(
@@ -190,7 +190,7 @@ impl Model for Stalled {
 #[tokio::test]
 async fn cancellation_fences_late_tools_and_manual_editing_stays_responsive() {
     let dir = tempfile::tempdir().unwrap();
-    let session = Session::start(dir.path().join("w.sqlite"), |_| {});
+    let session = Session::start(dir.path().join("profiles"), |_| {});
     let entered = Arc::new(AtomicUsize::new(0));
     let runtime = Runtime::new(session.clone());
     runtime
@@ -248,7 +248,7 @@ impl Model for Failed {
 #[tokio::test]
 async fn missing_credentials_and_network_failure_leave_manual_work_available() {
     let dir = tempfile::tempdir().unwrap();
-    let session = Session::start(dir.path().join("w.sqlite"), |_| {});
+    let session = Session::start(dir.path().join("profiles"), |_| {});
     let runtime = Runtime::new(session.clone());
     assert_eq!(
         runtime.start("Rename".into()).await.unwrap_err().code,
@@ -276,7 +276,7 @@ impl Model for Endless {
 #[tokio::test]
 async fn completion_is_explicit_and_request_budget_survives_resume() {
     let dir = tempfile::tempdir().unwrap();
-    let session = Session::start(dir.path().join("w.sqlite"), |_| {});
+    let session = Session::start(dir.path().join("profiles"), |_| {});
     let runtime = Runtime::new(session.clone());
     runtime.set_model(Arc::new(Endless)).await.unwrap();
     runtime.start("Finish".into()).await.unwrap();
@@ -313,7 +313,7 @@ impl Model for AudioReplay {
 #[tokio::test]
 async fn interrupted_ephemeral_audio_is_not_replayed_on_resume() {
     let dir = tempfile::tempdir().unwrap();
-    let session = Session::start(dir.path().join("workspace.sqlite"), |_| {});
+    let session = Session::start(dir.path().join("profiles"), |_| {});
     let task = session
         .agent(AgentWork::Begin {
             prompt: "Play sketch".into(),
@@ -361,7 +361,7 @@ async fn interrupted_ephemeral_audio_is_not_replayed_on_resume() {
 #[tokio::test]
 async fn manual_playback_never_requires_a_configured_provider() {
     let dir = tempfile::tempdir().unwrap();
-    let session = Session::start(dir.path().join("w.sqlite"), |_| {});
+    let session = Session::start(dir.path().join("profiles"), |_| {});
     let runtime = Runtime::new(session.clone());
     assert_eq!(
         runtime.start("Play".into()).await.unwrap_err().code,
