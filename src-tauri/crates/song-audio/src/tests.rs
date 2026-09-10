@@ -424,3 +424,161 @@ fn stress_scale_project_compiles_but_render_is_explicitly_bounded() {
         "audio_limit"
     );
 }
+/// Pick a null sink when one is enumerated (silent and deterministic),
+/// otherwise the default output. None means no audio stack: skip loudly.
+async fn continuity_device(engine: &Engine) -> Option<Option<String>> {
+    match engine.devices().await {
+        Ok(devices) if !devices.is_empty() => Ok(devices
+            .iter()
+            .find(|d| {
+                d.id.to_ascii_lowercase().contains("null")
+                    || d.name.to_ascii_lowercase().contains("null")
+            })
+            .map(|d| d.id.clone())),
+        _ => Err(()),
+    }
+    .ok()
+}
+#[tokio::test]
+async fn playback_continues_through_control_plane_load() {
+    let engine = Engine::new();
+    let Some(device_id) = continuity_device(&engine).await else {
+        eprintln!("continuity: SKIP (no audio output stack)");
+        engine.close();
+        return;
+    };
+    let song = song_testkit::audition_song();
+    let generation = engine.intent().unwrap();
+    // Saturate a sibling thread for the whole playback window: the flag stays
+    // set until "ended" is observed, so the burn is alive (not merely
+    // scheduled) throughout. Rounds completed vary by machine; the contention
+    // does not.
+    let reference = song_testkit::reference_song();
+    let loading = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
+    let flag = loading.clone();
+    let burn = tokio::task::spawn_blocking(move || {
+        let mut rounds = 0;
+        while flag.load(std::sync::atomic::Ordering::Relaxed) {
+            let _ = song_core::sounds(&reference);
+            rounds += 1;
+        }
+        rounds
+    });
+    let started = engine
+        .play(
+            generation,
+            song,
+            0,
+            crate::AudioPlay {
+                device_id,
+                tonic: None,
+                metronome: None,
+                from: None,
+            },
+        )
+        .await;
+    if let Err(e) = &started {
+        if e.message.contains("unavailable") {
+            eprintln!("continuity: SKIP (default output unusable)");
+            engine.close();
+            return;
+        }
+        panic!("play failed: {}", e.message);
+    }
+    let mut last_frames = 0;
+    let mut observations = 0;
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+    let final_view = loop {
+        let view = engine.view().await.unwrap();
+        assert!(
+            view.frames >= last_frames,
+            "frames must advance monotonically"
+        );
+        last_frames = view.frames;
+        observations += 1;
+        if view.status == "ended" {
+            assert!(
+                !burn.is_finished(),
+                "control-plane load must be alive when playback ends"
+            );
+            break view;
+        }
+        assert_eq!(view.status, "playing", "unexpected status: {}", view.status);
+        assert!(std::time::Instant::now() < deadline, "playback never ended");
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+    };
+    loading.store(false, std::sync::atomic::Ordering::Relaxed);
+    let rounds = burn.await.unwrap();
+    eprintln!(
+        "continuity: frames={} callbacks={} xruns={} observations={} burn_rounds={}",
+        final_view.frames, final_view.callbacks, final_view.xruns, observations, rounds
+    );
+    assert_eq!(final_view.frames, final_view.total_frames);
+    assert!(final_view.callbacks > 0);
+    engine.close();
+}
+#[test]
+fn engine_close_reopen_loses_no_state_and_rejects_stale_intents() {
+    let engine = Engine::new();
+    let _generation = engine.intent().unwrap();
+    engine.close();
+    assert!(engine.intent().is_err());
+    let reopened = Engine::new();
+    let view = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(reopened.view())
+        .unwrap();
+    assert_eq!(view.status, "stopped");
+    reopened.close();
+}
+#[tokio::test]
+async fn stop_start_cycles_release_and_reopen_the_stream() {
+    let engine = Engine::new();
+    let Some(device_id) = continuity_device(&engine).await else {
+        eprintln!("stop/start: SKIP (no audio output stack)");
+        engine.close();
+        return;
+    };
+    let attempt = |generation: u32, song: song_core::Song| {
+        let engine = &engine;
+        let device_id = device_id.clone();
+        async move {
+            engine
+                .play(
+                    generation,
+                    song,
+                    0,
+                    crate::AudioPlay {
+                        device_id,
+                        tonic: None,
+                        metronome: None,
+                        from: None,
+                    },
+                )
+                .await
+        }
+    };
+    let first = engine.intent().unwrap();
+    attempt(first, song_testkit::audition_song()).await.unwrap();
+    assert_eq!(engine.view().await.unwrap().status, "playing");
+    engine.stop().unwrap();
+    assert_eq!(engine.view().await.unwrap().status, "stopped");
+    let second = engine.intent().unwrap();
+    attempt(second, song_testkit::audition_song())
+        .await
+        .unwrap();
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+    loop {
+        let view = engine.view().await.unwrap();
+        if view.status == "ended" {
+            assert_eq!(view.frames, view.total_frames);
+            break;
+        }
+        assert_eq!(view.status, "playing", "unexpected status: {}", view.status);
+        assert!(std::time::Instant::now() < deadline, "replay never ended");
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+    }
+    engine.close();
+}
