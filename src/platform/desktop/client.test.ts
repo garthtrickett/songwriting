@@ -1,10 +1,13 @@
 import { test, expect } from "bun:test";
-import type { Snapshot } from "./wire.ts";
+import { snapshot, type Snapshot } from "./wire.ts";
 import { DesktopClient, type Transport } from "./client.ts";
 import type { EditRequest } from "../../generated/desktop/EditRequest.ts";
 
+const library = (): Snapshot["library"] => ({ appearances: [], markers: [], annotations: [], harmony: [],
+  parts: [], voices: [], chords: [], polyrhythms: [], fretted: [], takes: [], lyrics: [], phrases: [], prompts: [],
+  writing: { instructions: "", preferences: "", mode: "major", degreeReference: "major", bpm: 120, beatUnit: [1, 1] } });
 const state = (revision = 0): Snapshot => ({ protocol: 1, epoch: "session-one", profile: "Local profile", revision,
-  title: "Sketch", patterns: [], notes: [], bars: [], placements: [], undoable: [], redoable: [], warning: null });
+  title: "Sketch", patterns: [], notes: [], bars: [], placements: [], library: library(), undoable: [], redoable: [], warning: null });
 function setup() {
   let changed: (value: unknown) => void = () => {};
   let stopped = false;
@@ -64,4 +67,30 @@ test("disposal during listener registration releases the late listener", async (
   const opening = f.client.connect(); f.client.dispose();
   finish!(() => { released = true; }); await opening;
   expect(released).toBe(true); expect(f.client.state).toBeNull();
+});
+
+// The library reaches the view as rendered rows, so its shape is validated on
+// arrival like every other part of the snapshot. These cases fail if the
+// validation is removed: a no-op validator would accept all three.
+test("a snapshot without a library is rejected rather than rendered half-formed", () => {
+  const { library: _dropped, ...without } = state();
+  expect(() => snapshot(without)).toThrow();
+});
+
+test("a malformed library row is rejected", () => {
+  const bad = state();
+  bad.library.voices = [{ id: "v1", name: "Lead", partId: "p1", part: 7 } as unknown as Snapshot["library"]["voices"][number]];
+  expect(() => snapshot(bad)).toThrow();
+  const badTime = state();
+  badTime.library.markers = [{ id: "m1", name: "Drop", at: [1, 0] } as unknown as Snapshot["library"]["markers"][number]];
+  expect(() => snapshot(badTime)).toThrow("Invalid desktop state");
+});
+
+test("a well-formed library survives validation with its rows intact", () => {
+  const good = state();
+  good.library.markers = [{ id: "m1", name: "Drop", at: [4, 1] }];
+  good.library.writing.instructions = "keep it crooked";
+  const out = snapshot(good);
+  expect(out.library.markers[0]!.name).toBe("Drop");
+  expect(out.library.writing.instructions).toBe("keep it crooked");
 });

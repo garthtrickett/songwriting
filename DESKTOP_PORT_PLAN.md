@@ -4,7 +4,12 @@ Status: D2, D3 and D6 complete, 2026-09-10 (see D3_PLAN.md and
 docs/DESKTOP_D6_VALIDATION.md). D4–D5 and D7 remain planned and unactivated. The Rust SAM/SQLite slice is
 connected to a Tauri window and Lit view. Native audition and Rig are implemented.
 Physical-output, media, live-model and cross-platform release evidence remain outstanding. See
-[D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete.
+[D1 validation](docs/DESKTOP_D1_VALIDATION.md). D1 is not complete. The window now renders the ported
+model: every table reaches the view and the structure/rhythm/harmony/edit actions
+are reachable from workbench panels, so the UI no longer lags D2 and D3. See
+[workbench views](docs/DESKTOP_WORKBENCH_VIEWS.md). Parameterized analysis still
+needs a read-only query command before the harmony, rhythm and tablature
+workbenches match the browser.
 
 This is the selected product direction for the next implementation workstream.
 It supersedes the Neon/Vercel deployment target in MASTRA_AGENT_PLAN.md. Preserve

@@ -59,3 +59,42 @@
 .desktop-profiles-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .desktop-profiles small { color: #aeb5b9; }
 .desktop-profiles p { margin: 4px 0; color: #f8bc91; }
+
+/* The transport, media and profile panels used to stack full width, eating the
+   vertical space the editors and the side rail need. Racking them side by side
+   keeps all three visible without pushing the workspace off screen. */
+.desktop-rack { display: flex; flex-wrap: wrap; align-items: stretch; }
+.desktop-rack > section { flex: 1 1 300px; min-width: 0; border-right: 1px solid #121517; }
+.desktop-rack > section:last-child { border-right: 0; }
+.desktop-profiles form { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.desktop-profiles label { min-width: 0; flex: 1 1 160px; }
+.desktop-profiles input { width: 100%; box-sizing: border-box; }
+
+.desktop-tools { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 12px; background: #303234; border-block: 1px solid var(--line); flex: none; }
+.desktop-tray { flex: none; }
+.desktop-tools button { font-size: 11px; }
+.desktop-tools button[aria-selected="true"] { background: #4d7b6d; border-color: #8ab9a9; color: #edf6f3; }
+.desktop-tray { background: #2b2d2f; border-top: 1px solid var(--line); max-height: 45vh; overflow: auto; }
+
+.workbench { padding: 4px 0 14px; }
+.workbench-head { display: flex; align-items: baseline; gap: 12px; padding: 10px 12px 6px; }
+.workbench-head h3 { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+.workbench-head span { font-size: 11px; color: var(--muted); }
+.workbench-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.workbench-table th { text-align: left; font-weight: normal; font-size: 10px; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); padding: 4px 12px; border-bottom: 1px solid var(--line); }
+.workbench-table td { padding: 5px 12px; border-bottom: 1px solid #343638; vertical-align: middle; }
+.workbench-table tr:hover td { background: #313436; }
+.workbench-actions { display: flex; gap: 4px; flex-wrap: wrap; }
+.workbench-actions button { font-size: 11px; padding: 2px 7px; }
+.workbench-list { list-style: none; font-size: 12px; padding: 0 12px; }
+.workbench-list > li { padding: 4px 0; border-bottom: 1px solid #343638; }
+.workbench-list ul { list-style: none; padding-left: 14px; color: var(--muted); }
+.workbench-empty, .workbench-note { padding: 4px 12px 8px; font-size: 11px; color: var(--muted); }
+.workbench-error { padding: 4px 12px; font-size: 11px; color: #f8bc91; }
+.workbench-form { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; padding: 4px 12px 8px; }
+.workbench-form label { display: grid; gap: 4px; font-size: 11px; }
+.workbench-form input[type="number"] { width: 80px; }
+.workbench-writing { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+.workbench-writing textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.workbench-writing button { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 900px) { .workbench-writing { grid-template-columns: 1fr; } }
