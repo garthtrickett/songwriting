@@ -14,22 +14,51 @@ import { profilePanel } from "./profile-view.ts";
 import { agentPanel } from "./agent-view.ts";
 import { DesktopClient } from "./client.ts";
 import { format, fraction, parse, value } from "./coordinates.ts";
+import type { Edit, Workbench } from "./workbench.ts";
+import { structurePanel } from "./structure-view.ts";
+import { objectsPanel } from "./objects-view.ts";
+import { harmonyPanel } from "./harmony-view.ts";
+import { rhythmPanel } from "./rhythm-view.ts";
+import { tabPanel } from "./tab-view.ts";
+import { writingPanel } from "./writing-view.ts";
+import { takesPanel } from "./takes-view.ts";
 
 const key = (note: NoteView) => `${note.eventId}/${note.memberId ?? ""}`;
 interface Draft { value: string; base: Snapshot }
 interface Gesture { note: NoteView; base: Snapshot; x: number; pointer: number; element: HTMLElement; moved: boolean; zoom: number; snap: number }
+
+// The workbenches the writer can open. Each one renders projected state and
+// proposes actions Rust already accepts; none of them holds musical authority.
+const TOOLS = [
+  ["structure", "Structure"],
+  ["rhythm", "Rhythm"],
+  ["harmony", "Harmony"],
+  ["tab", "Tab"],
+  ["objects", "Objects"],
+  ["writing", "Writing"],
+  ["takes", "Takes"],
+] as const;
+type Tool = (typeof TOOLS)[number][0];
 
 export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: AgentClient, audio?: AudioClient, media?: MediaClient, profiles?: ProfileClient) {
   const transport = audio ? audioPanel(audio) : null;
   const library = media ? mediaPanel(media) : null;
   const accounts = profiles ? profilePanel(profiles, () => client.state?.profile ?? "", () => client.connect()) : null;
   const assistant = agent ? agentPanel(agent) : null;
+  const harmony = harmonyPanel(), rhythm = rhythmPanel(), writing = writingPanel();
+  let tool: Tool | null = null;
   let selected = "", patternId = "", zoom = 110, snap = 3;
   let titleDraft: Draft | null = null, noteDraft: Draft | null = null;
   let gesture: Gesture | null = null, preview: { key: string; start: Time } | null = null;
   let localError = "", disposed = false;
   const busy = () => client.status !== "ready" || !!client.pending;
   const select = (note: NoteView) => { selected = key(note); noteDraft = null; localError = ""; paint(); };
+  const dispatch: Edit = (action, label) => {
+    const base = client.state;
+    if (base) void client.edit(action, base, label);
+  };
+  const bench = (state: Snapshot): Workbench => ({ s: state, edit: dispatch, busy: busy(), repaint: paint });
+  const openTool = (next: Tool) => { tool = tool === next ? null : next; paint(); };
   const saveTitle = async (e: Event) => {
     e.preventDefault();
     const draft = titleDraft;
@@ -113,9 +142,7 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
         ${client.error || client.status === "offline" ? html`<button ?disabled=${client.status === "saving" || client.status === "connecting"} @click=${() => client.connect()}>Reconnect</button>` : nothing}
         ${client.pending ? html`<button ?disabled=${client.status !== "ready"} @click=${() => client.retry()}>Retry same edit</button>` : nothing}
       </div>
-      ${transport?.() ?? nothing}
-      ${library?.() ?? nothing}
-      ${accounts?.() ?? nothing}
+      <div class="desktop-rack">${transport?.() ?? nothing}${library?.() ?? nothing}${accounts?.() ?? nothing}</div>
       <main class="desktop-main">
         <aside class="desktop-library"><h2>SONG</h2><p>${s.title}</p><hr /><h2>HISTORY</h2>
           ${s.undoable.length ? repeat(s.undoable.slice(-8).reverse(), (u) => u.operationId, (u) => html`<button ?disabled=${busy()}
@@ -165,6 +192,19 @@ export function mountDesktop(root: HTMLElement, client: DesktopClient, agent?: A
           </section>
         </div>
       </main>
+      <nav class="desktop-tools" aria-label="Workbenches">
+        ${TOOLS.map(([id, label]) => html`<button role="tab" aria-selected=${tool === id}
+          @click=${() => openTool(id)}>${label}</button>`)}
+      </nav>
+      ${tool ? html`<div class="desktop-tray">${
+        tool === "structure" ? structurePanel(bench(s))
+        : tool === "rhythm" ? rhythm(bench(s))
+        : tool === "harmony" ? harmony(bench(s))
+        : tool === "tab" ? tabPanel(bench(s))
+        : tool === "objects" ? objectsPanel(bench(s))
+        : tool === "writing" ? writing(bench(s))
+        : takesPanel(bench(s))
+      }</div>` : nothing}
     </div>`, root);
   }
   const stop = client.subscribe(paint);

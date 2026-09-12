@@ -4183,6 +4183,7 @@ dependencies = [
  "song-audio",
  "song-core",
  "song-media",
+ "song-testkit",
  "song-workspace",
  "tempfile",
  "tokio",
