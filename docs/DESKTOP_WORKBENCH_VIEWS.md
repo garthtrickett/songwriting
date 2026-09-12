@@ -52,7 +52,7 @@ looking at a transport error instead of their music.
 | `check-desktop-imports` | PASS: 93 modules, no `src/song` or `src/app` |
 | `check-bindings` | PASS: 16 generated contracts current |
 | `cargo fmt` / `clippy -D warnings` | PASS |
-| `cargo test --workspace --no-fail-fast` | PASS except the pre-existing `song-media` format case below |
+| `cargo test --workspace --no-fail-fast` | PASS: 36 test targets, 0 failures, with `SONGWRITER_FFMPEG` set (see below) |
 
 ### Driven against the real window
 
@@ -69,16 +69,26 @@ The disabled move-up control on the first row is correct, not a defect: the
 first driver attempt failed because it clicked the first match rather than the
 first enabled one.
 
-### Known environment failure, not a regression
+### Running the media tests needs the pinned decoder
 
-`song-media --test formats` fails on `generated-aac.m4a` (58368 frames decoded,
-57600 recorded). The fixture's SHA-256 still matches, so the input did not
-change: the decoder did. `resolve_decoder` prefers `SONGWRITER_FFMPEG`, then the
-staged sidecar, then `PATH`, and on this droplet it reaches `/usr/bin/ffmpeg`
-6.1.1 while the expectations were recorded against the pinned FFmpeg 9.0.1 from
-`nix/ffmpeg.nix`, whose store path is no longer present. The 768-frame delta is
-AAC encoder-delay handling between those versions. This failure is identical
-before and after this work.
+`song-media --test formats` fails unless the proof decoder is selected:
+
+```sh
+SONGWRITER_FFMPEG="$PWD/.agent/ffmpeg-proof/ffmpeg" cargo test --manifest-path src-tauri/Cargo.toml --workspace
+```
+
+`resolve_decoder` prefers `SONGWRITER_FFMPEG`, then a staged sidecar, then
+`PATH`. With none set it reaches whatever system FFmpeg exists -- 6.1.1 on this
+droplet -- and `generated-aac.m4a` decodes 58368 frames against the 57600
+recorded by the pinned FFmpeg 9.0.1, a 768-frame AAC encoder-delay difference.
+The fixture's SHA-256 matches either way, which is the tell: the input did not
+change, the decoder did.
+
+This is not a repository fault and not a missing pin. `.agent/ffmpeg-proof/ffmpeg`
+is the checked-in 9.0.1 build, and CI builds the same decoder through
+`scripts/desktop/build-ffmpeg.py` and exports `SONGWRITER_FFMPEG` before
+testing. A local run that skips that step is measuring a different instrument,
+not a different tree.
 
 ## Not covered
 
